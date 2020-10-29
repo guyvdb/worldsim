@@ -1,0 +1,10 @@
+bin
+build
+contrib
+data
+documentation
+
+src/*.pro.user
+src/**/*.pro.user
+
+

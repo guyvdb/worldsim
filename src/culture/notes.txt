@@ -1,0 +1,20 @@
+Culture
+=============
+
+Culture includes:
+
+ - Language
+ - Home Life
+ - Single Life
+ - Paired Life
+ - Family Life
+ - Lifecycle
+ - Community
+ - Religion
+ - Government
+ - Art & Artifact
+ - Library (books, scrolls, oral)
+ - Music & Dance
+ - Housing & Architecture
+ - Science, Technology & Magic
+

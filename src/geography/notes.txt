@@ -1,0 +1,22 @@
+Geography
+============
+
+The Geography library is all about the attributes of the world.
+
+Map Generation
+Map Scale / Zooming
+Rainfall
+Rivers
+Mountains / Elevation
+Biomes
+Cities
+Villages
+Land Use
+Oceans
+Coastlines
+
+
+Want to work in 1 meter scale
+Must be metric internally but should be able to display a number of units of measure
+
+

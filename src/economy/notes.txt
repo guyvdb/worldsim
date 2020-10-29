@@ -1,0 +1,30 @@
+Notes on the economic mechanisms
+======================================
+
+Sources - things that create resources
+Drains - the consumption of resources
+Converts - turn resources into higher level resources - technology gains can increase the efficiency of converts
+Traders - move resources from one entity to another
+
+
+What are the econmic shapes at a macro level (lines on a graph for distribution, production, etc)
+
+
+Negative feedback loop creates equlibrium -- makes systems resistant to change - the point of stabilisation is equlibrium
+To have dynamic equlibrium you need to have a dynamic factor that is independant of the feedback. I.e. it could increase the
+equlibrium over time.
+
+
+Positive feedback creates an arms race. Positive feedback can cause mutual dependencies which can cause deadlocks. Need resource
+to buy resource harvester. Need resource harvester to get resources -- deadlock. Positive feedback works to amplify small differences.
+Positive feedback can be destructive. In chess if you loose a piece it weakens your position which may make it more likley to
+loose another piece.
+
+
+Use internal econmics to create large probability space.
+
+
+
+
+
+
