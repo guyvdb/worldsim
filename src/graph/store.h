@@ -3,11 +3,12 @@
 
 #include <filesystem>
 #include <cstdint>
-//#include <fstream>
-#include <cstdio>
+#include <fstream>
+
 
 #include <gerror.h>
 #include <cachepage.h>
+#include <storeable.h>
 
 namespace graph {
 
@@ -24,30 +25,36 @@ namespace graph {
       };
     public:
 
-      Store(std::filesystem::path filename, std::size_t pagesize, std::size_t recordsize);
+      Store(std::filesystem::path filename, std::size_t pagesize, std::size_t recordsize, ObjectFactory *factory);
+      ~Store();
       bool Open();
       void Close();
       bool Flush();
       ErrorNo LastError() { return m_lastError; }
       bool IsOpen() { return m_isopen; }
 
-      std::size_t Read(pid page, char *data);
-      std::size_t Write(pid page, const char *data);
+      void ReadPage(pid page, char *data);
+      void WritePage(pid page, const char *data);
+      Storeable *ReadRecord(gid id);
+      bool WriteRecord(Storeable *rec);
+
       std::size_t FileSize();
       std::size_t Capacity();
-      std::size_t RecordSize();
+      std::size_t RecordSize() { return this->m_recordsize; }
     private:
 
       std::filesystem::path m_filename;
       std::size_t m_pagesize;
       std::size_t m_recordsize;
+      ObjectFactory *m_factory;
       bool m_isopen;
       ErrorNo m_lastError;
+      std::fstream *m_file;
 
-      std::FILE *m_file;
+      //std::FILE *m_file;
   };
 
-
+/*
   class IdStore : public Store {
     public:
       IdStore(std::filesystem::path filename, std::size_t pagesize, std::size_t recordsize) :
@@ -91,7 +98,7 @@ namespace graph {
       PropertyTypeStore(std::filesystem::path filename, std::size_t pagesize, std::size_t recordsize) :
         Store(filename, pagesize, recordsize) {}
   };
-
+*/
 }
 
 #endif // STORE_H

@@ -6,10 +6,10 @@
 
 // file names
 #define ID_STORE_FILENAME "id.db"
-#define THING_TYPE_STORE_FILENAME "thing.type"
-#define THING_STORE_FILENAME "thing.db"
-#define THING_PROP_STORE_FILENAME "thing.prop"
-#define THING_PROP_TYPE_STORE_FILENAME "thing.schema"
+#define ENTITY_TYPE_STORE_FILENAME "entity.type"
+#define ENTITY_STORE_FILENAME "entity.db"
+#define ENTITY_PROP_STORE_FILENAME "entity.prop"
+#define ENTITY_PROP_TYPE_STORE_FILENAME "entity.schema"
 #define RELATION_TYPE_STORE_FILENAME "relation.type"
 #define RELATION_STORE_FILENAME "relation.db"
 #define RELATION_PROP_STORE_FILENAME "relation.prop"
@@ -26,7 +26,7 @@ namespace graph {
       bool Close();
     private:
 
-      const char * ConcatStorePath(const char *filename );
+      const char * fn(const char *filename );
 
       std::size_t m_pagesize;
       const char *m_datadir;
@@ -34,15 +34,15 @@ namespace graph {
       // the stores...
       //IdStore *m_idStore;
 
-      ThingStore *m_thingStore;
-      ThingTypeStore *m_thingTypeStore;
-      PropertyStore *m_thingPropertyStore;
-      PropertyTypeStore *m_thingPropertyTypeStore;
+      Store *m_entityStore;
+      Store *m_entityTypeStore;
+      Store *m_entityPropertyStore;
+      Store *m_entityPropertyTypeStore;
 
-      RelationStore *m_relationStore;
-      RelationTypeStore *m_relationTypeStore;
-      PropertyStore *m_relationPropertyStore;
-      PropertyTypeStore *m_relationPropertyTypeStore;
+      Store *m_relationStore;
+      Store *m_relationTypeStore;
+      Store *m_relationPropertyStore;
+      Store *m_relationPropertyTypeStore;
 
       std::vector<Store*> *m_dataStores;
   };

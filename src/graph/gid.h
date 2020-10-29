@@ -6,8 +6,7 @@
 
 namespace graph {
   enum GraphIds : gid {
-    NullId = 0x0,
-    InvalidId = 0xFFFFFFFF
+    NullId = 0xFFFFFFFF
   };
 
 

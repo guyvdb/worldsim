@@ -49,7 +49,7 @@ void MainWindow::on_pushButton_clicked() {
     for(int i=0;i<30;i++) {
 
     // the thing belongs to the transaction and will be release on commit or rollback
-      graph::Thing *t = tx->NewThing();
+      graph::Entity *t = tx->NewThing();
       std::cout << "Create Thing" << std::endl;
 
       tx->Commit();

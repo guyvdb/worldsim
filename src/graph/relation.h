@@ -22,13 +22,9 @@ namespace graph {
 
   class Relation : public Storeable{
     public:
-      Relation(Graph *g) : g(g){};
-
-      // Delete this relation
-      //void Delete(Tx *tx);
-
+      Relation(gid id) : Storeable(id){};
     private:
-      graph::Graph *g;
+
   };
 }
 #endif // RELATION_H

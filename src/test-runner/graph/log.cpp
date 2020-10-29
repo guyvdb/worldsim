@@ -14,7 +14,6 @@ TEST_CASE("The log should create a log file in the log directory", "[graph][log]
   RemoveTestDirectory();
   const char * dir = CreateTestDirectory();
 
-  std::cout << "LOG DIR: " << dir << std::endl;
 
   // Create a log
   graph::Log *log = new graph::Log(dir);

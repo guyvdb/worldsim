@@ -10,7 +10,7 @@ namespace graph {
     this->m_buf = new std::vector<char>();
   }
 
-  ByteBuffer::ByteBuffer(char *data, std::size_t size) : m_buf(0x0) {
+  ByteBuffer::ByteBuffer(const char *data, std::size_t size) : m_buf(0x0) {
     this->m_buf = new std::vector<char>(size);
     for(int i=0;i<(int)size;i++) {
       this->m_buf->push_back(data[i]);

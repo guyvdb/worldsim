@@ -3,7 +3,7 @@
 #include <types.h>
 #include <QDir>
 #include <QDebug>
-#define TEST_ROOT "test-directory"
+#define TEST_ROOT "data"
 
 
 

@@ -1,6 +1,6 @@
 #include <catch2.hpp>
 #include <utils.h>
-#include <thing.h>
+#include <entity.h>
 
 TEST_CASE("Thing should encode and decode from a byte stream","[graph][thing]") {
 
@@ -10,15 +10,11 @@ TEST_CASE("Thing should encode and decode from a byte stream","[graph][thing]") 
   graph::gid inrel = RandomGraphId();
   graph::gid outrel = RandomGraphId();
 
-
-  graph::Thing *t1 = new graph::Thing(id,propid,inrel,outrel);
-
-  graph::ByteBuffer *b = t1->Buffer();
-
-  graph::Thing *t2 = new graph::Thing(id,b);
+  graph::Entity *t1 = new graph::Entity(id,propid,inrel,outrel);
+  graph::Entity *t2 = new graph::Entity(id, t1->Data());
 
 
-  REQUIRE(t1->Id() == t2->Id());
+  REQUIRE(t1->GetId() == t2->GetId());
   REQUIRE(t1->PropId() == t2->PropId());
   REQUIRE(t1->InRelId() == t2->InRelId());
   REQUIRE(t1->OutRelId() == t2->OutRelId());
@@ -27,7 +23,6 @@ TEST_CASE("Thing should encode and decode from a byte stream","[graph][thing]") 
 
   delete t1;
   delete t2;
-  delete b;
 
   REQUIRE(true);
 }

@@ -9,9 +9,10 @@ HEADERS += catch2.hpp \
 
 SOURCES +=  catch2.cpp \
             graph/bytebuffer.cpp \
+            graph/entity.cpp \
             graph/idstore.cpp \
             graph/log.cpp \
-            graph/thing.cpp \
+            graph/store.cpp \
             utils.cpp
 
 DESTDIR =../../bin

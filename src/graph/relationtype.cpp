@@ -3,7 +3,7 @@
 namespace graph {
 
 
-  RelationType::RelationType() {
+  RelationType::RelationType(gid id) : Storeable(id) {
 
   }
 

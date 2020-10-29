@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <storeable.h>
+#include <entity.h>
 
 namespace graph {
 
@@ -14,28 +15,28 @@ namespace graph {
     // Create the data stores
   //  this->m_idStore = new IdStore(ConcatStorePath(ID_STORE_FILENAME), pagesize);
 
-    this->m_thingStore = new ThingStore(ConcatStorePath(THING_STORE_FILENAME), pagesize, Storeable::ThingSize);
-    this->m_thingTypeStore = new ThingTypeStore(ConcatStorePath(THING_TYPE_STORE_FILENAME), pagesize, Storeable::ThingTypeSize);
-    this->m_thingPropertyStore = new PropertyStore(ConcatStorePath(THING_PROP_STORE_FILENAME), pagesize, Storeable::PropertySize);
-    this->m_thingPropertyTypeStore = new PropertyTypeStore(ConcatStorePath(THING_PROP_TYPE_STORE_FILENAME),pagesize, Storeable::PropertyTypeSize);
+    this->m_entityStore = new Store(fn(ENTITY_STORE_FILENAME), pagesize, Storeable::EntitySize, new EntityFactory());
+    //this->m_thingTypeStore = new ThingTypeStore(fn(THING_TYPE_STORE_FILENAME), pagesize, Storeable::EntityTypeSize);
+    //this->m_thingPropertyStore = new PropertyStore(fn(THING_PROP_STORE_FILENAME), pagesize, Storeable::PropertySize);
+    //this->m_thingPropertyTypeStore = new PropertyTypeStore(fn(THING_PROP_TYPE_STORE_FILENAME),pagesize, Storeable::PropertyTypeSize);
 
-    this->m_relationStore = new RelationStore(ConcatStorePath(RELATION_STORE_FILENAME),pagesize, Storeable::RelationSize);
-    this->m_relationTypeStore = new RelationTypeStore(ConcatStorePath(RELATION_TYPE_STORE_FILENAME), pagesize, Storeable::RelationTypeSize);
-    this->m_relationPropertyStore = new PropertyStore(ConcatStorePath(RELATION_PROP_STORE_FILENAME), pagesize, Storeable::PropertySize);
-    this->m_relationPropertyTypeStore = new PropertyTypeStore(ConcatStorePath(RELATION_PROP_TYPE_STORE_FILENAME),pagesize, Storeable::PropertyTypeSize);
+    //this->m_relationStore = new RelationStore(fn(RELATION_STORE_FILENAME),pagesize, Storeable::RelationSize);
+    //this->m_relationTypeStore = new RelationTypeStore(fn(RELATION_TYPE_STORE_FILENAME), pagesize, Storeable::RelationTypeSize);
+    //this->m_relationPropertyStore = new PropertyStore(fn(RELATION_PROP_STORE_FILENAME), pagesize, Storeable::PropertySize);
+    //this->m_relationPropertyTypeStore = new PropertyTypeStore(fn(RELATION_PROP_TYPE_STORE_FILENAME),pagesize, Storeable::PropertyTypeSize);
 
 
     // Keep a vector of stores
     this->m_dataStores = new std::vector<Store*>(9);
     //this->m_dataStores->push_back(this->m_idStore);
-    this->m_dataStores->push_back(this->m_thingStore);
-    this->m_dataStores->push_back(this->m_thingTypeStore);
-    this->m_dataStores->push_back(this->m_thingPropertyStore);
-    this->m_dataStores->push_back(this->m_thingPropertyTypeStore);
-    this->m_dataStores->push_back(this->m_relationStore);
-    this->m_dataStores->push_back(this->m_relationTypeStore);
-    this->m_dataStores->push_back(this->m_relationPropertyStore);
-    this->m_dataStores->push_back(this->m_relationPropertyTypeStore);
+    this->m_dataStores->push_back(this->m_entityStore);
+    //this->m_dataStores->push_back(this->m_thingTypeStore);
+    //this->m_dataStores->push_back(this->m_thingPropertyStore);
+    //this->m_dataStores->push_back(this->m_thingPropertyTypeStore);
+    //this->m_dataStores->push_back(this->m_relationStore);
+    //this->m_dataStores->push_back(this->m_relationTypeStore);
+    //this->m_dataStores->push_back(this->m_relationPropertyStore);
+    //this->m_dataStores->push_back(this->m_relationPropertyTypeStore);
 
 
   }
@@ -63,7 +64,7 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  const char* StoreManager::ConcatStorePath(const char *filename) {
+  const char* StoreManager::fn(const char *filename) {
     std::filesystem::path result(this->m_datadir);
     result /= filename;
     return result.c_str();

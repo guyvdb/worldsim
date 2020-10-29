@@ -15,6 +15,8 @@ SOURCES += \
     cachemanager.cpp \
     cachepage.cpp \
     config.cpp \
+    entity.cpp \
+    entitytype.cpp \
     graph.cpp \
     log.cpp \
     properties.cpp \
@@ -24,8 +26,6 @@ SOURCES += \
     store.cpp \
     storeable.cpp \
     storemanager.cpp \
-    thing.cpp \
-    thingtype.cpp \
     transactionmanager.cpp \
     tx.cpp
 
@@ -35,6 +35,8 @@ HEADERS += \
     cachemanager.h \
     cachepage.h \
     config.h \
+    entity.h \
+    entitytype.h \
     gerror.h \
     gid.h \
     graph_global.h \
@@ -47,8 +49,6 @@ HEADERS += \
     store.h \
     storeable.h \
     storemanager.h \
-    thing.h \
-    thingtype.h \
     transactionmanager.h \
     tx.h \
     types.h

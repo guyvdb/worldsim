@@ -10,7 +10,7 @@ namespace graph {
   class ByteBuffer {
     public:
       ByteBuffer();
-      ByteBuffer(char *data, std::size_t size);
+      ByteBuffer(const char *data, std::size_t size);
       ByteBuffer(std::size_t size);
 
       ~ByteBuffer();

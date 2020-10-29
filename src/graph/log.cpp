@@ -19,8 +19,6 @@ namespace graph {
     std::filesystem::path filename(this->m_logdir);
     filename /= LOG_NAME;
 
-    std::cout << "log file name: " << filename.native() << std::endl;
-
     this->m_file = std::fopen(filename.c_str(),"wba");
     this->m_isopen = true;
     return true;

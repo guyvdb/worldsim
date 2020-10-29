@@ -9,7 +9,7 @@ namespace graph {
 
   class RelationType : public Storeable {
     public:
-      RelationType();
+      RelationType(gid id);
   };
 
 }

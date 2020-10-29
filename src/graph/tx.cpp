@@ -51,12 +51,12 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Thing *Tx::NewThing() {
+  Entity *Tx::NewThing() {
 
-    gid id = this->NextGraphId(Storeable::Type::Thing);
+    gid id = this->NextGraphId(Storeable::Type::Entity);
     std::cout << "[TX] Assign graphid " << id << std::endl;
 
-    Thing *t = new Thing(id);
+    Entity *t = new Entity(id);
     std::cout << "[TX] Thing created" << std::endl;
 
     this->m_modified->push_back(t);

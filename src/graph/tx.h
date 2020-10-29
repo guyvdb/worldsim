@@ -6,14 +6,14 @@
 
 #include <gerror.h>
 #include <types.h>
-#include <thing.h>
+#include <entity.h>
 #include <relation.h>
 
 namespace graph {
 
 //  class LogManager;
   //class CacheManager;
-  class Thing;
+  class Entity;
   class Relation;
   class TransactionManager;
 
@@ -54,10 +54,10 @@ namespace graph {
       ErrorNo LastError();
 
 
-      Thing *FindEntityById(gid id);
+      Entity *FindEntityById(gid id);
       Relation *FindRelationById(gid id);
 
-      Thing *NewThing();
+      Entity *NewThing();
       Relation *NewRelation();
 
     protected:
