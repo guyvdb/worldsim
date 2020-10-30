@@ -18,6 +18,7 @@ SOURCES += \
     entity.cpp \
     entitytype.cpp \
     graph.cpp \
+    idmanager.cpp \
     log.cpp \
     properties.cpp \
     relation.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     gid.h \
     graph_global.h \
     graph.h \
+    idmanager.h \
     log.h \
     properties.h \
     relation.h \

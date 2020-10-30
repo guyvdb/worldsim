@@ -25,10 +25,11 @@ namespace graph {
         Entity,
         EntityType,
         EntityProperty,
+        EntityPropertyType,
         Relation,
         RelationType,
         RelationProperty,
-        PropertyType,
+        RelationPropertyType,
         Id
       };
 

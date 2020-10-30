@@ -22,11 +22,11 @@ namespace graph {
   }
 
 
-  GraphId* IdCache::FindReclaimedId(Storeable::Type type) {
+  GraphId* IdCacheItem::FindReclaimedId(Storeable::Type type) {
     return 0x0;
   }
 
-  GraphId* IdCache::LastId(Storeable::Type type) {
+  GraphId* IdCacheItem::LastId(Storeable::Type type) {
     return 0x0;
   }
 }

@@ -78,9 +78,9 @@ namespace graph {
 
   // The id cache is a specialized cache that loades all of its records into memory
   // and maintains them there.
-  class IdCache : public Cache {
+  class IdCacheItem : public Cache {
     public:
-      IdCache(Store *store, std::size_t recsize) : Cache(store, recsize) {}
+      IdCacheItem(Store *store, std::size_t recsize) : Cache(store, recsize) {}
 
       GraphId* FindReclaimedId(Storeable::Type type);
       GraphId* LastId(Storeable::Type type);

@@ -6,6 +6,7 @@
 
 namespace graph {
 
+  typedef std::uint32_t aid;      // All Id -- cast down in size for other ids
   typedef std::uint32_t gid;      // Graph Id
   typedef std::uint32_t txid;     // Transaction Id
   typedef std::uint16_t tid;      // Type Id

@@ -19,7 +19,7 @@ namespace graph {
     return true;
   }
 
-  IdCache *CacheManager::GetIdCache() {
+  IdCacheItem *CacheManager::GetIdCache() {
     return 0x0;
   }
 

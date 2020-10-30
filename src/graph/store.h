@@ -12,17 +12,11 @@
 
 namespace graph {
 
-
+  class IdAccumulator;
 
 
   // This is the base class of all data stores
   class Store {
-      // This is a scanner that can scan the data store record by record
-      // This is used to rebuild an id store or restore checkpoints.
-      class Scanner {
-        public:
-          Scanner(Store *store);
-      };
     public:
 
       Store(std::filesystem::path filename, std::size_t pagesize, std::size_t recordsize, ObjectFactory *factory);
@@ -38,9 +32,13 @@ namespace graph {
       Storeable *ReadRecord(gid id);
       bool WriteRecord(Storeable *rec);
 
+      bool GrowStorage(int pagecount);
       std::size_t FileSize();
       std::size_t Capacity();
       std::size_t RecordSize() { return this->m_recordsize; }
+
+      bool ScanIds(IdAccumulator *scanner);
+
     private:
 
       std::filesystem::path m_filename;

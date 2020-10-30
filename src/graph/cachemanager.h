@@ -7,7 +7,7 @@
 namespace graph {
 
   class Cache;
-  class IdCache;
+  class IdCacheItem;
 
   class CacheManager {
     public:
@@ -16,7 +16,7 @@ namespace graph {
       bool Open();
       bool Close();
 
-      IdCache *GetIdCache();
+      IdCacheItem *GetIdCache();
       Cache *GetCache(Storeable::Type type);
 
     private:

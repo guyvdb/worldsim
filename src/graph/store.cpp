@@ -1,5 +1,6 @@
 #include "store.h"
 #include <iostream>
+#include <idmanager.h>
 
 namespace graph {
 
@@ -131,6 +132,12 @@ namespace graph {
     // if the store is not big enough... ie. this rec is leaving holes, pad the store
 
     return true;
+  }
+
+  bool Store::ScanIds(IdAccumulator *accumulator) {
+    // need to walk the whole store searching for reclaimable ids and the max id.
+    // set the values onto the reader
+
   }
 }
 
