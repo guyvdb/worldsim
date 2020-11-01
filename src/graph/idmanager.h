@@ -5,6 +5,7 @@
 #include <types.h>
 #include <storeable.h>
 #include <store.h>
+#include <idaccumulator.h>
 #include <mutex>
 #include <vector>
 #include <map>
@@ -12,13 +13,6 @@
 
 namespace graph {
 
-  class IdAccumulator {
-    public:
-      IdAccumulator() {}
-      virtual ~IdAccumulator() {}
-      virtual void Reclaim(aid id) = 0;
-      virtual void SetCounter(aid count) = 0;
-  };
 
   class IdCacheItem : public IdAccumulator{
     public:

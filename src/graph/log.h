@@ -113,7 +113,7 @@ namespace graph {
 
     private:
       const char *m_logdir;
-      std::FILE *m_file;
+      std::FILE *m_fd;
       bool m_isopen;
       ErrorNo m_lastError;
 

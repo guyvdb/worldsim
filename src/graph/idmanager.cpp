@@ -85,7 +85,7 @@ namespace graph {
     fn /= filename;
 
     // open the file
-    this->m_fd = std::fopen(fn.c_str(), "rwab");
+    this->m_fd = std::fopen(fn.c_str(), "r+ab");
     if(this->m_fd == 0x0){
       std::cout << "[ID MANAGER] Error - failed to open " << fn.native() << std::endl;
       return false;
@@ -93,6 +93,7 @@ namespace graph {
 
     // load the file
     if(this->Load()) {
+      std::cout << "[ID MANAGER] Loaded cache via data file." << std::endl;
       this->MarkItemState(true);
       this->m_isopen = true;
       return true;
@@ -101,6 +102,7 @@ namespace graph {
     // if load fail scan the data stores
     std::cout << "[ID MANAGER] Failed to load file - starting scan." << std::endl;
     if(this->Scan()) {
+      std::cout << "[ID MANAGER] Loaded cache via data store scan." << std::endl;
       this->MarkItemState(true);
       this->m_isopen = true;
       return true;
@@ -221,13 +223,11 @@ namespace graph {
    * Rebuild the cache via a scan of the data stores
    * --------------------------------------------------------------------------------------*/
   bool IdManager::Scan(){
-
-//    for (const auto &pair : this->m_cache) {
-//      aid max;
-//      Store *store = pair.second->GetStore();
-
-//      pair.second->GetStore()->ScanStoreIds(&max, &pair.second.)
-//    }
+    for(const auto &pair : this->m_cache) {
+      Store *store = pair.second->GetStore();
+      store->ScanIds(pair.second);
+    }
+    return true;
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -243,13 +243,14 @@ namespace graph {
     }
 
     // read the magic
-    if(!this->Read(magic,2)) {
+    if(!this->Read(magic,2)) {     
       return false; // not a valid store
     }
 
     // magic should be Valid
     if(magic[0] != ValidFileMarker[0] || magic[1] != ValidFileMarker[1] ) {
       // not a valid store
+      std::cout << "[ID MANAGER] Store file magic is not valid." << std::endl;
       return false;
     }
 
@@ -258,19 +259,11 @@ namespace graph {
     if(!this->Seek(0)) {
       return false; // this is bad
     }
-    if(!this->Write(InvalidFileMarker,1)) {
+
+    if(!this->Write(InvalidFileMarker,2)) {
       return false; // this is bad
     }
 
-    // start to read the index
-    /*
-    *   <header><index><data>
-    *   <header> = <magic(2)><type-count(2)>
-    *   <index>=<index-item>,<index-item>...type-count items
-    *   <index-item>=<type-id(1)><counter(4)><id-count(2)><file-offset(4)>
-    *   <data>=<data-item>,<data-item>,...id-count items
-    *   <data-item>=<id(4)>
-    */
     std::uint16_t typecnt;
     if(!this->Read(&typecnt)) {
       return false;
@@ -278,8 +271,6 @@ namespace graph {
 
     // Get the type index-items
     for(std::uint16_t i = 0; i < typecnt; i++) {
-
-      //<index-item>=<type-id(1)><counter(4)><id-count(2)><file-offset(4)>
 
       // read type id
       std::uint8_t tid;
@@ -316,7 +307,6 @@ namespace graph {
       } else {
         // have an unregistered type.... do nothing with it.
       }
-
     }
 
     // Load the the actual reclaimed ids
@@ -374,7 +364,7 @@ namespace graph {
       std::uint16_t reclaimCnt = (std::uint16_t)pair.second->ReclaimedIdCount();
       std::uint8_t type = (std::uint8_t)pair.first;
       std::uint32_t counter = (std::uint32_t)pair.second->Counter();
-      std::uint32_t fakeOffset = 0;
+      std::uint32_t fakeOffset = 0xFFFFFFFF;
 
       // Write the type
       if(!this->Write(type)) {
@@ -403,7 +393,6 @@ namespace graph {
 
 
     // Loop again writing the actual data
-
     long marker = this->Tell();
 
     // Write the data items
@@ -526,14 +515,29 @@ namespace graph {
     return  this->Read(data);
   }
 
+
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
   bool IdManager::Write(const char *data, std::size_t size) {
     // std::size_t fwrite( const void* buffer, std::size_t size, std::size_t count, std::FILE* stream );
 
+
+    std::cout << "WRITE: start tell=" << this->Tell() << ", data=";
+
+    const char *ptr = data;
+    for(std::size_t i=0; i<size; i++) {
+      std::uint8_t d = (std::uint8_t)*ptr;
+      std::printf("0x%X ", d);
+      ptr++;
+    }
+
+
     // write size bytes at the current position
     std::size_t written = std::fwrite((void*)data,1,size,this->m_fd);
+
+    std::cout << ", size=" << size << ", end tell=" << this->Tell() << std::endl;
+
     return written == size;
   }
 
@@ -556,14 +560,6 @@ namespace graph {
     return this->Write(buf,2);
   }
 
-/*
-      data[0] = value >> 24;
-      data[1] = value >> 16;
-      data[2] = value >> 8;
-      data[3] = value;
-  */
-
-
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
@@ -580,7 +576,25 @@ namespace graph {
    * data needs to be at least size bytes long
    * --------------------------------------------------------------------------------------*/
   bool IdManager::Read(char *data, std::size_t size) {
-    std::size_t read = fread((void*)data,1,size,this->m_fd);
+
+
+    std::cout << "READ: start tell=" << this->Tell() << ", data=";
+
+
+
+
+    std::size_t read = std::fread((void*)data,1,size,this->m_fd);
+
+
+    const char *ptr = data;
+    for(std::size_t i=0; i<size; i++) {
+      std::uint8_t d = (std::uint8_t)*ptr;
+      std::printf("0x%X ", d);
+      ptr++;
+    }
+
+      std::cout << ", size=" << size << ", end tell=" << this->Tell() << std::endl;
+
     return read == size;
   }
 

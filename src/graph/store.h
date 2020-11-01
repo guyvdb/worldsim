@@ -3,51 +3,60 @@
 
 #include <filesystem>
 #include <cstdint>
-#include <fstream>
+#include <cstdio>
 
 
 #include <gerror.h>
 #include <cachepage.h>
 #include <storeable.h>
+#include <idaccumulator.h>
 
 namespace graph {
 
-  class IdAccumulator;
+
 
 
   // This is the base class of all data stores
   class Store {
     public:
-
-      Store(std::filesystem::path filename, std::size_t pagesize, std::size_t recordsize, ObjectFactory *factory);
+//std::filesystem::path filename
+      Store(const char *filename, std::size_t pagesize, std::size_t recordsize, ObjectFactory *factory);
       ~Store();
       bool Open();
       void Close();
-      bool Flush();
+      void SetIdAccumulator(IdAccumulator *accumulator) {this->m_accumulator = accumulator;}
       ErrorNo LastError() { return m_lastError; }
       bool IsOpen() { return m_isopen; }
 
-      void ReadPage(pid page, char *data);
-      void WritePage(pid page, const char *data);
-      Storeable *ReadRecord(gid id);
+      bool ReadPage(pid page, char *data);
+      bool WritePage(pid page, const char *data);
+      bool ReadRecord(gid id, Storeable **result);
       bool WriteRecord(Storeable *rec);
 
       bool GrowStorage(int pagecount);
-      std::size_t FileSize();
-      std::size_t Capacity();
-      std::size_t RecordSize() { return this->m_recordsize; }
 
       bool ScanIds(IdAccumulator *scanner);
 
     private:
+      bool Read(char *data, std::size_t size);
+      bool Read(long pos, char *data, std::size_t size);
+      bool Write(const char *data, std::size_t size);
+      bool Write(long pos, const char *data, std::size_t size);
+      bool Seek(long pos);
+      bool Flush();
+      long Tell();
+      long FileSize();
 
-      std::filesystem::path m_filename;
+
+      const char *m_filename;
       std::size_t m_pagesize;
       std::size_t m_recordsize;
       ObjectFactory *m_factory;
       bool m_isopen;
       ErrorNo m_lastError;
-      std::fstream *m_file;
+      std::FILE *m_fd;
+      IdAccumulator *m_accumulator;
+
 
       //std::FILE *m_file;
   };

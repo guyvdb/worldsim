@@ -17,6 +17,7 @@ SOURCES += \
     config.cpp \
     entity.cpp \
     entitytype.cpp \
+    file.cpp \
     graph.cpp \
     idmanager.cpp \
     log.cpp \
@@ -38,10 +39,12 @@ HEADERS += \
     config.h \
     entity.h \
     entitytype.h \
+    file.h \
     gerror.h \
     gid.h \
     graph_global.h \
     graph.h \
+    idaccumulator.h \
     idmanager.h \
     log.h \
     properties.h \

@@ -11,7 +11,7 @@ TEST_CASE("The log should create a log file in the log directory", "[graph][log]
 
 
   // Create a new tempory directory
-  RemoveTestDirectory();
+  //RemoveTestDirectory();
   const char * dir = CreateTestDirectory();
 
 

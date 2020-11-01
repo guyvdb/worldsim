@@ -1,11 +1,12 @@
 #include "log.h"
 #include <filesystem>
 #include <iostream>
+#include <cerrno>
 
 namespace graph {
 
   Log::Log(const char *logdir) : m_logdir(logdir),
-    m_file(0x0), m_isopen(false), m_lastError(ErrorNone) {
+    m_fd(0x0), m_isopen(false), m_lastError(ErrorNone) {
 
   }
 
@@ -19,7 +20,12 @@ namespace graph {
     std::filesystem::path filename(this->m_logdir);
     filename /= LOG_NAME;
 
-    this->m_file = std::fopen(filename.c_str(),"wba");
+    std::cout << "[LOG] Open log file: " << filename.c_str() << std::endl;
+
+    this->m_fd = std::fopen(filename.c_str(),"wba");
+
+    std::cout << "[LOG] fd=" << this->m_fd << ", errno=" << errno << std::endl;
+
     this->m_isopen = true;
     return true;
   }
@@ -28,11 +34,11 @@ namespace graph {
     // Force the generation of a shutdown checkpoint
 
     // Flush the log file
-    std::fflush(this->m_file);
+    std::fflush(this->m_fd);
 
     // Close the log file
-    std::fclose(this->m_file);
-    this->m_file = 0x0;
+    std::fclose(this->m_fd);
+    this->m_fd = 0x0;
     this->m_isopen = false;
     return true;
   }
