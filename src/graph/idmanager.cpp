@@ -9,8 +9,7 @@ const char InvalidFileMarker[2] = {0x0,0x0};
 namespace graph {
 
 
-  IdCacheItem::IdCacheItem(Store *store) : IdAccumulator(), m_store(store),m_active(false){
-
+  IdCacheItem::IdCacheItem(Store *store) : IdAccumulator() ,m_store(store),m_active(false){
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -57,8 +56,10 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  IdManager::IdManager(std::filesystem::path datadir) : m_fd(0x0), m_datadir(datadir),  m_isopen(false) {
-
+  IdManager::IdManager(std::filesystem::path datadir) : m_file(0x0), m_datadir(datadir),  m_isopen(false) {
+    std::filesystem::path fn(this->m_datadir);
+    fn /= filename;
+    this->m_file = new File(fn);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -72,6 +73,10 @@ namespace graph {
 
     // clear the cache
     this->m_cache.clear();
+
+
+    delete this->m_file;
+
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -81,13 +86,10 @@ namespace graph {
    * all reclaimed ids and the highest issued id.
    * --------------------------------------------------------------------------------------*/
   bool IdManager::Open(){
-    std::filesystem::path fn(this->m_datadir);
-    fn /= filename;
 
     // open the file
-    this->m_fd = std::fopen(fn.c_str(), "r+ab");
-    if(this->m_fd == 0x0){
-      std::cout << "[ID MANAGER] Error - failed to open " << fn.native() << std::endl;
+    if(!this->m_file->Open()){
+      std::cout << "[ID MANAGER] Error - failed to open file."  << std::endl;
       return false;
     }
 
@@ -110,8 +112,6 @@ namespace graph {
 
     // This is very bad we should not get here.
     std::cout << "[ID MANAGER] Error - failed to open." << std::endl;
-    std::fclose(this->m_fd);
-    this->m_fd = 0x0;
     return false;
   }
 
@@ -129,11 +129,7 @@ namespace graph {
     }
 
     // close the file
-    if(this->m_fd != 0x0) {
-      std::fflush(this->m_fd);
-      std::fclose(this->m_fd);
-      this->m_fd = 0x0;
-    }
+    this->m_file->Close();
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -238,12 +234,12 @@ namespace graph {
     // after we have completed a load we should write a bad magic number to the file ....
     char magic[2];
 
-    if(!this->Seek(0)) {
+    if(!this->m_file->Seek(0)) {
       return false;
     }
 
     // read the magic
-    if(!this->Read(magic,2)) {     
+    if(!this->m_file->Read(magic,2)) {
       return false; // not a valid store
     }
 
@@ -256,16 +252,16 @@ namespace graph {
 
     // Invalidate the store magic for future
     // Save will revalidate it
-    if(!this->Seek(0)) {
+    if(!this->m_file->Seek(0)) {
       return false; // this is bad
     }
 
-    if(!this->Write(InvalidFileMarker,2)) {
+    if(!this->m_file->Write(InvalidFileMarker,2)) {
       return false; // this is bad
     }
 
     std::uint16_t typecnt;
-    if(!this->Read(&typecnt)) {
+    if(!this->m_file->Read(&typecnt)) {
       return false;
     }
 
@@ -274,25 +270,25 @@ namespace graph {
 
       // read type id
       std::uint8_t tid;
-      if(!this->Read(&tid)) {
+      if(!this->m_file->Read(&tid)) {
         return false;
       }
 
       // read the counter value
       std::uint32_t counter;
-      if(!this->Read(&counter)){
+      if(!this->m_file->Read(&counter)){
         return false;
       }
 
       // read reclaimed id count for type
       std::uint16_t reclaimCnt;
-      if(!this->Read(&reclaimCnt)) {
+      if(!this->m_file->Read(&reclaimCnt)) {
         return false;
       }
 
       // read data offset for data start
       std::uint32_t offset;
-      if(!this->Read(&offset)) {
+      if(!this->m_file->Read(&offset)) {
         return false;
       }
 
@@ -314,13 +310,13 @@ namespace graph {
       std::uint32_t reclaimCount = pair.second->ReclaimedIdCount();
       long offset = pair.second->FileOffset();
 
-      if(!this->Seek(offset)) {
+      if(!this->m_file->Seek(offset)) {
         return false;
       }
 
       for(std::uint32_t i = 0; i < reclaimCount; i++) {
         std::uint32_t id;
-        if(!this->Read(&id)) {
+        if(!this->m_file->Read(&id)) {
           return false;
         }
         pair.second->Reclaim((aid)id);
@@ -345,16 +341,16 @@ namespace graph {
   bool IdManager::Save() {
 
     // write the header
-    this->Seek(0); // seek to begining
+    this->m_file->Seek(0); // seek to begining
 
     // Write magic header
-    if(!this->Write(ValidFileMarker, 2)) {
+    if(!this->m_file->Write(ValidFileMarker, 2)) {
       return false;
     }
 
     // Write count types
     std::uint16_t cnt = (std::uint16_t)this->m_cache.size();
-    if(!this->Write(cnt)) {
+    if(!this->m_file->Write(cnt)) {
       return false;
     }
 
@@ -367,46 +363,46 @@ namespace graph {
       std::uint32_t fakeOffset = 0xFFFFFFFF;
 
       // Write the type
-      if(!this->Write(type)) {
+      if(!this->m_file->Write(type)) {
         return false;
       }
 
       // Write the counter value
-      if(!this->Write(counter)) {
+      if(!this->m_file->Write(counter)) {
         return false;
       }
 
       // Write the reclaimed id count
-      if(!this->Write(reclaimCnt)) {
+      if(!this->m_file->Write(reclaimCnt)) {
         return false;
       }
 
       // Save the location to the cache item where we
       // have to come back and write the read dataoffset
-      pair.second->SetFileOffset(this->Tell());
+      pair.second->SetFileOffset(this->m_file->Tell());
 
       // write the fake dataoffset
-      if(!this->Write(fakeOffset)){
+      if(!this->m_file->Write(fakeOffset)){
         return false;
       }
     }
 
 
     // Loop again writing the actual data
-    long marker = this->Tell();
+    long marker = this->m_file->Tell();
 
     // Write the data items
     for(const auto &pair : this->m_cache) {
 
       // seek to the write marker
-      if(!this->Seek(marker)) {
+      if(!this->m_file->Seek(marker)) {
         return false;
       }
 
       // write the reclaimed id data for this type
       auto data = pair.second->Data();
       for(auto id : data) {
-        if(!this->Write((uint32_t)id)) {
+        if(!this->m_file->Write((uint32_t)id)) {
           return false;
         }
       }
@@ -415,15 +411,15 @@ namespace graph {
       long offset = marker;
 
       // set the marker at where we are for next write
-      marker = this->Tell();
+      marker = this->m_file->Tell();
 
       // jump back to this types index entry
-      if(!this->Seek(pair.second->FileOffset())) {
+      if(!this->m_file->Seek(pair.second->FileOffset())) {
         return false;
       }
 
       // write the correct data offset replacing the old fake offset
-      if(!this->Write((uint32_t)offset)){
+      if(!this->m_file->Write((uint32_t)offset)){
         return false;
       }
 
@@ -435,220 +431,5 @@ namespace graph {
   }
 
 
-  /* ----------------------------------------------------------------------------------------
-   * Write data size long to the pos in the file
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Write(long pos, const char *data, std::size_t size){
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return this->Write(data, size);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Write(long pos, std::uint8_t data){
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return this->Write(data);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Write(long pos, std::uint16_t data){
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return this->Write(data);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Write(long pos, std::uint32_t data){
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return  this->Write(data);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Read(long pos, char *data, std::size_t size){
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return this->Read(data,size);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Read(long pos, std::uint8_t *data){
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return this->Read(data);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Read(long pos, std::uint16_t *data){
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return this->Read(data);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Read(long pos, std::uint32_t *data){
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return  this->Read(data);
-  }
-
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Write(const char *data, std::size_t size) {
-    // std::size_t fwrite( const void* buffer, std::size_t size, std::size_t count, std::FILE* stream );
-
-
-    std::cout << "WRITE: start tell=" << this->Tell() << ", data=";
-
-    const char *ptr = data;
-    for(std::size_t i=0; i<size; i++) {
-      std::uint8_t d = (std::uint8_t)*ptr;
-      std::printf("0x%X ", d);
-      ptr++;
-    }
-
-
-    // write size bytes at the current position
-    std::size_t written = std::fwrite((void*)data,1,size,this->m_fd);
-
-    std::cout << ", size=" << size << ", end tell=" << this->Tell() << std::endl;
-
-    return written == size;
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Write(std::uint8_t data) {
-    char buf[1];
-    buf[0] = (char)data;
-    return this->Write(buf,1);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Write(std::uint16_t data) {
-    char buf[2];
-    buf[0] = (char)(data >>8);
-    buf[1] = (char)(data);
-    return this->Write(buf,2);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Write(std::uint32_t data) {
-    char buf[4];
-    buf[0] = (char)(data >> 24);
-    buf[1] = (char)(data >> 16);
-    buf[2] = (char)(data >> 8);
-    buf[3] = (char)(data);
-    return this->Write(buf,4);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   * data needs to be at least size bytes long
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Read(char *data, std::size_t size) {
-
-
-    std::cout << "READ: start tell=" << this->Tell() << ", data=";
-
-
-
-
-    std::size_t read = std::fread((void*)data,1,size,this->m_fd);
-
-
-    const char *ptr = data;
-    for(std::size_t i=0; i<size; i++) {
-      std::uint8_t d = (std::uint8_t)*ptr;
-      std::printf("0x%X ", d);
-      ptr++;
-    }
-
-      std::cout << ", size=" << size << ", end tell=" << this->Tell() << std::endl;
-
-    return read == size;
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Read(std::uint8_t *data) {
-    return this->Read((char*)data, 1);
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Read(std::uint16_t *data) {
-    char buf[2];
-    if(!this->Read(buf,2)) {
-      return false;
-    }
-
-    *data = (buf[0] <<8) + buf[1];
-    return true;
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Read(std::uint32_t *data) {
-    char buf[4];
-    if(!this->Read(buf,4)) {
-      return false;
-    }
-    *data = (buf[0] << 24) + (buf[1] << 16) + (buf[2] << 8) + buf[3];
-    return true;
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Seek(long pos) {
-    return std::fseek(this->m_fd,pos,SEEK_SET) == 0;
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  bool IdManager::Flush() {
-    return std::fflush(this->m_fd) == 0;
-  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  long IdManager::Tell() {
-     return std::ftell(this->m_fd);
-  }
 
 }

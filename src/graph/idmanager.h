@@ -6,10 +6,11 @@
 #include <storeable.h>
 #include <store.h>
 #include <idaccumulator.h>
+#include <file.h>
 #include <mutex>
 #include <vector>
 #include <map>
-#include <cstdio>
+//#include <cstdio>
 
 namespace graph {
 
@@ -76,7 +77,7 @@ namespace graph {
       bool Load();
       bool Save();
 
-
+      /*
       bool Seek(long pos);
       bool Flush();
       long Tell();
@@ -100,10 +101,11 @@ namespace graph {
       bool Read(long pos, std::uint8_t *data);
       bool Read(long pos, std::uint16_t *data);
       bool Read(long pos, std::uint32_t *data);
+      */
 
 
-
-      std::FILE *m_fd;
+      //std::FILE *m_fd;
+      File *m_file;
       std::filesystem::path m_datadir;
       std::map<Storeable::Type, IdCacheItem*> m_cache;
       bool m_isopen;

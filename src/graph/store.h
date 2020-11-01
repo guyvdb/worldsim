@@ -3,13 +3,14 @@
 
 #include <filesystem>
 #include <cstdint>
-#include <cstdio>
+//#include <cstdio>
 
 
 #include <gerror.h>
 #include <cachepage.h>
 #include <storeable.h>
 #include <idaccumulator.h>
+#include <file.h>
 
 namespace graph {
 
@@ -38,14 +39,14 @@ namespace graph {
       bool ScanIds(IdAccumulator *scanner);
 
     private:
-      bool Read(char *data, std::size_t size);
-      bool Read(long pos, char *data, std::size_t size);
-      bool Write(const char *data, std::size_t size);
-      bool Write(long pos, const char *data, std::size_t size);
-      bool Seek(long pos);
-      bool Flush();
-      long Tell();
-      long FileSize();
+      //bool Read(char *data, std::size_t size);
+      //bool Read(long pos, char *data, std::size_t size);
+      //bool Write(const char *data, std::size_t size);
+      //bool Write(long pos, const char *data, std::size_t size);
+      //bool Seek(long pos);
+      //bool Flush();
+      //long Tell();
+      //long FileSize();
 
 
       const char *m_filename;
@@ -54,7 +55,8 @@ namespace graph {
       ObjectFactory *m_factory;
       bool m_isopen;
       ErrorNo m_lastError;
-      std::FILE *m_fd;
+      //std::FILE *m_fd;
+      File *m_file;
       IdAccumulator *m_accumulator;
 
 

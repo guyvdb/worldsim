@@ -45,7 +45,7 @@ TEST_CASE("Check Byte Order","[bytes]") {
 
 TEST_CASE("The id manager should recycle id's","[graph][id-manager]") {
 
-  //RemoveTestDirectory();
+  RemoveTestDirectory();
 
   // Params to open manager
   std::filesystem::path datadir(CreateTestDirectory());
@@ -115,8 +115,10 @@ TEST_CASE("The id manager should recycle id's","[graph][id-manager]") {
 
     REQUIRE(manager->Open());
 
-    //id = manager->NextGraphId(graph::Storeable::Type::Entity);
-    //REQUIRE(id == 13); // lucky 13
+    id = manager->NextGraphId(graph::Storeable::Type::Entity);
+    REQUIRE(id == 13); // lucky 13
+
+
     manager->Close();
 
 

@@ -20,7 +20,7 @@ namespace graph {
     if(!this->Exists()) {
       this->Touch();
     }
-    // Open the file
+
     // open the file
     this->m_fd = std::fopen(this->m_filename.c_str(), "r+ab");
     if(this->m_fd == 0x0){
@@ -132,24 +132,8 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   bool File::Write(const char *data, std::size_t size) {
-    // std::size_t fwrite( const void* buffer, std::size_t size, std::size_t count, std::FILE* stream );
-
-
-    std::cout << "WRITE: start tell=" << this->Tell() << ", data=";
-
-    const char *ptr = data;
-    for(std::size_t i=0; i<size; i++) {
-      std::uint8_t d = (std::uint8_t)*ptr;
-      std::printf("0x%X ", d);
-      ptr++;
-    }
-
-
     // write size bytes at the current position
     std::size_t written = std::fwrite((void*)data,1,size,this->m_fd);
-
-    std::cout << ", size=" << size << ", end tell=" << this->Tell() << std::endl;
-
     return written == size;
   }
 
@@ -187,21 +171,8 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * data needs to be at least size bytes long
    * --------------------------------------------------------------------------------------*/
-  bool File::Read(char *data, std::size_t size) {
-    std::cout << "READ: start tell=" << this->Tell() << ", data=";
-
+  bool File::Read(char *data, std::size_t size) {    
     std::size_t read = std::fread((void*)data,1,size,this->m_fd);
-
-
-    const char *ptr = data;
-    for(std::size_t i=0; i<size; i++) {
-      std::uint8_t d = (std::uint8_t)*ptr;
-      std::printf("0x%X ", d);
-      ptr++;
-    }
-
-      std::cout << ", size=" << size << ", end tell=" << this->Tell() << std::endl;
-
     return read == size;
   }
 
@@ -258,6 +229,21 @@ namespace graph {
      return std::ftell(this->m_fd);
   }
 
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  long File::Size() {
+    long pos = this->Tell();
+    std::fseek(this->m_fd,0,SEEK_END);
+    long size = this->Tell();
+    this->Seek(pos);
+    return size;
+  }
+
+
+
+
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
@@ -265,7 +251,7 @@ namespace graph {
     assert(!this->m_isopen);
 
     // open the file for read... if it fails the file does not exist
-    FILE *fd;
+    FILE *fd = 0x0;
     std::fopen(this->m_filename.c_str(),"r");
     if(fd == 0x0) {
       return false;
@@ -279,11 +265,12 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   void File::Touch() {
     assert(!this->m_isopen);
-
     // make sure the file does not exist... open the file for write to create it
-    FILE *fd;
-    std::fopen(this->m_filename.c_str(),"c");
-    std::fclose(fd);
+    FILE *fd = 0x0;
+    std::fopen(this->m_filename.c_str(),"a+");
+    if(fd != 0x0) {
+      std::fclose(fd);
+    }
   }
 
 

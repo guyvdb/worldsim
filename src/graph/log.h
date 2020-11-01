@@ -2,8 +2,9 @@
 #define LOG_H
 
 #include <types.h>
-#include <cstdio>
+//#include <cstdio>
 #include <gerror.h>
+#include <file.h>
 
 #define LOG_NAME "transaction.log"
 
@@ -97,7 +98,7 @@ namespace graph {
   class Log {
     public:
       Log(const char *logdir);
-
+      ~Log();
       // Open the log
       bool Open();
 
@@ -113,7 +114,8 @@ namespace graph {
 
     private:
       const char *m_logdir;
-      std::FILE *m_fd;
+      File *m_file;
+  //    std::FILE *m_fd;
       bool m_isopen;
       ErrorNo m_lastError;
 

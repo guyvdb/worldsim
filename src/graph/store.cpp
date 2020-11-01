@@ -10,16 +10,18 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   Store::Store(const char *filename/*std::filesystem::path filename*/, std::size_t pagesize, std::size_t recordsize, ObjectFactory *factory) :
     m_filename(filename), m_pagesize(pagesize), m_recordsize(recordsize), m_factory(factory),
-    m_isopen(false), m_lastError(ErrorNone), m_fd(0x0),m_accumulator(0x0) {
+    m_isopen(false), m_lastError(ErrorNone), m_file(0x0),m_accumulator(0x0) {
+    std::filesystem::path fn(filename);
 
-    std::cout << "[STORE] Creating store - pagesize % recordsize: " << (pagesize % recordsize) << std::endl;
+    this->m_file = new File(fn);
+
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
   Store::~Store() {
-    std::cout << "[STORE] Release ObjectFactory" << std::endl;
+    delete this->m_file;
     delete this->m_factory;
   }
 
@@ -31,23 +33,11 @@ namespace graph {
     std::cout << "[STORE] Open filename: " << this->m_filename << std::endl;
 
     // open the file
-    //a+b
-    this->m_fd = std::fopen(this->m_filename, "a+b");
-    std::cout << "[STORE] fd=" << this->m_fd << ", errno=" << errno << std::endl;
-
-    if(this->m_fd == 0x0) {
-      return false;
+    if(this->m_file->Open()) {
+      this->m_isopen = true;
+      return true;
     }
-    /*if(this->m_fd == 0x0){
-      std::cout << "[STORE] Error - failed to open " << this->m_filename << std::endl;
-     std::cout << "errorno is : " << errno << std::endl;
-
-      return false;
-    }*/
-
-    this->m_isopen = true;
-    return true;
-
+    return false;
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -55,8 +45,7 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   void Store::Close() {
     if(this->m_isopen) {
-      this->Flush();
-      std::fclose(this->m_fd);
+      this->m_file->Close();
       this->m_isopen = false;
     }
   }
@@ -79,7 +68,7 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   bool Store::ReadPage(pid page, char *data) {
     long offset = (long)page * (long)this->m_pagesize;
-    return this->Read(offset, data, this->m_pagesize);
+    return this->m_file->Read(offset, data, this->m_pagesize);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -87,7 +76,7 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   bool Store::WritePage(pid page, const char *data) {
     long offset = (long)page * (long)this->m_pagesize;
-    return this->Write(offset, data,this->m_pagesize);
+    return this->m_file->Write(offset, data,this->m_pagesize);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -96,7 +85,7 @@ namespace graph {
   bool Store::ReadRecord(gid id, Storeable **result) {
     long offset = (long)(id-1) * (long)this->m_recordsize;
     std::vector<char> buffer(this->m_recordsize);
-    if(!this->Read(offset,buffer.data(), this->m_recordsize)) {
+    if(!this->m_file->Read(offset,buffer.data(), this->m_recordsize)) {
       return false;
     }
 
@@ -110,7 +99,7 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   bool Store::WriteRecord(Storeable *rec) {
     long offset = (long)(rec->GetId()-1) * (long)this->m_recordsize;
-    return this->Write(offset, rec->Data(), this->m_recordsize);
+    return this->m_file->Write(offset, rec->Data(), this->m_recordsize);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -119,7 +108,7 @@ namespace graph {
   bool Store::ScanIds(IdAccumulator *accumulator) {
     // need to walk the whole store searching for reclaimable ids and the max id.
     // set the values onto the accumulator
-    long filesize = this->FileSize();
+    long filesize = this->m_file->Size(); // FileSize();
     char buf[1];
 
     //if(filesize % (long)this->m_recordsize != 0) {
@@ -130,7 +119,7 @@ namespace graph {
     for(long id = 1; id <= count; id++) {
       long offset = (id - 1) *  (long)this->m_recordsize;
 
-      if(!this->Read(offset,buf,1)) {
+      if(!this->m_file->Read(offset,buf,1)) {
         return false;
       }
 
@@ -149,78 +138,78 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::Read(char *data, std::size_t size) {
-    std::size_t read = std::fread((void*)data,1,size,this->m_fd);
-    return read == size;
-  }
+//  bool Store::Read(char *data, std::size_t size) {
+//    std::size_t read = std::fread((void*)data,1,size,this->m_fd);
+//    return read == size;
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::Read(long pos, char *data, std::size_t size) {
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return this->Read(data,size);
-  }
+//  bool Store::Read(long pos, char *data, std::size_t size) {
+//    if(!this->Seek(pos)) {
+//      return false;
+//    }
+//    return this->Read(data,size);
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::Write(const char *data, std::size_t size) {
-    std::size_t written = std::fwrite((void*)data,1,size,this->m_fd);
-    return written == size;
-  }
+//  bool Store::Write(const char *data, std::size_t size) {
+//    std::size_t written = std::fwrite((void*)data,1,size,this->m_fd);
+//    return written == size;
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::Write(long pos, const char *data, std::size_t size) {
-    if(!this->Seek(pos)) {
-      return false;
-    }
-    return this->Write(data,size);
-  }
+//  bool Store::Write(long pos, const char *data, std::size_t size) {
+//    if(!this->Seek(pos)) {
+//      return false;
+//    }
+//    return this->Write(data,size);
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::Seek(long pos) {
-    return std::fseek(this->m_fd,pos,SEEK_SET) == 0;
-  }
+//  bool Store::Seek(long pos) {
+//    return std::fseek(this->m_fd,pos,SEEK_SET) == 0;
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::Flush() {
-    return std::fflush(this->m_fd) == 0;
-  }
+//  bool Store::Flush() {
+//    return std::fflush(this->m_fd) == 0;
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  long Store::Tell() {
-    return std::ftell(this->m_fd);
-  }
+//  long Store::Tell() {
+//    return std::ftell(this->m_fd);
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  long Store::FileSize() {
-    // keep point to return to
-    long pos = this->Tell();
+//  long Store::FileSize() {
+//    // keep point to return to
+//    long pos = this->Tell();
 
-    // seek to eof
-    std::fseek(this->m_fd,0,SEEK_END);
+//    // seek to eof
+//    std::fseek(this->m_fd,0,SEEK_END);
 
-    // tell position
-    long result = this->Tell();
+//    // tell position
+//    long result = this->Tell();
 
-    // seek back to where we where
-    this->Seek(pos);
+//    // seek back to where we where
+//    this->Seek(pos);
 
-    return result;
-  }
+//    return result;
+//  }
 
 }
 
