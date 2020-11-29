@@ -42,16 +42,14 @@ void MainWindow::on_pushButton_clicked() {
   graph::Transaction tx;
   if(g->Update(tx)){
     graph::Entity *e = tx.CreateEntity(1);
-    std::cout << "ENTITY ID=" << e->GraphId() << "\n";
+    std::cout << "ENTITY ID=" << e->GetGraphId() << "\n";
     e->SetFlag(0);
-    e->SetInRelId(23);
-    e->SetOutRelId(44);
-    e->SetPropId(233);
+    e->SetRelationId(23);
+    e->SetAttributeId(233);
 
     std::cout << "Flag = " << e->GetFlag() << std::endl;
-    std::cout << "InRelId = " << e->InRelId() << std::endl;
-    std::cout << "OutRelId = " << e->OutRelId() << std::endl;
-    std::cout << "PropId = " << e->PropId() << std::endl;
+    std::cout << "InRelId = " << e->RelationId() << std::endl;
+    std::cout << "PropId = " << e->AttributeId() << std::endl;
 
 
     graph::Entity *e2 = tx.CopyEntity(e);

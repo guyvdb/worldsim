@@ -1,7 +1,7 @@
 #ifndef STORE_H
 #define STORE_H
 
-#include <graph_types.h>
+#include <types.h>
 #include <filesystem>
 #include <cstdint>
 #include <string>

@@ -1,7 +1,7 @@
 #ifndef RELATIONENCODER_H
 #define RELATIONENCODER_H
 
-#include <graph_types.h>
+#include <types.h>
 #include <encoder.h>
 #include <relation.h>
 

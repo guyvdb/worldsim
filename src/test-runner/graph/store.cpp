@@ -27,9 +27,8 @@ TEST_CASE("The store should store and retreive records","[graph][store]") {
 
   graph::Entity *t = new graph::Entity(1);
   t->SetFlag(0x0);
-  t->SetInRelId(RandomGraphId());
-  t->SetOutRelId(RandomGraphId());
-  t->SetPropId(RandomGraphId());
+  t->SetRelationId(RandomGraphId());
+  t->SetAttributeId(RandomGraphId());
 
   REQUIRE(store->WriteRecord(t));
 

@@ -6,7 +6,7 @@
 #include <chrono>
 #include <map>
 
-#include <graph_types.h>
+#include <types.h>
 #include <cachepage.h>
 #include <storeable.h>
 

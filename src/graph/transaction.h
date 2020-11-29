@@ -5,12 +5,12 @@
 
 
 
-#include <graph_types.h>
+#include <types.h>
 #include <storeable.h>
 
 namespace graph {
   class Entity;
-  class EntityType;
+  class Type;
   class Relation;
   class RelationType;
   class Attribute;
@@ -37,7 +37,7 @@ namespace graph {
       ErrorNo LastError();
 
 
-      EntityType *CreateEntityType();
+      Type *CreateEntityType();
       Entity *CopyEntity(Entity *src);
       Entity *CreateEntity(gid type);
       Entity *FindEntityById(gid id);

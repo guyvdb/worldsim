@@ -107,7 +107,7 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   bool Store::WriteRecord(Storeable *rec) {
-    long offset = (long)(rec->GraphId()-1) * (long)this->m_recordsize;
+    long offset = (long)(rec->GetGraphId()-1) * (long)this->m_recordsize;
     return this->m_file->Write(offset, rec->Buffer()->VoidData(), this->m_recordsize);
   }
 

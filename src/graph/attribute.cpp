@@ -5,7 +5,7 @@ namespace graph {
 
 
 
-  Attribute::Attribute() : Storeable(NullId) {
+  Attribute::Attribute() : Storeable(NullId, Storeable::AttributeSize) {
 
   }
 

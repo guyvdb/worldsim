@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include <graph_types.h>
+#include <types.h>
 
 const std::string filename("id.db");
 const char ValidFileMarker[2] = {0xA,0xB};

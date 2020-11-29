@@ -11,7 +11,6 @@ CONFIG += c++17
 
 SOURCES += \
     attribute.cpp \
-    attributetype.cpp \
     buffer.cpp \
     cache.cpp \
     cachemanager.cpp \
@@ -20,7 +19,6 @@ SOURCES += \
     encoder.cpp \
     entity.cpp \
     entityencoder.cpp \
-    entitytype.cpp \
     file.cpp \
     graph.cpp \
     idmanager.cpp \
@@ -28,18 +26,17 @@ SOURCES += \
     properties.cpp \
     relation.cpp \
     relationencoder.cpp \
-    relationtype.cpp \
     schema.cpp \
     store.cpp \
     storeable.cpp \
     storemanager.cpp \
     transaction.cpp \
     transactionlog.cpp \
-    transactionmanager.cpp
+    transactionmanager.cpp \
+    type.cpp
 
 HEADERS += \
     attribute.h \
-    attributetype.h \
     buffer.h \
     cache.h \
     cachemanager.h \
@@ -48,25 +45,24 @@ HEADERS += \
     encoder.h \
     entity.h \
     entityencoder.h \
-    entitytype.h \
     file.h \
     graph_global.h \
     graph.h \
-    graph_types.h \
     idaccumulator.h \
     idmanager.h \
     log.h \
     properties.h \
     relation.h \
     relationencoder.h \
-    relationtype.h \
     schema.h \
     store.h \
     storeable.h \
     storemanager.h \
     transaction.h \
     transactionlog.h \
-    transactionmanager.h
+    transactionmanager.h \
+    type.h \
+    types.h
 
 
 DESTDIR = ../../bin

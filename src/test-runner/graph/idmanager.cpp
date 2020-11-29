@@ -10,7 +10,7 @@
 #include <idmanager.h>
 #include <entity.h>
 #include <entityencoder.h>
-#include <graph_types.h>
+#include <types.h>
 
 TEST_CASE("Check Byte Order","[bytes]") {
 

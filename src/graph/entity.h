@@ -1,9 +1,19 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <graph_types.h>
+#include <types.h>
 #include <storeable.h>
 #include <buffer.h>
+
+
+
+/*
+ * Buffer layout of entity:
+ * |------|---------|-----------|------------|
+ * | 0    | 1 2 3 4 | 5 6 7 8   | 9 10 11 12 |
+ * | flag | typeid  | relid     | attribid   |
+ * |------|---------|-----------|------------|
+ */
 
 namespace graph {
   class Entity : public Storeable {
@@ -11,24 +21,14 @@ namespace graph {
       Entity();
       Entity(gid id);
       Entity(gid id, ByteBuffer *buffer);
-      Entity(gid id, gid propid, gid inrelid, gid outrelid);
+      Entity(gid id, gid attribid, gid relid);
       ~Entity();
-
-      gid PropId();
-      gid InRelId();
-      gid OutRelId();
-      void SetPropId(gid value);
-      void SetInRelId(gid value);
-      void SetOutRelId(gid value);
-
-      virtual ByteBuffer *Buffer() { return this->m_buf; }
-      virtual Concept Type() { return Storeable::Concept::Entity; }
-      virtual void SetFlag(std::uint8_t flag) {this->m_buf->Set(0,flag); }
-      virtual std::uint8_t GetFlag() { return this->m_buf->GetUint8(0); }
-
+      gid AttributeId();
+      gid RelationId();
+      void SetAttributeId(gid value);
+      void SetRelationId(gid value);
+      virtual Concept GetConcept() { return Storeable::Concept::Entity; }
     private:
-      void CreateBuffer();
-      ByteBuffer *m_buf;
   };
 
 

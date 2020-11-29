@@ -6,7 +6,6 @@
 define:
 
 
-
   person is entity,
          has full-name,
          has age,
@@ -36,11 +35,33 @@ define:
        relates employee,
        relates employer;
 
+  marrage is relation,
+    relates husband,
+    relates wife;
 
   
+commit;
 
 
+insert:
 
+  $joe is person,
+       has name "Joe",
+       has age 43,
+       has gender 'M';
+
+
+  $jane is person,
+        has name "Jane",
+        has age 39,
+        has gender 'F';
+
+
+  $marage1 is marrage,
+           relates husband $joe,
+           relates wife $jane;
+
+commit;
 
 
 

@@ -1,15 +1,14 @@
 #include "transaction.h"
 
-#include <graph_types.h>
+#include <types.h>
 #include <transactionmanager.h>
 #include <cache.h>
 
 #include <entity.h>
-#include <entitytype.h>
+#include <type.h>
 #include <relation.h>
-#include <relationtype.h>
 #include <attribute.h>
-#include <attributetype.h>
+#include <type.h>
 
 #include <cassert>
 #include <iostream>

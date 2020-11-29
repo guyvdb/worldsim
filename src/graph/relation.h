@@ -30,7 +30,7 @@ namespace graph {
 
 
       virtual ByteBuffer* Buffer() { return this->m_buf; }
-      virtual Concept Type() {return Concept::Relation; }
+      virtual Concept GetConcept() {return Concept::Relation; }
       virtual void SetFlag(std::uint8_t flag){this->m_buf->Set(0,flag); }
       virtual std::uint8_t GetFlag() {return this->m_buf->GetUint8(0); }
 

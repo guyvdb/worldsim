@@ -7,7 +7,7 @@
 #include <string>
 #include <filesystem>
 
-#include <graph_types.h>
+#include <types.h>
 #include <config.h>
 #include <transaction.h>
 #include <storemanager.h>
