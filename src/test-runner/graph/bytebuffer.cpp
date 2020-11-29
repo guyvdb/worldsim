@@ -1,6 +1,6 @@
 #include <catch2.hpp>
 //#include <bytebuffer.h>
-#include <types.h>
+#include <graph_types.h>
 
 /*
 TEST_CASE("The byte buffer should encode/decode values", "[graph][bytebuffer]") {

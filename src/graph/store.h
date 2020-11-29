@@ -1,13 +1,10 @@
 #ifndef STORE_H
 #define STORE_H
 
+#include <graph_types.h>
 #include <filesystem>
 #include <cstdint>
-//#include <cstdio>
-
 #include <string>
-
-#include <gerror.h>
 #include <cachepage.h>
 #include <storeable.h>
 #include <idaccumulator.h>

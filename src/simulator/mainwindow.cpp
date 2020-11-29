@@ -9,6 +9,7 @@
 #define LOGDIR "/home/guy/Projects/worldsim/data/log"
 
 #include <graph.h>
+#include <entity.h>
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
@@ -40,8 +41,8 @@ void MainWindow::on_pushButton_clicked() {
 
   graph::Transaction tx;
   if(g->Update(tx)){
-    graph::Entity *e = tx.CreateEntity();
-    std::cout << "ENTITY ID=" << e->GetId() << "\n";
+    graph::Entity *e = tx.CreateEntity(1);
+    std::cout << "ENTITY ID=" << e->GraphId() << "\n";
     e->SetFlag(0);
     e->SetInRelId(23);
     e->SetOutRelId(44);

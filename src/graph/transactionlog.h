@@ -1,9 +1,7 @@
 #ifndef TRANSACTIONLOG_H
 #define TRANSACTIONLOG_H
 
-#include <types.h>
-//#include <cstdio>
-#include <gerror.h>
+#include <graph_types.h>
 #include <file.h>
 #include <mutex>
 #include <vector>

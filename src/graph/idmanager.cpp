@@ -1,7 +1,9 @@
 #include "idmanager.h"
-#include <gid.h>
 #include <iostream>
 #include <string>
+
+#include <graph_types.h>
+
 const std::string filename("id.db");
 const char ValidFileMarker[2] = {0xA,0xB};
 const char InvalidFileMarker[2] = {0x0,0x0};

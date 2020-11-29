@@ -2,7 +2,7 @@
 #define ENCODER_H
 
 #include <storeable.h>
-#include <types.h>
+#include <graph_types.h>
 #include <buffer.h>
 
 namespace graph {

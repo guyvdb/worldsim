@@ -1,7 +1,7 @@
 #ifndef CACHEMANAGER_H
 #define CACHEMANAGER_H
 
-#include <types.h>
+#include <graph_types.h>
 #include <storeable.h>
 #include <storemanager.h>
 #include <cache.h>

@@ -2,7 +2,7 @@
 #define IDMANAGER_H
 
 #include <filesystem>
-#include <types.h>
+#include <graph_types.h>
 #include <storeable.h>
 #include <store.h>
 #include <idaccumulator.h>

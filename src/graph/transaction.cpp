@@ -1,6 +1,6 @@
 #include "transaction.h"
 
-#include <gid.h>
+#include <graph_types.h>
 #include <transactionmanager.h>
 #include <cache.h>
 

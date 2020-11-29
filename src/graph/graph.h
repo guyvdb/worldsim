@@ -3,9 +3,11 @@
 
 #include "graph_global.h"
 
+
 #include <string>
 #include <filesystem>
-#include <gerror.h>
+
+#include <graph_types.h>
 #include <config.h>
 #include <transaction.h>
 #include <storemanager.h>

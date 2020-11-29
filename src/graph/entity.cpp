@@ -81,7 +81,7 @@ namespace graph {
   }
 
   Entity::~Entity()  {
-    std::cout << "[ENTITY] Release resource: " << this->GetId() << std::endl;
+    std::cout << "[ENTITY] Release resource: " << this->GraphId() << std::endl;
     delete this->m_buf;
   }
 

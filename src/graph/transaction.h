@@ -4,15 +4,8 @@
 #include <vector>
 
 
-#include <gerror.h>
-#include <types.h>
-//#include <entity.h>
-//#include <entitytype.h>
-//#include <relation.h>
-//#include <relationtype.h>
-//#include <attribute.h>
-//#include <attributetype.h>
 
+#include <graph_types.h>
 #include <storeable.h>
 
 namespace graph {

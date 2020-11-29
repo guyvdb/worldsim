@@ -2,7 +2,7 @@
 #define CACHE_PAGE_H
 
 
-#include <types.h>
+#include <graph_types.h>
 #include <cstdint>
 #include <chrono>
 

@@ -1,6 +1,6 @@
 #ifndef IDACCUMULATOR_H
 #define IDACCUMULATOR_H
-#include <types.h>
+#include <graph_types.h>
 
 namespace graph {
 

@@ -1,12 +1,15 @@
 #ifndef CACHE_H
 #define CACHE_H
 
-#include <types.h>
+
 #include <cstdint>
 #include <chrono>
 #include <map>
+
+#include <graph_types.h>
 #include <cachepage.h>
-#include <gid.h>
+#include <storeable.h>
+
 
 namespace graph {
 

@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <map>
-#include <types.h>
+#include <graph_types.h>
 #include <buffer.h>
 
 namespace graph {
@@ -29,12 +29,8 @@ namespace graph {
         NotStorable,
         Entity,
         EntityType,
-        //EntityProperty,
-        //EntityPropertyType,
         Relation,
         RelationType,
-        //RelationProperty,
-        //RelationPropertyType,
         Attribute,
         AttributeType,
         Id,
@@ -52,10 +48,12 @@ namespace graph {
       virtual std::uint8_t GetFlag() = 0;
 
 
-      gid GetId() {return m_id;}
-      void SetId(gid value) { this->m_id = value; }
+      gid GraphId() {return m_graphid;}
+      gid TypeId() { return m_typeid; }
+      void SetGraphId(gid value) { this->m_graphid = value; }
     protected:
-      gid m_id;
+      gid m_graphid;
+      gid m_typeid;
   };
 
 

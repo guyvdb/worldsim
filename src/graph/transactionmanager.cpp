@@ -61,7 +61,7 @@ namespace graph {
 
     // write a frame for every created object
     for(auto obj : *tx.CreatedObjects()){
-      this->m_log->FrameAppend(obj->GetId(),obj->Type(),TransactionOp::Create,obj->Buffer());
+      this->m_log->FrameAppend(obj->GetGraphId(),obj->Type(),TransactionOp::Create,obj->Buffer());
     }
 
     // write a frame for every updated object

@@ -1,9 +1,10 @@
 #ifndef RELATIONENCODER_H
 #define RELATIONENCODER_H
 
+#include <graph_types.h>
 #include <encoder.h>
 #include <relation.h>
-#include <gid.h>
+
 
 namespace graph {
 

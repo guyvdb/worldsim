@@ -50,10 +50,9 @@ HEADERS += \
     entityencoder.h \
     entitytype.h \
     file.h \
-    gerror.h \
-    gid.h \
     graph_global.h \
     graph.h \
+    graph_types.h \
     idaccumulator.h \
     idmanager.h \
     log.h \
@@ -67,8 +66,7 @@ HEADERS += \
     storemanager.h \
     transaction.h \
     transactionlog.h \
-    transactionmanager.h \
-    types.h
+    transactionmanager.h
 
 
 DESTDIR = ../../bin

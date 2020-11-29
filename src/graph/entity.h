@@ -1,10 +1,45 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <types.h>
+#include <graph_types.h>
 #include <storeable.h>
-#include <gid.h>
 #include <buffer.h>
+
+namespace graph {
+  class Entity : public Storeable {
+    public:
+      Entity();
+      Entity(gid id);
+      Entity(gid id, ByteBuffer *buffer);
+      Entity(gid id, gid propid, gid inrelid, gid outrelid);
+      ~Entity();
+
+      gid PropId();
+      gid InRelId();
+      gid OutRelId();
+      void SetPropId(gid value);
+      void SetInRelId(gid value);
+      void SetOutRelId(gid value);
+
+      virtual ByteBuffer *Buffer() { return this->m_buf; }
+      virtual Concept Type() { return Storeable::Concept::Entity; }
+      virtual void SetFlag(std::uint8_t flag) {this->m_buf->Set(0,flag); }
+      virtual std::uint8_t GetFlag() { return this->m_buf->GetUint8(0); }
+
+    private:
+      void CreateBuffer();
+      ByteBuffer *m_buf;
+  };
+
+
+}
+#endif // ENTITY_H
+
+
+
+
+
+
 /*
 Node store:
 All the nodes in the database are stored in the node store file.
@@ -32,39 +67,3 @@ First In Relation Id    4
 Total                   16
 
 */
-
-
-
-namespace graph {
-
-
-  class Entity : public Storeable {
-    public:
-      Entity();
-      Entity(gid id);
-      Entity(gid id, ByteBuffer *buffer);
-      Entity(gid id, gid propid, gid inrelid, gid outrelid);
-      ~Entity();
-
-      gid PropId();
-      gid InRelId();
-      gid OutRelId();
-      void SetPropId(gid value);
-      void SetInRelId(gid value);
-      void SetOutRelId(gid value);
-      //gid GetPropId();
-      //gid GetInRelId();
-      //gid GetOutRelId();
-
-      virtual ByteBuffer *Buffer() { return this->m_buf; }
-      virtual Concept Type() { return Storeable::Concept::Entity; }
-      virtual void SetFlag(std::uint8_t flag) {this->m_buf->Set(0,flag); }
-      virtual std::uint8_t GetFlag() { return this->m_buf->GetUint8(0); }
-    private:
-      void CreateBuffer();
-      ByteBuffer *m_buf;
-  };
-
-
-}
-#endif // ENTITY_H

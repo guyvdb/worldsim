@@ -2,9 +2,8 @@
 #define ATTRIBUTETYPE_H
 
 
-#include <types.h>
+#include <graph_types.h>
 #include <storeable.h>
-#include <gid.h>
 #include <buffer.h>
 
 namespace graph {
