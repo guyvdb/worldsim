@@ -12,7 +12,7 @@
 
 namespace graph {
 
-
+/*
   class PropertyCollection {
     public:
       PropertyCollection();
@@ -28,7 +28,7 @@ namespace graph {
   class RelationPropertyCollection : public PropertyCollection {
 
   };
-
+*/
 }
 
 #endif // PROPERTIES_H

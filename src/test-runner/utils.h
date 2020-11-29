@@ -8,6 +8,7 @@
 void RemoveTestDirectory();
 const char *CreateTestDirectory();
 std::filesystem::path CreateFilePath(std::string filename);
+std::string CreateFilePathString(std::string filename);
 graph::gid RandomGraphId();
 
 #endif // UTILS_H

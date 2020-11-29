@@ -5,8 +5,6 @@
 #include <cstdint>
 #include <chrono>
 #include <map>
-
-#include <store.h>
 #include <cachepage.h>
 #include <gid.h>
 
@@ -19,18 +17,23 @@ namespace graph {
    */
 
 
-  struct StorageInfo {
-      int FileOffset;
-      int PayloadSize;
-      int StartPageNo;
-      int StartPageOffset;
+  class CacheManager;
+
+  struct ObjectCacheInfo {
+      long FileOffset;
+      long FileEndset;
+      int PageStart;
+      int PageEnd;
+      int PageOffset;
+      std::size_t Len;
   };
-
-
-
-
-
-
+  /*
+  foff=(id-1)*recsize
+  fend=(foff + (recsize-1))
+  pstart=rounddown(foff/pagesize))
+  pend=rounddown(fend/pagesize))
+  poff=(foff-(pstart*pagesize))
+      */
 
   // Need to layout the eviction policy
 
@@ -41,51 +44,22 @@ namespace graph {
 
   class Cache {
     public:
-      Cache(Store *store, std::size_t recsize);
-
-
-      // need to implement Lock / Unlock of pages
-
-
-      //bool Get(gid id, std::vector<std::uint8_t> &data);
-      //bool Put(gid id, std::vector<std::uint8_t> &data);
-      //bool Delete(gid id);
-
-      //StorageInfo GetStorageInfo(gid id);
-
-
-      Store* GetStore() { return m_store; };
-
-      // flush all dirty pages to disk
+      Cache(CacheManager *manage, Storeable::Concept concept, std::size_t recordsize, std::size_t pagesize);
       bool Flush();
 
+      ObjectCacheInfo ObjectInfo(gid id);
+
     protected:
-
-
-
-      //PageLocation Location(GraphId id);
     private:
-      int StorageFileOffset(gid id);
+      int BytePageNo(long offset);
 
-
-
-      Store *m_store;
+      CacheManager *m_cacheManager;
+      Storeable::Concept m_concept;
       std::size_t m_recsize;
+      std::size_t m_pagesize;
+
+
       std::map<int, CachePage*> m_pages;
   };
-
-
-
-  // The id cache is a specialized cache that loades all of its records into memory
-  // and maintains them there.
-  class IdCacheItem : public Cache {
-    public:
-      IdCacheItem(Store *store, std::size_t recsize) : Cache(store, recsize) {}
-
-      GraphId* FindReclaimedId(Storeable::Type type);
-      GraphId* LastId(Storeable::Type type);
-  };
-
-
 }
 #endif // CACHE_H

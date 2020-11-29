@@ -2,7 +2,8 @@
 #define RELATION_H
 
 #include <storeable.h>
-#include <tx.h>
+#include <transaction.h>
+#include <buffer.h>
 /*
 Relationship store:
 Each relationship record is a fixed record of 34 bytes
@@ -16,15 +17,39 @@ The relationship node contains 4 other pointers or misdirections to relationship
 */
 
 
+
 namespace graph {
-  class Graph;
+  //class Graph;
 
 
   class Relation : public Storeable{
     public:
-      Relation(gid id) : Storeable(id){};
-    private:
+      Relation(gid id);
+      Relation(gid id, ByteBuffer *buffer);
+      ~Relation();
 
+
+      virtual ByteBuffer* Buffer() { return this->m_buf; }
+      virtual Concept Type() {return Concept::Relation; }
+      virtual void SetFlag(std::uint8_t flag){this->m_buf->Set(0,flag); }
+      virtual std::uint8_t GetFlag() {return this->m_buf->GetUint8(0); }
+
+      /*
+
+      virtual Buffer *Buf() = 0;
+      virtual Type ObjectType() = 0;
+      virtual void SetFlag(std::uint8_t flag) = 0;
+      virtual std::uint8_t GetFlag() = 0;
+
+      */
+
+
+
+    private:
+      ByteBuffer *m_buf;
   };
+
+
+
 }
 #endif // RELATION_H

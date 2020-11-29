@@ -1,0 +1,48 @@
+
+
+// This is the schema language
+
+
+define:
+
+
+
+  person is entity,
+         has full-name,
+         has age,
+         has gender;
+
+
+
+  organism is entity;
+
+
+
+
+   person is entity,
+          key full-name,
+          has age,
+          plays spouse,
+          plays worker,
+          plays hero;
+
+
+   monster is abstract entity,
+           key full-name,
+           has hitpoints;
+
+
+   job is relation,
+       relates employee,
+       relates employer;
+
+
+  
+
+
+
+
+
+
+
+

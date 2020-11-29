@@ -1,17 +1,24 @@
 #include "store.h"
 #include <iostream>
 #include <cerrno>
-
+#include <buffer.h>
 
 namespace graph {
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Store::Store(const char *filename/*std::filesystem::path filename*/, std::size_t pagesize, std::size_t recordsize, ObjectFactory *factory) :
-    m_filename(filename), m_pagesize(pagesize), m_recordsize(recordsize), m_factory(factory),
-    m_isopen(false), m_lastError(ErrorNone), m_file(0x0),m_accumulator(0x0) {
+  Store::Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Encoder *factory, Storeable::Concept concept) :
+    m_filename(filename), m_pagesize(pagesize), m_recordsize(recordsize), m_factory(factory),    
+    m_isopen(false), m_lastError(ErrorNone),m_concept(concept), m_file(0x0),m_accumulator(0x0) {
     std::filesystem::path fn(filename);
+
+    std::cout << "[STORE] Create - filename = " << this->m_filename <<
+                 ", pagesize = " << this->m_pagesize <<
+                 ", recordsize = " << this->m_recordsize <<
+                 ", type = " << (int)this->m_concept <<
+                 ", factory - " << this->m_factory << std::endl;
+
 
     this->m_file = new File(fn);
 
@@ -34,6 +41,7 @@ namespace graph {
 
     // open the file
     if(this->m_file->Open()) {
+      std::cout << "[STORE] File " << this->m_filename << " is open" << std::endl;
       this->m_isopen = true;
       return true;
     }
@@ -84,12 +92,13 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   bool Store::ReadRecord(gid id, Storeable **result) {
     long offset = (long)(id-1) * (long)this->m_recordsize;
-    std::vector<char> buffer(this->m_recordsize);
-    if(!this->m_file->Read(offset,buffer.data(), this->m_recordsize)) {
+    ByteBuffer b = ByteBuffer(this->m_recordsize);
+
+    if(!this->m_file->Read(offset,b.CharData(), this->m_recordsize)) {
       return false;
     }
 
-    *result = this->m_factory->CreateObject(id, buffer.data());
+    *result = this->m_factory->Decode(id, &b);
     return true;
 
   }
@@ -99,7 +108,7 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   bool Store::WriteRecord(Storeable *rec) {
     long offset = (long)(rec->GetId()-1) * (long)this->m_recordsize;
-    return this->m_file->Write(offset, rec->Data(), this->m_recordsize);
+    return this->m_file->Write(offset, rec->Buffer()->VoidData(), this->m_recordsize);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -111,9 +120,7 @@ namespace graph {
     long filesize = this->m_file->Size(); // FileSize();
     char buf[1];
 
-    //if(filesize % (long)this->m_recordsize != 0) {
-      // we have a problem....
-    //}
+
     long count = filesize / (long) this->m_recordsize;
 
     for(long id = 1; id <= count; id++) {
@@ -124,14 +131,11 @@ namespace graph {
       }
 
       if(buf[0] != 0x0) {
-        accumulator->Reclaim((aid)id);
+        accumulator->Reclaim((gid)id);
       }
     }
 
-    accumulator->SetCounter((aid)count+1);
-
-    std::cout << "[STORE] Id scan complete." << std::endl;
-
+    accumulator->SetCounter((gid)count+1);
     return true;
   }
 

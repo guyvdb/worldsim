@@ -5,12 +5,14 @@
 #include <cstdint>
 //#include <cstdio>
 
+#include <string>
 
 #include <gerror.h>
 #include <cachepage.h>
 #include <storeable.h>
 #include <idaccumulator.h>
 #include <file.h>
+#include <encoder.h>
 
 namespace graph {
 
@@ -21,13 +23,14 @@ namespace graph {
   class Store {
     public:
 //std::filesystem::path filename
-      Store(const char *filename, std::size_t pagesize, std::size_t recordsize, ObjectFactory *factory);
+      Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Encoder *factory, Storeable::Concept concept);
       ~Store();
       bool Open();
       void Close();
       void SetIdAccumulator(IdAccumulator *accumulator) {this->m_accumulator = accumulator;}
       ErrorNo LastError() { return m_lastError; }
       bool IsOpen() { return m_isopen; }
+      std::string Filename() { return this->m_filename; }
 
       bool ReadPage(pid page, char *data);
       bool WritePage(pid page, const char *data);
@@ -37,25 +40,17 @@ namespace graph {
       bool GrowStorage(int pagecount);
 
       bool ScanIds(IdAccumulator *scanner);
-
+      Storeable::Concept Type() { return  this->m_concept;}
+      std::size_t RecordSize() { return this->m_recordsize; }
+      std::size_t PageSize() { return this->m_pagesize; }
     private:
-      //bool Read(char *data, std::size_t size);
-      //bool Read(long pos, char *data, std::size_t size);
-      //bool Write(const char *data, std::size_t size);
-      //bool Write(long pos, const char *data, std::size_t size);
-      //bool Seek(long pos);
-      //bool Flush();
-      //long Tell();
-      //long FileSize();
-
-
-      const char *m_filename;
+      std::string m_filename;
       std::size_t m_pagesize;
       std::size_t m_recordsize;
-      ObjectFactory *m_factory;
+      Encoder *m_factory;
       bool m_isopen;
       ErrorNo m_lastError;
-      //std::FILE *m_fd;
+      Storeable::Concept m_concept;
       File *m_file;
       IdAccumulator *m_accumulator;
 

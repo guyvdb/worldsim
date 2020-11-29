@@ -25,45 +25,61 @@ MainWindow::~MainWindow()
 
 
 void MainWindow::on_pushButton_clicked() {
-    std::cout << "Create Graph" << std::endl;
+  //Configure
+  graph::Config config(std::string(GRAPHDIR), std::string(LOGDIR));
+  // Create
+  graph::Graph *g = new graph::Graph(config);
 
-
-    graph::Config config(std::string(GRAPHDIR), std::string(LOGDIR));
-    std::cout << "Config Created" << std::endl;
-
-    graph::Graph *g = new graph::Graph(config);
-    std::cout << "Graph Created" << std::endl;
-
-    if(!g->Open()) {
-      std::cout << "Error - failed to open the graph" << std::endl;
-      delete g;
-      return;
-    }
-    std::cout << "Open" << std::endl;
-
-    graph::Tx *tx = g->Update();
-    std::cout << "Create Tx" << std::endl;
-
-
-    // create 30 things
-    for(int i=0;i<30;i++) {
-
-    // the thing belongs to the transaction and will be release on commit or rollback
-      graph::Entity *t = tx->NewThing();
-      std::cout << "Create Thing" << std::endl;
-
-      tx->Commit();
-      std::cout << "Tx.Commit" << std::endl;
-
-    }
-
-
-
-    if(!g->Close()) {
-      std::cout << "Error - failed to close the graph" << std::endl;
-    }
-    std::cout << "Close Graph" << std::endl;
-
+  // Open
+  if(!g->Open()) {
+    std::cout << "Error - failed to open the graph" << std::endl;
     delete g;
-    std::cout << "Delete Graph" << std::endl;
+    return;
+  }
+
+
+  graph::Transaction tx;
+  if(g->Update(tx)){
+    graph::Entity *e = tx.CreateEntity();
+    std::cout << "ENTITY ID=" << e->GetId() << "\n";
+    e->SetFlag(0);
+    e->SetInRelId(23);
+    e->SetOutRelId(44);
+    e->SetPropId(233);
+
+    std::cout << "Flag = " << e->GetFlag() << std::endl;
+    std::cout << "InRelId = " << e->InRelId() << std::endl;
+    std::cout << "OutRelId = " << e->OutRelId() << std::endl;
+    std::cout << "PropId = " << e->PropId() << std::endl;
+
+
+    graph::Entity *e2 = tx.CopyEntity(e);
+
+
+
+
+    tx.Commit();
+  }
+
+
+  /*
+   *   REQUIRE(t1->GetId() == t2->GetId());
+  REQUIRE(t1->PropId() == t2->PropId());
+  REQUIRE(t1->InRelId() == t2->InRelId());
+  REQUIRE(t1->OutRelId() == t2->OutRelId());
+  */
+
+  /*
+  graph::Transaction tx;
+  if(g->Update(tx)) {
+    graph::Entity *e = tx.CreateEntity();
+    std::cout << "Entity Id: " << e->GetId() << " created\n";
+    tx.Commit();
+  }
+  */
+
+    // Close & Dispose
+    g->Close();    
+    delete g;
+
 }

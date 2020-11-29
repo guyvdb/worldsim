@@ -3,9 +3,10 @@
 
 #include <shared_mutex>
 
-#include <tx.h>
-#include <log.h>
+#include <transaction.h>
+#include <transactionlog.h>
 #include <cachemanager.h>
+#include <idmanager.h>
 
 namespace graph {
 
@@ -14,27 +15,36 @@ namespace graph {
 
 
   class TransactionManager {
+    friend Transaction;
     public:
-      TransactionManager(Log *log, CacheManager *cacheManager);
+      TransactionManager(TransactionLog *log, CacheManager *cacheManager, IdManager *idManager);
       ~TransactionManager();
 
-      Tx *ReadOnlyTransaction();
-      Tx *ReadWriteTransaction();
-
-      bool Commit(Tx *tx);
-      void Rollback(Tx *tx);
-      void Finished(Tx *tx);
-
+      bool StartReadOnlyTransaction(Transaction &tx);
+      bool StartReadWriteTransaction(Transaction &tx);
+      bool Commit(Transaction &tx);
+      void Rollback(Transaction &tx);
 
       CacheManager *GetCacheManager() { return this->m_cacheManager; }
-      Log *GetLog() { return this->m_log; }
+      TransactionLog *GetLog() { return this->m_log; }
 
     protected:
 
+      StoreableId AllocateId(Storeable::Concept concept);
+
+      // Allow the id manager to reclaim an id that was not used
+      bool ReclaimId(StoreableId id);
+
     private:
       std::shared_mutex *m_mutex;
-      Log* m_log;
+      TransactionLog* m_log;
       CacheManager* m_cacheManager;
+      IdManager *m_idManager;
+
+
+
+
+      //std::vector<Tx&> m_currentTransactions;
   };
 
 }

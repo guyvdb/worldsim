@@ -1,6 +1,6 @@
 #include "cache.h"
+#include "cachemanager.h"
 
-#include <QDebug>
 
 namespace graph {
 
@@ -9,24 +9,42 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Cache::Cache(Store *store, std::size_t recsize) : m_store(store), m_recsize(recsize) {
+  Cache::Cache(CacheManager *manage, Storeable::Concept concept, std::size_t recordsize, std::size_t pagesize) :
+    m_cacheManager(manage), m_concept(concept), m_recsize(recordsize), m_pagesize(pagesize) {
 
   }
 
-  //bool Cache::Close() {
-    // The pages should be
-  //}
-
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   bool Cache::Flush() {
-    return false;
+    return true;
   }
 
+  /* ----------------------------------------------------------------------------------------
+   * Where is the data for this object
+   * --------------------------------------------------------------------------------------*/
+  ObjectCacheInfo Cache::ObjectInfo(gid id) {
+    ObjectCacheInfo info;
 
-  GraphId* IdCacheItem::FindReclaimedId(Storeable::Type type) {
-    return 0x0;
+    info.FileOffset = ((long)id-1) * (long)this->m_recsize;
+    info.FileEndset = info.FileOffset + ((long)this->m_recsize-1);
+    info.PageStart = (int)info.FileOffset / (int)this->m_pagesize;
+    info.PageEnd = (int)info.FileEndset / (int)this->m_pagesize;
+    info.PageOffset = info.FileOffset - (info.PageStart* (long)this->m_pagesize);
+    info.Len = (int)this->m_recsize;
+
+
+
+
+    return info;
   }
 
-  GraphId* IdCacheItem::LastId(Storeable::Type type) {
-    return 0x0;
+  /* ----------------------------------------------------------------------------------------
+   * On which page does this byte fall
+   * --------------------------------------------------------------------------------------*/
+  int Cache::BytePageNo(long offset) {
+    return ((int) (offset / (long)this->m_pagesize));
   }
+
 }

@@ -7,10 +7,11 @@
 #include <filesystem>
 #include <gerror.h>
 #include <config.h>
-#include <tx.h>
+#include <transaction.h>
 #include <storemanager.h>
 #include <transactionmanager.h>
-#include <log.h>
+#include <idmanager.h>
+#include <transactionlog.h>
 
 
 
@@ -22,14 +23,17 @@ namespace graph {
       Graph(Config &config);
       ~Graph();
       bool Open();
-      bool Close();
+      void Close();
       bool Flush();
       ErrorNo LastError();
 
 
+      bool Read(Transaction &tx);
+      bool Update(Transaction &tx);
 
-      Tx *Read();
-      Tx *Update();
+
+      //Tx *Read();
+      //Tx *Update();
 
 
     private:
@@ -42,11 +46,11 @@ namespace graph {
       ErrorNo m_lastError;
       bool m_isOpen;
       Config &m_config;
-
+      IdManager *m_idManager;
       StoreManager *m_storeManager;
       TransactionManager *m_transactionManager;
       CacheManager *m_cacheManager;
-      Log *m_log;
+      TransactionLog *m_log;
 
 
 

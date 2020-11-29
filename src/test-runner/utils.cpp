@@ -33,6 +33,10 @@ std::filesystem::path CreateFilePath(std::string filename) {
   return p;
 }
 
+std::string CreateFilePathString(std::string filename) {
+  return CreateFilePath(filename).native();
+}
+
 graph::gid RandomGraphId() {
   // get wall clock time
   std::chrono::time_point time = std::chrono::system_clock::now();

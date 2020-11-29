@@ -4,25 +4,20 @@
 
 namespace graph {
 
-
   class Logger;
-
-
-
+  
+  static Logger* Log(); 
+  
   class Logger {
     public:
+      friend Log;
       static Logger* Current();
     private:
       Logger();
-
-      static void *current;
   };
 
 
 
-  static Logger* Log() {
-    return Logger::Current();
-  }
-
+  
 }
 #endif // LOG_H

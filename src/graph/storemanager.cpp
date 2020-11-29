@@ -3,6 +3,9 @@
 #include <filesystem>
 #include <storeable.h>
 #include <entity.h>
+#include <entityencoder.h>
+#include <relation.h>
+#include <relationencoder.h>
 
 namespace graph {
 
@@ -10,12 +13,18 @@ namespace graph {
 
   StoreManager::StoreManager(const char *datadir, std::size_t pagesize) : m_pagesize(pagesize), m_datadir(datadir) {
 
+   // this->m_dataStores = new std::vector<Store*>();
+   // this->m_dataStoreIndex = new std::map<Storeable::Type, Store*>();
+    this->m_entityStore = this->CreateStore(ENTITY_STORE_FILENAME, Storeable::EntitySize, Storeable::Concept::Entity, new EntityEncoder());
+    this->m_relationStore = this->CreateStore(RELATION_STORE_FILENAME, Storeable::RelationSize, Storeable::Concept::Relation, new RelationEncoder());
+
+
 
 
     // Create the data stores
   //  this->m_idStore = new IdStore(ConcatStorePath(ID_STORE_FILENAME), pagesize);
 
-    this->m_entityStore = new Store(fn(ENTITY_STORE_FILENAME), pagesize, Storeable::EntitySize, new EntityFactory());
+    //this->m_entityStore = new Store(fn(ENTITY_STORE_FILENAME), pagesize, Storeable::EntitySize, new EntityFactory(), Storeable::Type::Entity);
     //this->m_thingTypeStore = new ThingTypeStore(fn(THING_TYPE_STORE_FILENAME), pagesize, Storeable::EntityTypeSize);
     //this->m_thingPropertyStore = new PropertyStore(fn(THING_PROP_STORE_FILENAME), pagesize, Storeable::PropertySize);
     //this->m_thingPropertyTypeStore = new PropertyTypeStore(fn(THING_PROP_TYPE_STORE_FILENAME),pagesize, Storeable::PropertyTypeSize);
@@ -27,9 +36,9 @@ namespace graph {
 
 
     // Keep a vector of stores
-    this->m_dataStores = new std::vector<Store*>(9);
+   // this->m_dataStores = new std::vector<Store*>(9);
     //this->m_dataStores->push_back(this->m_idStore);
-    this->m_dataStores->push_back(this->m_entityStore);
+    //this->m_dataStores->push_back(this->m_entityStore);
     //this->m_dataStores->push_back(this->m_thingTypeStore);
     //this->m_dataStores->push_back(this->m_thingPropertyStore);
     //this->m_dataStores->push_back(this->m_thingPropertyTypeStore);
@@ -45,14 +54,35 @@ namespace graph {
     // close all stores
 
     // delete the list of stores
-    delete this->m_dataStores;
   }
 
   bool StoreManager::Open() {
+
+    bool error = false;
+
+    // open all the files
+    for (auto& store : this->m_dataStores) {
+      if(!store->Open()) {
+        error = true;
+        std::cout << "[STOREMANAGER] Failed to open store: " << store->Filename() << std::endl;
+        break;
+      }
+    }
+
+    if(error) {
+      for(auto &store : this->m_dataStores) {
+        store->Close();
+      }
+      return false;
+    }
+
     // open all stores
     return true;
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   bool StoreManager::Close() {
     // All files should have been fsynced via a log shutdown checkpoint -- asset that here
 
@@ -64,10 +94,39 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  const char* StoreManager::fn(const char *filename) {
+  Store *StoreManager::CreateStore(std::string filename, std::size_t size, Storeable::Concept concept, Encoder *encoder) {
+    std::string fq = fn(filename);
+
+    std::cout << "[STOREMANAGER] Create store: " <<
+                 "filename=" << filename <<
+                 ", fq=" << fq << std::endl;
+
+
+    Store *s = new Store(fq,this->m_pagesize, size, encoder, concept);
+    this->m_dataStores.push_back(s);
+    this->m_dataStoreIndex[concept] = s;
+    return s;
+
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  Store *StoreManager::GetStore(Storeable::Concept concept) {
+    std::map<Storeable::Concept,Store*>::iterator it = this->m_dataStoreIndex.find(concept);
+    if(it != this->m_dataStoreIndex.end()) {
+      return it->second;
+    }
+    return 0x0;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  std::string StoreManager::fn(std::string filename) {
     std::filesystem::path result(this->m_datadir);
     result /= filename;
-    return result.c_str();
+    return result.native();
   }
 
 }

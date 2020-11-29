@@ -3,6 +3,7 @@
 #include <store.h>
 #include <filesystem>
 #include <entity.h>
+#include <entityencoder.h>
 #include <storeable.h>
 
 
@@ -18,9 +19,9 @@ TEST_CASE("The store should store and retreive records","[graph][store]") {
   std::filesystem::path filename = CreateFilePath("entity.db");
 
 
-  graph::ObjectFactory *factory = new graph::EntityFactory();
+  graph::Encoder *factory = new graph::EntityEncoder();
 
-  graph::Store *store = new graph::Store(filename.c_str(), pagesize, recordsize, factory);
+  graph::Store *store = new graph::Store(filename.c_str(), pagesize, recordsize, factory, graph::Storeable::Concept::Entity);
 
   REQUIRE(store->Open());
 
@@ -31,9 +32,6 @@ TEST_CASE("The store should store and retreive records","[graph][store]") {
   t->SetPropId(RandomGraphId());
 
   REQUIRE(store->WriteRecord(t));
-
-
-
 
 
   store->Close();

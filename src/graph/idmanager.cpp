@@ -16,14 +16,14 @@ namespace graph {
    * Take the next id out of the data vector if there is one. Otherwise
    * return the counter and increment it. Do all of this within a mutex lock
    * --------------------------------------------------------------------------------------*/
-  aid IdCacheItem::NextId() {
+  gid IdCacheItem::NextId() {
     if(!this->m_active) {
       std::cout << "[ID MANAGER] Error - trying to get id while cache item is inactive." << std::endl;
-      return (aid)NullId;
+      return (gid)NullId;
     }
 
 
-    aid result;
+    gid result;
 
     // Lock the mutex - will be released at end of scope
     std::lock_guard<std::mutex> guard(this->m_mutex);
@@ -44,7 +44,7 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * Put the id in the reclaimed data vector within a locked mutex
    * --------------------------------------------------------------------------------------*/
-  void IdCacheItem::Reclaim(aid id) {
+  void IdCacheItem::Reclaim(gid id) {
     if(!this->m_active) {
       std::cout << "[ID MANAGER] Error - trying to reclaim id while cache item is inactive." << std::endl;
       return;
@@ -86,7 +86,6 @@ namespace graph {
    * all reclaimed ids and the highest issued id.
    * --------------------------------------------------------------------------------------*/
   bool IdManager::Open(){
-
     // open the file
     if(!this->m_file->Open()){
       std::cout << "[ID MANAGER] Error - failed to open file."  << std::endl;
@@ -95,16 +94,12 @@ namespace graph {
 
     // load the file
     if(this->Load()) {
-      std::cout << "[ID MANAGER] Loaded cache via data file." << std::endl;
       this->MarkItemState(true);
       this->m_isopen = true;
       return true;
     }
 
-    // if load fail scan the data stores
-    std::cout << "[ID MANAGER] Failed to load file - starting scan." << std::endl;
     if(this->Scan()) {
-      std::cout << "[ID MANAGER] Loaded cache via data store scan." << std::endl;
       this->MarkItemState(true);
       this->m_isopen = true;
       return true;
@@ -135,47 +130,47 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * Mark this id as reclaimed for the given type
    * --------------------------------------------------------------------------------------*/
-  void IdManager::Reclaim(gid id, Storeable::Type type){
+  void IdManager::Reclaim(gid id, Storeable::Concept concept){
     if(!this->m_isopen) {
       std::cout << "[ID MANAGER] Error - trying to reclaim an id while closed." << std::endl;
       return;
     }
-    IdCacheItem *item = this->m_cache[type];
+    IdCacheItem *item = this->m_cache[concept];
     if(item == 0x0) {
       std::cout << "[ID MANAGER] Error - trying to reclaim an id with an unregisterd type." << std::endl;
       return;
     }
 
     // The item will lock a mutex on reclaim
-    item->Reclaim((aid)id);
+    item->Reclaim((gid)id);
   }
 
   /* ----------------------------------------------------------------------------------------
    * Mark this id as reclaimed for the given type
    * --------------------------------------------------------------------------------------*/
-  void IdManager::Reclaim(tid id, Storeable::Type type){
+  /*void IdManager::Reclaim(tid id, Storeable::Concept type){
     this->Reclaim((gid)id, type);
-  }
+  }*/
 
   /* ----------------------------------------------------------------------------------------
    * Register a data store for a given type with the manager. This function should be called
    * an appropriate number of times prior to the store being opened. Once the store is open
    * no more stores can be registerd. The register method is not thread safe.
    * --------------------------------------------------------------------------------------*/
-  bool IdManager::Register(Store *store, Storeable::Type type){
+  bool IdManager::Register(Store *store, Storeable::Concept concept){
     if(this->m_isopen) {
       std::cout << "[ID MANAGER] Error - trying to register a store after the manager has been opened." << std::endl;
       return false;
     }
 
-    IdCacheItem *item = this->m_cache[type];
+    IdCacheItem *item = this->m_cache[concept];
     if(item != 0x0) {
       std::cout << "[ID MANAGER] Error - trying to register alread registerd store." << std::endl;
       return false;
     }
 
     item = new IdCacheItem(store);
-    this->m_cache[type] = item;
+    this->m_cache[concept] = item;
 
     return true;
   }
@@ -183,13 +178,13 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * Get the next gid for the given type (reclaimed or new)
    * --------------------------------------------------------------------------------------*/
-  gid IdManager::NextGraphId(Storeable::Type type){
+  gid IdManager::NextGraphId(Storeable::Concept concept){
     if (!this->m_isopen) {
       std::cout << "[ID MANAGER] Error - trying to get an id while closed." << std::endl;
       return  NullId;
     }
 
-    IdCacheItem *item = this->m_cache[type];
+    IdCacheItem *item = this->m_cache[concept];
     if(item == 0x0) {
       std::cout << "[ID MANAGER] Error - trying to get an id from a nonregistered type."<< std::endl;
       return NullId;
@@ -202,9 +197,9 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * Get the next tid for the given type (reclaimed or new)
    * --------------------------------------------------------------------------------------*/
-  tid IdManager::NextTypeId(Storeable::Type type){
+  /*tid IdManager::NextTypeId(Storeable::Concept type){
     return (tid)this->NextGraphId(type);
-  }
+  }*/
 
   /* ----------------------------------------------------------------------------------------
    * If the item state is inactive it will not provide ids
@@ -293,13 +288,13 @@ namespace graph {
       }
 
       // do we have the type registered?
-      Storeable::Type type = (Storeable::Type)tid;
-      IdCacheItem *item = this->m_cache[type];
+      Storeable::Concept concept = (Storeable::Concept)tid;
+      IdCacheItem *item = this->m_cache[concept];
       if (item != 0x0) {
         // set the load count and file offset on the item
         item->SetFileOffset((long)offset);
         item->SetIdLoadCount(reclaimCnt);
-        item->SetCounter((aid)counter);
+        item->SetCounter((gid)counter);
       } else {
         // have an unregistered type.... do nothing with it.
       }
@@ -319,7 +314,7 @@ namespace graph {
         if(!this->m_file->Read(&id)) {
           return false;
         }
-        pair.second->Reclaim((aid)id);
+        pair.second->Reclaim((gid)id);
       }
     }
 

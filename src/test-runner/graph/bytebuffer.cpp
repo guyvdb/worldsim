@@ -1,8 +1,8 @@
 #include <catch2.hpp>
-#include <bytebuffer.h>
+//#include <bytebuffer.h>
 #include <types.h>
 
-
+/*
 TEST_CASE("The byte buffer should encode/decode values", "[graph][bytebuffer]") {
 
   graph::ByteBuffer *b = new graph::ByteBuffer();
@@ -69,3 +69,4 @@ TEST_CASE("The byte buffer should create a stream of bytes and decode them", "[g
 
 
 }
+*/

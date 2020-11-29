@@ -8,8 +8,8 @@ namespace graph {
     public:
       IdAccumulator() {}
       virtual ~IdAccumulator() {}
-      virtual void Reclaim(aid id) = 0;
-      virtual void SetCounter(aid count) = 0;
+      virtual void Reclaim(gid id) = 0;
+      virtual void SetCounter(gid count) = 0;
   };
 
 }

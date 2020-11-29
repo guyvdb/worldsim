@@ -3,6 +3,8 @@
 
 #include <store.h>
 #include <vector>
+#include <string>
+#include <map>
 
 // file names
 #define ID_STORE_FILENAME "id.db"
@@ -24,9 +26,12 @@ namespace graph {
 
       bool Open();
       bool Close();
+      std::vector<Store*> *Stores() { return &this->m_dataStores; }
+      Store *GetStore(Storeable::Concept concept);
     private:
 
-      const char * fn(const char *filename );
+      Store *CreateStore(std::string filename, std::size_t size, Storeable::Concept concept, Encoder *encoder);
+      std::string fn(std::string filename );
 
       std::size_t m_pagesize;
       const char *m_datadir;
@@ -44,7 +49,8 @@ namespace graph {
       Store *m_relationPropertyStore;
       Store *m_relationPropertyTypeStore;
 
-      std::vector<Store*> *m_dataStores;
+      std::vector<Store*> m_dataStores;
+      std::map<Storeable::Concept, Store*> m_dataStoreIndex;
   };
 }
 

@@ -6,7 +6,7 @@ namespace graph {
 
 
   File::File(std::filesystem::path filename) : m_fd(0x0), m_filename(filename), m_isopen(false) {
-
+    std::cout << "[FILE] Create file object - filename=" << m_filename << std::endl;
   }
 
   File::~File() {
@@ -16,8 +16,11 @@ namespace graph {
   }
 
   bool File::Open() {
+    std::cout << "[FILE] Open " << this->m_filename << std::endl;
+
     // Check if the file exists... if not touch it
     if(!this->Exists()) {
+      std::cout << "[FILE] Touch file " << this->m_filename << std::endl;
       this->Touch();
     }
 
@@ -27,6 +30,8 @@ namespace graph {
       std::cout << "[FILE] Error - failed to open " << this->m_filename.native() << std::endl;
       return false;
     }
+
+    std::cout << "[FILE] File " << this->m_filename.native() << " is open" << std::endl;
 
     // set the flags
     this->m_isopen = true;
@@ -47,9 +52,23 @@ namespace graph {
   }
 
   /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool File::Write(long pos, const char* data, std::size_t size) {
+    return this->Write(pos, (void*)data, size);
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool File::Write(long pos, std::uint8_t *data, std::size_t size) {
+    return this->Write(pos, (void*)data, size);
+  }
+
+  /* ----------------------------------------------------------------------------------------
    * Write data size long to the pos in the file
    * --------------------------------------------------------------------------------------*/
-  bool File::Write(long pos, const char *data, std::size_t size){
+  bool File::Write(long pos, void *data, std::size_t size){
     if(!this->Seek(pos)) {
       return false;
     }
@@ -84,6 +103,16 @@ namespace graph {
       return false;
     }
     return  this->Write(data);
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool File::Write(long pos, std::uint64_t data) {
+    if(!this->Seek(pos)) {
+      return false;
+    }
+    return this->Write(data);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -126,14 +155,30 @@ namespace graph {
     return  this->Read(data);
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool File::Read(long pos, std::uint64_t *data) {
+    if(!this->Seek(pos)) {
+      return false;
+    }
+    return this->Read(data);
+  }
 
+  bool File::Write(const char* data, std::size_t size){
+    return this->Write((void*)data, size);
+  }
+
+  bool File::Write(std::uint8_t *data, std::size_t size) {
+    return this->Write((void*)data, size);
+  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool File::Write(const char *data, std::size_t size) {
+  bool File::Write(void *data, std::size_t size) {
     // write size bytes at the current position
-    std::size_t written = std::fwrite((void*)data,1,size,this->m_fd);
+    std::size_t written = std::fwrite(data,1,size,this->m_fd);
     return written == size;
   }
 
@@ -151,7 +196,7 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   bool File::Write(std::uint16_t data) {
     char buf[2];
-    buf[0] = (char)(data >>8);
+    buf[0] = (char)(data >> 8);
     buf[1] = (char)(data);
     return this->Write(buf,2);
   }
@@ -166,6 +211,22 @@ namespace graph {
     buf[2] = (char)(data >> 8);
     buf[3] = (char)(data);
     return this->Write(buf,4);
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool File::Write(std::uint64_t data) {
+    char buf[8];
+    buf[0] = (char)(data >> 56);
+    buf[1] = (char)(data >> 48);
+    buf[2] = (char)(data >> 40);
+    buf[3] = (char)(data >> 32);
+    buf[4] = (char)(data >> 24);
+    buf[5] = (char)(data >> 16);
+    buf[6] = (char)(data >> 8);
+    buf[7] = (char)(data);
+    return this->Write(buf,8);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -187,12 +248,11 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   bool File::Read(std::uint16_t *data) {
-    char buf[2];
-    if(!this->Read(buf,2)) {
+    std::uint8_t buf[2];
+    if(!this->Read((char*)buf,2)) {
       return false;
     }
-
-    *data = (buf[0] <<8) + buf[1];
+    *data = (buf[0] << 8) + (buf[1]);
     return true;
   }
 
@@ -200,8 +260,8 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   bool File::Read(std::uint32_t *data) {
-    char buf[4];
-    if(!this->Read(buf,4)) {
+    std::uint8_t buf[4];
+    if(!this->Read((char*)buf,4)) {
       return false;
     }
     *data = (buf[0] << 24) + (buf[1] << 16) + (buf[2] << 8) + buf[3];
@@ -211,8 +271,36 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
+  bool File::Read(std::uint64_t *data) {
+    uint8_t buf[8];
+    if(!this->Read((char*)buf,8)) {
+      return false;
+    }
+
+    *data = ((std::uint64_t)buf[0] << 56) +
+            ((std::uint64_t)buf[1] << 48) +
+            ((std::uint64_t)buf[2] << 40) +
+            ((std::uint64_t)buf[3] << 32) +
+            ((std::uint64_t)buf[4] << 24) +
+            ((std::uint64_t)buf[5] << 16) +
+            ((std::uint64_t)buf[6] << 8) +
+            ((std::uint64_t)buf[7]);
+
+    return true;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   bool File::Seek(long pos) {
     return std::fseek(this->m_fd,pos,SEEK_SET) == 0;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool File::SeekEOF() {
+    return std::fseek(this->m_fd,0,SEEK_END) == 0;
   }
 
   /* ----------------------------------------------------------------------------------------

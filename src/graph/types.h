@@ -6,12 +6,11 @@
 
 namespace graph {
 
-  typedef std::uint32_t aid;      // All Id -- cast down in size for other ids
   typedef std::uint32_t gid;      // Graph Id
   typedef std::uint32_t txid;     // Transaction Id
-  typedef std::uint16_t tid;      // Type Id
+//  typedef std::uint16_t tid;      // Type Id
   typedef std::uint32_t pid;      // Page Id
-  typedef std::uint8_t stid;      // Storable Type Id - values are hard coded
+  typedef std::uint8_t cid;       // Concept Id
 
 
 
