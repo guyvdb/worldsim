@@ -24,5 +24,5 @@ DESTDIR =../../bin
 
 unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lgraph
 
-INCLUDEPATH += $$PWD/../graph
+INCLUDEPATH += $$PWD/../graph/graph
 DEPENDPATH += $$PWD/../graph
