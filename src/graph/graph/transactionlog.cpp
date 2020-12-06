@@ -13,7 +13,7 @@ namespace graph {
     m_file(0x0), m_isopen(false), m_lastError(ErrorNone) {
     std::filesystem::path fn(this->m_logdir);
     fn /= LOG_NAME;
-    this->m_file = new File(fn);
+    this->m_file = new ExtendedFile(fn);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -111,12 +111,12 @@ namespace graph {
     }
 
     this->m_counter++;
-    if(!this->m_file->Write((std::uint32_t)this->m_counter)){
+    if(!this->m_file->WriteInt((std::uint32_t)this->m_counter)){
       std::cout << "[TXLOG] Error - failed to write frame txno." << std::endl;
       return false;
     }
 
-    if(!this->m_file->Write(timestamp)) {
+    if(!this->m_file->WriteInt(timestamp)) {
       std::cout << "[TXLOG] Error - failed to write frame timestamp." << std::endl;
       return false;
     }
@@ -143,7 +143,7 @@ namespace graph {
   bool TransactionLog::FrameEnd(){
     // write the number of records into header
     std::uint32_t count = (std::uint32_t)this->m_transactionData.size();
-    if(!this->m_file->Write(count)) {
+    if(!this->m_file->WriteInt(count)) {
       std::cout << "[TXLOG] Error - failed to write frame record count." << std::endl;
       return false;
     }
@@ -160,17 +160,17 @@ namespace graph {
       std::uint8_t op = (std::uint8_t)rec->Op();
       std::uint32_t size = (std::uint32_t)rec->Buf()->Size();
 
-      if(!this->m_file->Write(type)) {
+      if(!this->m_file->WriteInt(type)) {
         std::cout << "[TXLOG] Error - failed to write record type." << std::endl;
         return false;
       }
 
-      if(!this->m_file->Write(op)) {
+      if(!this->m_file->WriteInt(op)) {
         std::cout << "[TXLOG] Error - failed to write record op." << std::endl;
         return false;
       }
 
-      if(!this->m_file->Write(size)) {
+      if(!this->m_file->WriteInt(size)) {
         std::cout << "[TXLOG] Error - failed to write record size." << std::endl;
         return false;
       }
@@ -184,13 +184,13 @@ namespace graph {
     // Write out the footer
     // Frame Footer: | start of frame pointer | checksum | magic
     //                        64 bit               32 bit   16 bit
-    if(!this->m_file->Write(this->m_framepointer)) {
+    if(!this->m_file->WriteInt(this->m_framepointer)) {
       std::cout << "[TXLOG] Error - failed to frame pointer." << std::endl;
       return false;
     }
 
     std::uint32_t checksum = 0; // not implemented
-    if(!this->m_file->Write(checksum)) {
+    if(!this->m_file->WriteInt(checksum)) {
       std::cout << "[TXLOG] Error - failed to frame checksums." << std::endl;
       return false;
     }
@@ -198,7 +198,7 @@ namespace graph {
     std::uint8_t magic[2];
     magic[0] = FRAME_FOOTER_MAGIC0;
     magic[1] = FRAME_FOOTER_MAGIC1;
-    if(!this->m_file->Write((const char*)magic, 2)) {
+    if(!this->m_file->Write((char*)magic, 2)) {
       std::cout << "[TXLOG] Error - failed to frame footer magic." << std::endl;
       return false;
     }
@@ -268,7 +268,7 @@ namespace graph {
     }
 
     std::uint32_t txno;
-    if(!this->m_file->Read(&txno)) {
+    if(!this->m_file->ReadInt(&txno)) {
       std::cout << "[TXLOG] Error - falied to read last frame transaction number." << std::endl;
       return false;
     }
@@ -305,12 +305,12 @@ namespace graph {
     std::uint32_t checksum;
     std::uint8_t magic[2];
 
-    if(!this->m_file->Read(&address)) {
+    if(!this->m_file->ReadInt(&address)) {
       std::cout << "[TXLOG] Error - failed to read address of start of last frame." << std::endl;
       return -1;
     }
 
-    if(!this->m_file->Read(&checksum)) {
+    if(!this->m_file->ReadInt(&checksum)) {
       std::cout << "[TXLOG] Error - failed to read checksum of last frame." << std::endl;
       return -1;
     }

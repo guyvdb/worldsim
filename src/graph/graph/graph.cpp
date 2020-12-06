@@ -21,14 +21,14 @@ namespace graph {
     //std::cout << "Create store manager\n";
     this->m_storeManager = new StoreManager(config.DataDirectory(), config.PageSize());
     //std::cout << "Create cache manager\n";
-    this->m_cacheManager = new CacheManager(this->m_storeManager);
+    this->m_cacheManager = new CacheManager(this->m_storeManager,config);
     //std::cout << "Create log\n";
     this->m_log = new TransactionLog(config.LogDirectory());
 
     //std::cout << "Register Stores \n";
     // Register all the stores with the id manager
     for(auto &store : *this->m_storeManager->Stores()) {
-      this->m_idManager->Register(store,store->Type());
+      this->m_idManager->Register(store,store->GetConcept());
     }
     //std::cout << "Create complete\n";
 

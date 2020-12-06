@@ -10,13 +10,11 @@ namespace graph {
   typedef std::uint32_t gid;      // Graph Id
   typedef std::uint32_t txid;     // Transaction Id
   typedef std::uint32_t pid;      // Page Id
+  typedef std::uint16_t tid;      // Type Id
   typedef std::uint8_t cid;       // Concept Id
+  typedef std::uint8_t stateid;       // Action Id
 
-  // The Null Graph Id Type
-  enum GraphIds : gid {
-    NullId = 0xFFFFFFFF
-  };
-
+  const gid InvalidGraphId = 0xFFFFFFFF;
 
   // Error Types
   typedef std::uint16_t ErrorNo;
@@ -29,6 +27,14 @@ namespace graph {
     ErrorFileFlushError
   };
 
+  enum DataType : std::uint8_t {
+    Complex,
+    Integer,
+    Float,
+    Boolean,
+    String,
+    DateTime
+  };
 
 
 }

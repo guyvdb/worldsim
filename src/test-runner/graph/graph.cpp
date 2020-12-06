@@ -23,5 +23,4 @@ TEST_CASE("Should create a transaction","[graph][graph-db][tx]") {
   REQUIRE(g->Open());
   g->Close();
   delete g;
-
 }

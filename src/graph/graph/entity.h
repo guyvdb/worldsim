@@ -4,34 +4,81 @@
 #include <types.h>
 #include <storeable.h>
 #include <buffer.h>
-
-
-
-/*
- * Buffer layout of entity:
- * |------|---------|-----------|------------|
- * | 0    | 1 2 3 4 | 5 6 7 8   | 9 10 11 12 |
- * | flag | typeid  | relid     | attribid   |
- * |------|---------|-----------|------------|
- */
+#include <encoder.h>
 
 namespace graph {
-  class Entity : public Storeable {
+  class Relation;
+  class RelationCollection;
+  class AttributeCollection;
+  class Attribute;
+
+  /*
+   * Buffer layout: Entity
+   * |-----------|-------------------|----------------------|----------------------------------|
+   * | Storeable | StoreableWithType | StoreableWithAttrib  | Entity                           |
+   * |-----------|-------------------|----------------------|-----------------|----------------|
+   * | 0         | 1 2 3 4           | 5 6 7 8              | 9 10 11 12      | 13 14 15 16    |
+   * | flag      | typeid            | Root AttribBucket Id | Root Out Rel Id | Root In Rel Id |
+   * |-----------|-------------------|----------------------|-----------------|----------------|
+   *
+   * Entity padded to 18 bytes long
+   */
+
+
+
+  class Entity : public StoreableWithAttributes {
     public:
+      const static int ROOT_OUT_REL_ID_OFFSET = 9;
+      const static int ROOT_IN_REL_ID_OFFSET = 13;
+
       Entity();
       Entity(gid id);
       Entity(gid id, ByteBuffer *buffer);
-      Entity(gid id, gid attribid, gid relid);
+      Entity(gid id, gid attribid, gid outRelId, gid inRelid);
       ~Entity();
-      gid AttributeId();
-      gid RelationId();
-      void SetAttributeId(gid value);
-      void SetRelationId(gid value);
-      virtual Concept GetConcept() { return Storeable::Concept::Entity; }
+
+
+      gid GetRootOutRelationId();
+      void SetRootOutRelId(gid id);
+      gid GetRootInRelationId();
+      void SetRootInRelationId(gid id);
+
+      Relation *CreateRelation(Entity *to, tid relType);
+
+      void AddInRelation(Relation *r);
+      void AddOutRelation(Relation *r);
+
+
+      virtual Concept GetConcept() { return Storeable::Concept::CEntity; }
+
+      // API
+      RelationCollection *Relations();
+      AttributeCollection *Attributes();
+      //Attribute* AddAttribute();
     private:
   };
 
+  class EntityCollection {
+    public:
+      EntityCollection();
+      ~EntityCollection();
+      std::size_t Size();
+      void Add(Entity *entity);
+      //void Remove(Entity *entity);
+      Entity* operator[](std::size_t index);
+      //Entity* At(std::size_t index);
+    private:
+      std::vector<Entity*> m_entities;
+  };
 
+
+  class EntityEncoder : public Encoder {
+    public:
+      EntityEncoder() : Encoder() {}
+      virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new Entity(id, buffer); }
+      virtual Storeable *Empty() { return new Entity(InvalidGraphId); }
+      virtual bool Decodeable() { return true; }
+  };
 }
 #endif // ENTITY_H
 

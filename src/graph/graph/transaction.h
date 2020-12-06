@@ -2,20 +2,21 @@
 #define TRANSACTION_H
 
 #include <vector>
-
-
+#include <map>
 
 #include <types.h>
 #include <storeable.h>
 
 namespace graph {
+
   class Entity;
-  class Type;
+  class AttributeDefinition;
+  class AttributeBucket;
   class Relation;
-  class RelationType;
   class Attribute;
-  class AttributeType;
+  class AttributeCollection;
   class TransactionManager;
+  class CacheManager;
 
 
   class Transaction {
@@ -36,36 +37,38 @@ namespace graph {
       TransactionState State() { return m_state; }
       ErrorNo LastError();
 
+      bool IsReadable();
+      bool IsWriteable();
 
-      Type *CreateEntityType();
-      Entity *CopyEntity(Entity *src);
+      AttributeDefinition *CreateAttributeDefinition();
+      AttributeDefinition *FindAttributeDefinitionById(gid id);
+
+      AttributeBucket *CreateAttributeBucket();
+      AttributeBucket *FindAttributeBucketById(gid id);
+
+
+      //Entity *CopyEntity(Entity *src);
       Entity *CreateEntity(gid type);
       Entity *FindEntityById(gid id);
 
-      RelationType *CreateRelationType();
+      AttributeCollection *LoadAttributes(StoreableWithAttributes *storeable);
+
+
+
       Relation *CreateRelation(gid type);
       Relation *FindRelationById(gid id);
-
-      AttributeType *CreateAttributeType();
-      Attribute *CreateAttribute(gid type);
-
+      Attribute *CreateAttribute(tid type);
 
 
       void SetTransactionManager(TransactionManager *manager) {this->m_transactionManager = manager; }
       void ChangeState(TransactionState state) {this->m_state = state;}
       void SetReadOnly(bool value) { this->m_readonly = value; }
       void SetTxId(txid id) { this->m_txid = id; }
-
-
-      std::vector<Storeable*>* CreatedObjects() { return &this->m_createdObjects; }
-
+      std::vector<Storeable*> ModifiedObjects();
     private:
-
-
       void ReleaseResources();
-
-
-
+      TransactionManager *TxMan() { return this->m_transactionManager; }
+      CacheManager *CacheMan();
 
       // Allocate a new id via the id manager
       StoreableId AllocateId(Storeable::Concept concept);
@@ -73,22 +76,22 @@ namespace graph {
       // Allow the id manager to reclaim an id that was not used
       bool ReclaimId(StoreableId id);
 
-
-
-
-     // gid NextGraphId(Storeable::Type type);
       bool m_readonly;
       TransactionManager *m_transactionManager;
       ErrorNo m_lastError;
-      //gid m_counter; // temp
       txid m_txid;
-      TransactionState m_state;
-      //std::vector<Relation*> m_allocatedRelations;
+      TransactionState m_state;      
+
+      /*
       std::vector<Storeable*> m_createdObjects;
       std::vector<Storeable*> m_updatedObjects;
-      std::vector<Storeable*> m_deletedObjects;
+      std::vector<Storeable*> m_deletedObjects;*/
+      std::vector<Storeable*> m_allocatedObjects;
       std::vector<StoreableId> m_allocatedIds;
-      //std::vector<Relation*> m_modifiedRelations;
+
+      std::vector<AttributeCollection*> m_attributeCollections;
+      std::map<StoreableWithAttributes*, AttributeCollection*> m_attributeCollectionIndex;
+
 
   };
 }

@@ -5,8 +5,8 @@
 #include <types.h>
 
 const std::string filename("id.db");
-const char ValidFileMarker[2] = {0xA,0xB};
-const char InvalidFileMarker[2] = {0x0,0x0};
+char ValidFileMarker[2] = {0xA,0xB};
+char InvalidFileMarker[2] = {0x0,0x0};
 
 namespace graph {
 
@@ -21,7 +21,7 @@ namespace graph {
   gid IdCacheItem::NextId() {
     if(!this->m_active) {
       std::cout << "[ID MANAGER] Error - trying to get id while cache item is inactive." << std::endl;
-      return (gid)NullId;
+      return (gid)InvalidGraphId;
     }
 
 
@@ -61,7 +61,7 @@ namespace graph {
   IdManager::IdManager(std::filesystem::path datadir) : m_file(0x0), m_datadir(datadir),  m_isopen(false) {
     std::filesystem::path fn(this->m_datadir);
     fn /= filename;
-    this->m_file = new File(fn);
+    this->m_file = new ExtendedFile(fn);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -150,9 +150,9 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * Mark this id as reclaimed for the given type
    * --------------------------------------------------------------------------------------*/
-  /*void IdManager::Reclaim(tid id, Storeable::Concept type){
-    this->Reclaim((gid)id, type);
-  }*/
+  void IdManager::Reclaim(tid id, Storeable::Concept concept){
+    this->Reclaim((gid)id, concept);
+  }
 
   /* ----------------------------------------------------------------------------------------
    * Register a data store for a given type with the manager. This function should be called
@@ -183,13 +183,13 @@ namespace graph {
   gid IdManager::NextGraphId(Storeable::Concept concept){
     if (!this->m_isopen) {
       std::cout << "[ID MANAGER] Error - trying to get an id while closed." << std::endl;
-      return  NullId;
+      return  InvalidGraphId;
     }
 
     IdCacheItem *item = this->m_cache[concept];
     if(item == 0x0) {
       std::cout << "[ID MANAGER] Error - trying to get an id from a nonregistered type."<< std::endl;
-      return NullId;
+      return InvalidGraphId;
     }
 
     // this will lock a mutex
@@ -199,9 +199,9 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * Get the next tid for the given type (reclaimed or new)
    * --------------------------------------------------------------------------------------*/
-  /*tid IdManager::NextTypeId(Storeable::Concept type){
+  tid IdManager::NextTypeId(Storeable::Concept type){
     return (tid)this->NextGraphId(type);
-  }*/
+  }
 
   /* ----------------------------------------------------------------------------------------
    * If the item state is inactive it will not provide ids
@@ -258,7 +258,7 @@ namespace graph {
     }
 
     std::uint16_t typecnt;
-    if(!this->m_file->Read(&typecnt)) {
+    if(!this->m_file->ReadInt(&typecnt)) {
       return false;
     }
 
@@ -267,25 +267,25 @@ namespace graph {
 
       // read type id
       std::uint8_t tid;
-      if(!this->m_file->Read(&tid)) {
+      if(!this->m_file->ReadInt(&tid)) {
         return false;
       }
 
       // read the counter value
       std::uint32_t counter;
-      if(!this->m_file->Read(&counter)){
+      if(!this->m_file->ReadInt(&counter)){
         return false;
       }
 
       // read reclaimed id count for type
       std::uint16_t reclaimCnt;
-      if(!this->m_file->Read(&reclaimCnt)) {
+      if(!this->m_file->ReadInt(&reclaimCnt)) {
         return false;
       }
 
       // read data offset for data start
       std::uint32_t offset;
-      if(!this->m_file->Read(&offset)) {
+      if(!this->m_file->ReadInt(&offset)) {
         return false;
       }
 
@@ -313,7 +313,7 @@ namespace graph {
 
       for(std::uint32_t i = 0; i < reclaimCount; i++) {
         std::uint32_t id;
-        if(!this->m_file->Read(&id)) {
+        if(!this->m_file->ReadInt(&id)) {
           return false;
         }
         pair.second->Reclaim((gid)id);
@@ -347,7 +347,7 @@ namespace graph {
 
     // Write count types
     std::uint16_t cnt = (std::uint16_t)this->m_cache.size();
-    if(!this->m_file->Write(cnt)) {
+    if(!this->m_file->WriteInt(cnt)) {
       return false;
     }
 
@@ -360,17 +360,17 @@ namespace graph {
       std::uint32_t fakeOffset = 0xFFFFFFFF;
 
       // Write the type
-      if(!this->m_file->Write(type)) {
+      if(!this->m_file->WriteInt(type)) {
         return false;
       }
 
       // Write the counter value
-      if(!this->m_file->Write(counter)) {
+      if(!this->m_file->WriteInt(counter)) {
         return false;
       }
 
       // Write the reclaimed id count
-      if(!this->m_file->Write(reclaimCnt)) {
+      if(!this->m_file->WriteInt(reclaimCnt)) {
         return false;
       }
 
@@ -379,7 +379,7 @@ namespace graph {
       pair.second->SetFileOffset(this->m_file->Tell());
 
       // write the fake dataoffset
-      if(!this->m_file->Write(fakeOffset)){
+      if(!this->m_file->WriteInt(fakeOffset)){
         return false;
       }
     }
@@ -399,7 +399,7 @@ namespace graph {
       // write the reclaimed id data for this type
       auto data = pair.second->Data();
       for(auto id : data) {
-        if(!this->m_file->Write((uint32_t)id)) {
+        if(!this->m_file->WriteInt((uint32_t)id)) {
           return false;
         }
       }
@@ -416,7 +416,7 @@ namespace graph {
       }
 
       // write the correct data offset replacing the old fake offset
-      if(!this->m_file->Write((uint32_t)offset)){
+      if(!this->m_file->WriteInt((uint32_t)offset)){
         return false;
       }
 

@@ -59,21 +59,22 @@ namespace graph {
     txid id = this->m_log->FrameStart();
     tx.SetTxId(id);
 
+
+    std::vector<Storeable*> modified = tx.ModifiedObjects();
+
     // write a frame for every created object
-    for(auto obj : *tx.CreatedObjects()){
+    for(auto obj : modified){
       this->m_log->FrameAppend(obj->GetGraphId(),obj->GetConcept(),TransactionOp::Create,obj->Buffer());
     }
-
-    // write a frame for every updated object
-
-    // write a frame for every deleted objecgt
-
-    //this->m_log->FrameAppend()
-    // ..
-    //this->m_log->FrameAppend();
     this->m_log->FrameEnd();
-
     this->m_log->Release();
+
+
+    // now check which objects need to be written back to the cach
+    for(auto obj : modified) {
+      this->GetCacheManager()->SetStoreable(obj);
+      std::cout << "Need to save object type=" << obj->GetConceptString() << ", id=" << obj->GetGraphId() << std::endl;
+    }
 
 
     // the log is in locked state

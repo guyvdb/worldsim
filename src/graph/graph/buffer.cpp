@@ -11,19 +11,39 @@ namespace graph {
 
   ByteBuffer::ByteBuffer(std::size_t len) {
     this->m_data.reserve(len);
+    std::fill(this->m_data.begin(), this->m_data.end(), 0x0);
   }
 
-  ByteBuffer::ByteBuffer(ByteBuffer *buf) {
 
-    std::cout << "BUFFER copy from " << ((long)buf) << "\n";
+  ByteBuffer::ByteBuffer(ByteBuffer *buf) {
+    std::cout << "New Buffer: buf=" << buf->Size() << std::endl;
 
     this->Reserve(buf->Size());
-    std::uint8_t *ptr = buf->Data();
+    std::uint8_t *ptr = (std::uint8_t*)buf->Data();
     for(std::size_t i =0; i<buf->Size();i++) {
       this->m_data.push_back(ptr[i]);
     }
 
-    std::cout << "copy complete\n";
+    std::cout << "New Buffer: this=" << this->Size() << std::endl;
+  }
+
+  bool ByteBuffer::Equal(ByteBuffer *buf) {
+    if(this->Size() != buf->Size()) {
+      return false;
+    }
+
+    for(std::size_t i =0; i< this->Size();i++) {
+      if(this->At(i) != buf->At(i)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  std::uint8_t* ByteBuffer::Slice(int offset) {
+    std::uint8_t *ptr = this->m_data.data();
+    ptr += offset;
+    return ptr;
   }
 
   void ByteBuffer::Append(std::uint8_t value) {

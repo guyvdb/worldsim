@@ -105,7 +105,7 @@ namespace graph {
       bool Roll();
 
       const char *m_logdir;
-      File *m_file;
+      ExtendedFile *m_file;
       bool m_isopen;
       ErrorNo m_lastError;
       txid m_counter;

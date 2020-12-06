@@ -3,9 +3,8 @@
 #include <filesystem>
 #include <storeable.h>
 #include <entity.h>
-#include <entityencoder.h>
 #include <relation.h>
-#include <relationencoder.h>
+#include <attribute.h>
 
 namespace graph {
 
@@ -15,10 +14,25 @@ namespace graph {
 
    // this->m_dataStores = new std::vector<Store*>();
    // this->m_dataStoreIndex = new std::map<Storeable::Type, Store*>();
-    this->m_entityStore = this->CreateStore(ENTITY_STORE_FILENAME, Storeable::EntitySize, Storeable::Concept::Entity, new EntityEncoder());
-    this->m_relationStore = this->CreateStore(RELATION_STORE_FILENAME, Storeable::RelationSize, Storeable::Concept::Relation, new RelationEncoder());
+    this->m_entityStore = this->CreateStore(ENTITY_STORE_FILENAME,
+                                            Storeable::EntitySize,
+                                            Storeable::Concept::CEntity,
+                                            new EntityEncoder());
 
+    this->m_relationStore = this->CreateStore(RELATION_STORE_FILENAME,
+                                              Storeable::RelationSize,
+                                              Storeable::Concept::CRelation,
+                                              new RelationEncoder());
 
+    this->m_attributeDefinitionStore = this->CreateStore(ATTRIBUTE_DEFINITION_STORE_FILENAME,
+                                                         Storeable::AttributeDefinitionSize,
+                                                         Storeable::Concept::CAttributeDefinition,
+                                                         new AttributeDefinitionEncoder());
+
+    this->m_attributeBucketStore = this->CreateStore(ATTRIBUTE_BUCKET_STORE_FILENAME,
+                                                     Storeable::AttributeBucketSize,
+                                                     Storeable::Concept::CAttributeBucket,
+                                                     new AttributeBucketEncoder());
 
 
     // Create the data stores

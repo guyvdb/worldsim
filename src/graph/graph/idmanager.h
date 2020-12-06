@@ -48,16 +48,7 @@ namespace graph {
   // It flushes content back to disk on shutdown. If the data file gets
   // out of sync it can rebuild it from the rest of the data files
   //
-  // It maintains next id and reclaimed id for the following:
-  //
-  //  - Entity
-  //  - EntityType
-  //  - EntityProperty
-  //  - EntityPropertyType
-  //  - Relation
-  //  - RelationType
-  //  - RelationProperty
-  //  - RelationPropertyType
+  // It maintains next id and reclaimed ids
 
   class IdManager {
     public:
@@ -67,17 +58,17 @@ namespace graph {
       void Close();
 
       void Reclaim(gid id, Storeable::Concept type);
-      //void Reclaim(tid id, Storeable::Concept type);
+      void Reclaim(tid id, Storeable::Concept type);
       bool Register(Store *store, Storeable::Concept type);
       gid NextGraphId(Storeable::Concept type);
-      //tid NextTypeId(Storeable::Concept type);
+      tid NextTypeId(Storeable::Concept type);
     private:
       void MarkItemState(bool active);
       bool Scan();
       bool Load();
       bool Save();
 
-      File *m_file;
+      ExtendedFile *m_file;
       std::filesystem::path m_datadir;
       std::map<Storeable::Concept, IdCacheItem*> m_cache;
       bool m_isopen;

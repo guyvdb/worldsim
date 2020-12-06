@@ -1,6 +1,31 @@
 #include <catch2.hpp>
-//#include <bytebuffer.h>
+#include <buffer.h>
 #include <types.h>
+#include <iostream>
+
+
+TEST_CASE("ByteBuffer should encode/decode values", "[graph][buffer]") {
+
+  std::uint8_t i8 = 132;                    // 0
+  std::uint16_t i16 = 32878;                // 1 2
+  std::uint32_t i32 = 984838222;            // 3 4 5 6
+  //std::uint64_t i64 = 948484838232432;      // 7 8 9 10 11 12 13 14
+
+  graph::ByteBuffer *b = new graph::ByteBuffer(15);
+  b->Set(0,i8);
+  b->Set(1,i16);
+  b->Set(3,i32);
+  //b->Set(7,i64);
+
+  REQUIRE(b->GetUint8(0) == i8);
+  REQUIRE(b->GetUint16(1) == i16);
+  REQUIRE(b->GetUint32(3) == i32);
+ // REQUIRE(b->GetUint64(7) == i64);
+
+  delete b;
+
+}
+
 
 /*
 TEST_CASE("The byte buffer should encode/decode values", "[graph][bytebuffer]") {

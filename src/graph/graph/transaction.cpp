@@ -1,14 +1,14 @@
 #include "transaction.h"
 
-#include <types.h>
+
 #include <transactionmanager.h>
 #include <cache.h>
+#include <types.h>
 
+#include <storeable.h>
 #include <entity.h>
-#include <type.h>
 #include <relation.h>
 #include <attribute.h>
-#include <type.h>
 
 #include <cassert>
 #include <iostream>
@@ -70,31 +70,76 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Entity *Transaction::CopyEntity(Entity *src) {
+  CacheManager* Transaction::CacheMan() {
+    return this->TxMan()->GetCacheManager();
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool Transaction::IsReadable() {
+    if(this->m_state != Started) {
+      return false;
+    }
+    return true;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool Transaction::IsWriteable() {
+    if(!this->IsReadable() || this->m_readonly) {
+      return false;
+    }
+    return true;
+  }
+
+  std::vector<Storeable*> Transaction::ModifiedObjects() {
+    std::vector<Storeable*> v;
+    v.reserve(this->m_allocatedObjects.size());
+
+    for(auto obj : this->m_allocatedObjects) {
+      if(obj->IsDirty()) {
+        v.push_back(obj);
+      }
+    }
+    return v;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+ /* Entity *Transaction::CopyEntity(Entity *src) {
     if(this->m_state != Started) {
       std::cout << "[TX] Error - transaction in wrong state to copy entity." << std::endl;
       return 0x0;
     }
-    StoreableId rec = this->AllocateId(Storeable::Concept::Entity);
+    StoreableId rec = this->AllocateId(Storeable::Concept::CEntity);
     Entity *e = new Entity(rec.Id, src->Buffer());
+    e->SetTypeId(src->GetTypeId());
+    e->SetTransaction(this);
     this->m_createdObjects.push_back(e);
     this->m_allocatedIds.push_back(rec);
     return e;
-  }
+  }*/
 
   /* ----------------------------------------------------------------------------------------
    * Create a new entity.
    * --------------------------------------------------------------------------------------*/
   Entity *Transaction::CreateEntity(gid type) {
 
-    if (this->m_state != Started) {
-      std::cout << "[TX] Error - transaction in wrong state to create entity." << std::endl;
-      return 0x0;
+    if(!this->IsWriteable()) {
+      std::cout << "[TX] Error - transaction is not writeable." << std::endl;
+      return  0x0;
     }
 
-    StoreableId rec = this->AllocateId(Storeable::Concept::Entity);
+    StoreableId rec = this->AllocateId(Storeable::Concept::CEntity);
     Entity *e = new Entity(rec.Id);
-    this->m_createdObjects.push_back(e);
+    e->SetTypeId(type);
+    e->SetTransaction(this);
+    e->SetDirty(true);
+
+    this->m_allocatedObjects.push_back(e);
     this->m_allocatedIds.push_back(rec);
     return e;
   }
@@ -102,32 +147,96 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
+  class Relation* Transaction::CreateRelation(gid type) {
+
+    if(!this->IsWriteable()) {
+      std::cout << "[TX] Error - transaction is not writeable." << std::endl;
+      return  0x0;
+    }
+
+    StoreableId rec = this->AllocateId(Storeable::Concept::CRelation);
+    class Relation *rel = new Relation(rec.Id);
+    rel->SetTypeId(type);
+    rel->SetTransaction(this);
+    rel->SetDirty(true);
+    this->m_allocatedObjects.push_back(rel);
+    this->m_allocatedIds.push_back(rec);
+    return rel;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+    Relation * Transaction::FindRelationById(gid id) {
+      if(!this->IsReadable()) {
+        std::cout << "[TX] Error - transaction is not readable." << std::endl;
+        return 0x0;
+      }
+
+
+      ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::CRelation, id);
+      if(b == 0x0) {
+        std::cout << "[TX] Error - failed to load relation from cache." << std::endl;
+        return 0x0;
+      }
+      Relation *r = new Relation(id, b);
+
+      this->m_allocatedObjects.push_back(r);
+      return r;
+  }
+
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   StoreableId Transaction::AllocateId(Storeable::Concept concept) {
-    return this->m_transactionManager->AllocateId(concept);
+    return this->TxMan()->AllocateId(concept);
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
   bool Transaction::ReclaimId(StoreableId id) {
-    return this->m_transactionManager->ReclaimId(id);
+    return this->TxMan()->ReclaimId(id);
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  AttributeCollection* Transaction::LoadAttributes(StoreableWithAttributes *storeable) {
+    if (this->m_state != Started) {
+      std::cout << "[TX] Error - transaction not started." << std::endl;
+      return 0x0;
+    }
+
+    // have we cached this collection in this transaction?
+    if ( this->m_attributeCollectionIndex.find(storeable) == this->m_attributeCollectionIndex.end() ) {
+      // not found - create collection and return
+      AttributeCollection *c = new AttributeCollection(this, storeable);
+      gid root = storeable->GetRootAttributesBucketId();
+
+      // load from cache and follow linked list to get all buckets.
+      // add bucket to collection
+      // index it and return
+
+
+      //this->m_transactionManager->GetCacheManager()->FindAttributeBucketById(root);
+
+    } else {
+      // return locally cached version
+      return this->m_attributeCollectionIndex[storeable];
+    }
+
   }
 
 
-  /* ----------------------------------------------------------------------------------------
-   * A new graph id is needed for a given storable type. This id is either going to be a new
-   * id for the given type or a reclaimed one.
-   * --------------------------------------------------------------------------------------*/
-  /*gid Transaction::NextGraphId(Storeable::Type type) {
-    std::cout << "Warning: Tx::NextGraphId is returning a temporary rolling sequence" << std::endl;
-    gid id = this->m_counter;
-    std::cout << "[TX] Graphid will be " << id << std::endl;
-    this->m_counter++;
-    return id;
-  }*/
-
   void Transaction::ReleaseResources() {
-    for(auto obj : this->m_createdObjects) {
+
+    for(auto obj : this->m_allocatedObjects) {
+      delete obj;
+    }
+
+    for(auto obj : this->m_attributeCollections) {
       delete obj;
     }
   }

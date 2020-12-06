@@ -21,47 +21,63 @@ namespace graph {
       bool Flush();
       long Tell();
 
+
       bool IsOpen() { return this->m_isopen; }
-
-      // Read/Write from current position in file
-      bool Write(const char* data, std::size_t size);
-      bool Write(std::uint8_t *data, std::size_t size);
       bool Write(void *data, std::size_t size);
-      bool Write(std::uint8_t data);
-      bool Write(std::uint16_t data);
-      bool Write(std::uint32_t data);
-      bool Write(std::uint64_t data);
-      
-      bool Read(char *data, std::size_t size);
-      bool Read(std::uint8_t *data);
-      bool Read(std::uint16_t *data);
-      bool Read(std::uint32_t *data);
-      bool Read(std::uint64_t *data);
-
-      // Read/Write from specific position in file
-      bool Write(long pos, const char* data, std::size_t size);
-      bool Write(long pos, std::uint8_t *data, std::size_t size);
       bool Write(long pos, void *data, std::size_t size);
-      bool Write(long pos, std::uint8_t data);
-      bool Write(long pos, std::uint16_t data);
-      bool Write(long pos, std::uint32_t data);
-      bool Write(long pos, std::uint64_t data);
-      
+      bool Write(char* data, std::size_t size);
+      bool Write(long pos, char* data, std::size_t size);
+
+
+      bool Read(void *data, std::size_t size);
+      bool Read(long pos, void *data, std::size_t size);
+      bool Read(char *data, std::size_t size);
       bool Read(long pos, char *data, std::size_t size);
-      bool Read(long pos, std::uint8_t *data);
-      bool Read(long pos, std::uint16_t *data);
-      bool Read(long pos, std::uint32_t *data);
-      bool Read(long pos, std::uint64_t *data);
+
 
       long Size();
    private:
 
       void Touch();
+      long FileSize();
+      //bool Grow(long size);
+      //void CheckGrow(long pos, long size);
+      //bool Grow(std::size_t size);
 
+      long m_size;
+      //std::size_t m_pagesize;
+      //int m_growPageCount;
       std::FILE *m_fd;
       std::filesystem::path m_filename;
       bool m_isopen;
+  };
 
+
+  class ExtendedFile : public File {
+    public:
+      ExtendedFile(std::filesystem::path filename) : File(filename) {}
+
+
+
+      bool WriteInt(std::uint8_t data);
+      bool WriteInt(std::uint16_t data);
+      bool WriteInt(std::uint32_t data);
+      bool WriteInt(std::uint64_t data);
+      bool WriteInt(long pos, std::uint8_t data);
+      bool WriteInt(long pos, std::uint16_t data);
+      bool WriteInt(long pos, std::uint32_t data);
+      bool WriteInt(long pos, std::uint64_t data);
+
+
+
+      bool ReadInt(std::uint8_t *data);
+      bool ReadInt(std::uint16_t *data);
+      bool ReadInt(std::uint32_t *data);
+      bool ReadInt(std::uint64_t *data);
+      bool ReadInt(long pos, std::uint8_t *data);
+      bool ReadInt(long pos, std::uint16_t *data);
+      bool ReadInt(long pos, std::uint32_t *data);
+      bool ReadInt(long pos, std::uint64_t *data);
 
   };
 

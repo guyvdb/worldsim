@@ -6,21 +6,29 @@
 #include <string>
 #include <map>
 
-// file names
-#define ID_STORE_FILENAME "id.db"
-#define ENTITY_TYPE_STORE_FILENAME "entity.type"
-#define ENTITY_STORE_FILENAME "entity.db"
-#define ENTITY_PROP_STORE_FILENAME "entity.prop"
-#define ENTITY_PROP_TYPE_STORE_FILENAME "entity.schema"
-#define RELATION_TYPE_STORE_FILENAME "relation.type"
-#define RELATION_STORE_FILENAME "relation.db"
-#define RELATION_PROP_STORE_FILENAME "relation.prop"
-#define RELATION_PROP_TYPE_STORE_FILENAME "relation.schema"
+
+//#define ID_STORE_FILENAME "id.db"
+//#define ENTITY_TYPE_STORE_FILENAME "entity.type"
+//#define ENTITY_STORE_FILENAME "entity.db"
+//#define ENTITY_PROP_STORE_FILENAME "entity.prop"
+//#define ENTITY_PROP_TYPE_STORE_FILENAME "entity.schema"
+//#define RELATION_TYPE_STORE_FILENAME "relation.type"
+//#define RELATION_STORE_FILENAME "relation.db"
+//#define RELATION_PROP_STORE_FILENAME "relation.prop"
+//#define RELATION_PROP_TYPE_STORE_FILENAME "relation.schema"
 
 namespace graph {
 
   class StoreManager  {
     public:
+
+
+      //const char * ID_STORE_FILENAME = "id.db";
+      const char * ENTITY_STORE_FILENAME = "entity.db";
+      const char * RELATION_STORE_FILENAME = "relation.db";
+      const char * ATTRIBUTE_BUCKET_STORE_FILENAME = "attribute.db";
+      const char * ATTRIBUTE_DEFINITION_STORE_FILENAME = "attribute.def";
+
       StoreManager(const char *datadir, std::size_t pagesize);
       ~StoreManager();
 
@@ -40,14 +48,17 @@ namespace graph {
       //IdStore *m_idStore;
 
       Store *m_entityStore;
-      Store *m_entityTypeStore;
-      Store *m_entityPropertyStore;
-      Store *m_entityPropertyTypeStore;
-
       Store *m_relationStore;
-      Store *m_relationTypeStore;
-      Store *m_relationPropertyStore;
-      Store *m_relationPropertyTypeStore;
+      Store *m_attributeBucketStore;
+      Store *m_attributeDefinitionStore;
+      //Store *m_entityTypeStore;
+      //Store *m_entityPropertyStore;
+      //Store *m_entityPropertyTypeStore;
+
+
+      //Store *m_relationTypeStore;
+      //Store *m_relationPropertyStore;
+      //Store *m_relationPropertyTypeStore;
 
       std::vector<Store*> m_dataStores;
       std::map<Storeable::Concept, Store*> m_dataStoreIndex;

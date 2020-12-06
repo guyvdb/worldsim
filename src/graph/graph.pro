@@ -14,18 +14,15 @@ SOURCES += \
     graph/buffer.cpp \
     graph/cache.cpp \
     graph/cachemanager.cpp \
-    graph/cachepage.cpp \
     graph/config.cpp \
     graph/encoder.cpp \
     graph/entity.cpp \
-    graph/entityencoder.cpp \
     graph/file.cpp \
     graph/graph.cpp \
     graph/idmanager.cpp \
     graph/log.cpp \
-    graph/properties.cpp \
+    graph/page.cpp \
     graph/relation.cpp \
-    graph/relationencoder.cpp \
     graph/schema.cpp \
     graph/store.cpp \
     graph/storeable.cpp \
@@ -33,27 +30,24 @@ SOURCES += \
     graph/transaction.cpp \
     graph/transactionlog.cpp \
     graph/transactionmanager.cpp \
-    graph/type.cpp
+    query/parser.cpp
 
 HEADERS += \
     graph/attribute.h \
     graph/buffer.h \
     graph/cache.h \
     graph/cachemanager.h \
-    graph/cachepage.h \
     graph/config.h \
     graph/encoder.h \
     graph/entity.h \
-    graph/entityencoder.h \
     graph/file.h \
     graph/graph_global.h \
     graph/graph.h \
     graph/idaccumulator.h \
     graph/idmanager.h \
     graph/log.h \
-    graph/properties.h \
+    graph/page.h \
     graph/relation.h \
-    graph/relationencoder.h \
     graph/schema.h \
     graph/store.h \
     graph/storeable.h \
@@ -61,8 +55,8 @@ HEADERS += \
     graph/transaction.h \
     graph/transactionlog.h \
     graph/transactionmanager.h \
-    graph/type.h \
-    graph/types.h
+    graph/types.h \
+    query/parser.h
 
 
 DESTDIR = ../../bin

@@ -5,45 +5,31 @@
 #include <storeable.h>
 #include <storemanager.h>
 #include <cache.h>
+#include <config.h>
 
 namespace graph {
 
   class Entity;
   class Relation;
+  class AttributeBucket;
 
 
   class CacheManager {
     public:
-      CacheManager(StoreManager *storeManager);
+      CacheManager(StoreManager *storeManager, Config &config);
       ~CacheManager();
       bool Open();
       bool Close();
-
       Cache *GetCache(Storeable::Concept concept);
+      ByteBuffer* GetStoreableBuffer(Storeable::Concept concept, gid id);
+      bool SetStoreable(Storeable *storeable);
 
-
-      Entity *FindEntityById(gid id);
-      Relation *FindRelationById(gid id);
-
+      //Entity *FindEntityById(gid id);
+      //Relation *FindRelationById(gid id);
+      //AttributeBucket *FindAttributeBucketById(gid id);
     private:
       Storeable *FindObjectById(Cache *cache, gid id);
-
       StoreManager *m_storeManager;
-
-      // the caches
-      /*
-      Cache *m_idStoreCache;
-
-      Cache *m_thingStoreCache;
-      Cache *m_thingTypeStoreCache;
-      Cache *m_thingPropertyStoreCache;
-      Cache *m_thingPropertyTypeStoreCache;
-
-      Cache *m_relationStoreCache;
-      Cache *m_relationTypeStoreCache;
-      Cache *m_relationPropertyStoreCache;
-      Cache *m_relationPropertyTypeStoreCache;
-*/
       std::vector<Cache*> m_caches;
       std::map<Storeable::Concept, Cache*> m_cacheIndex;
   };

@@ -41,41 +41,19 @@ void MainWindow::on_pushButton_clicked() {
 
   graph::Transaction tx;
   if(g->Update(tx)){
-    graph::Entity *e = tx.CreateEntity(1);
-    std::cout << "ENTITY ID=" << e->GetGraphId() << "\n";
-    e->SetFlag(0);
-    e->SetRelationId(23);
-    e->SetAttributeId(233);
+    graph::Entity *e1 = tx.CreateEntity(1);
+    std::cout << "ENTITY ID=" << e1->GetGraphId() << "\n";
 
-    std::cout << "Flag = " << e->GetFlag() << std::endl;
-    std::cout << "InRelId = " << e->RelationId() << std::endl;
-    std::cout << "PropId = " << e->AttributeId() << std::endl;
+    graph::Entity *e2 = tx.CreateEntity(1);
+    std::cout << "ENTITY ID=" << e2->GetGraphId() << "\n";
 
-
-    graph::Entity *e2 = tx.CopyEntity(e);
-
+    graph::Relation *r = e1->CreateRelation(e2, 1);
 
 
 
     tx.Commit();
   }
 
-
-  /*
-   *   REQUIRE(t1->GetId() == t2->GetId());
-  REQUIRE(t1->PropId() == t2->PropId());
-  REQUIRE(t1->InRelId() == t2->InRelId());
-  REQUIRE(t1->OutRelId() == t2->OutRelId());
-  */
-
-  /*
-  graph::Transaction tx;
-  if(g->Update(tx)) {
-    graph::Entity *e = tx.CreateEntity();
-    std::cout << "Entity Id: " << e->GetId() << " created\n";
-    tx.Commit();
-  }
-  */
 
     // Close & Dispose
     g->Close();    

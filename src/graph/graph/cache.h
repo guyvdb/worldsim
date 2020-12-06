@@ -7,9 +7,10 @@
 #include <map>
 
 #include <types.h>
-#include <cachepage.h>
+#include <page.h>
 #include <storeable.h>
-
+#include <store.h>
+#include <mutex>
 
 namespace graph {
 
@@ -22,14 +23,21 @@ namespace graph {
 
   class CacheManager;
 
-  struct ObjectCacheInfo {
-      long FileOffset;
-      long FileEndset;
+
+//  File Start	File End	Bytes	Page Start	Page End	Page Offset	Object Id
+
+
+
+  struct CacheOffset {
+      long FileStart;
+      long FileEnd;
       int PageStart;
       int PageEnd;
       int PageOffset;
       std::size_t Len;
   };
+
+
   /*
   foff=(id-1)*recsize
   fend=(foff + (recsize-1))
@@ -47,22 +55,45 @@ namespace graph {
 
   class Cache {
     public:
-      Cache(CacheManager *manage, Storeable::Concept concept, std::size_t recordsize, std::size_t pagesize);
+      Cache(CacheManager *manage, Store *store, std::size_t maxpages); // Storeable::Concept concept, std::size_t recordsize, std::size_t pagesize);
       bool Flush();
 
-      ObjectCacheInfo ObjectInfo(gid id);
+      CacheOffset GetCacheOffset(gid id);
+
+      // Return an object from the cache ...
+      // the caller needs to free the byte buffer
+      ByteBuffer* GetStoreableBuffer(gid id);
+      bool SetStoreable(Storeable *storeable);
+
+
+      Page *LockPage(int no);
+      void UnlockPage(Page *page);
+
 
     protected:
     private:
       int BytePageNo(long offset);
+      long PageFileOffset(int no);
+
+      void FetchPageFromDisk(int pageno);
+      void ReduceCachePageCount();
 
       CacheManager *m_cacheManager;
+      Store *m_store;
       Storeable::Concept m_concept;
+      std::size_t m_maxPages;
       std::size_t m_recsize;
       std::size_t m_pagesize;
 
+      std::mutex m_mutex;
 
-      std::map<int, CachePage*> m_pages;
+      std::map<int, Page*> m_pageIndex;
+      std::vector<Page*> m_pageQueue;
+      std::vector<Page*> m_pageHotQueue;
+
+
+
+
   };
 }
 #endif // CACHE_H

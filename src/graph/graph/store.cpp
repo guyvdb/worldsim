@@ -74,23 +74,28 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * The data pointer needs to be m_pagesize size. Read the given page from the file
    * --------------------------------------------------------------------------------------*/
-  bool Store::ReadPage(pid page, char *data) {
+  bool Store::ReadPage(int page, ByteBuffer *buffer) {
     long offset = (long)page * (long)this->m_pagesize;
-    return this->m_file->Read(offset, data, this->m_pagesize);
+
+
+    // if the file is not big enough
+
+
+    return this->m_file->Read(offset, buffer->Data(), this->m_pagesize);
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::WritePage(pid page, const char *data) {
+  bool Store::WritePage(int page, ByteBuffer *buffer) {
     long offset = (long)page * (long)this->m_pagesize;
-    return this->m_file->Write(offset, data,this->m_pagesize);
+    return this->m_file->Write(offset, buffer->Data(),this->m_pagesize);
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::ReadRecord(gid id, Storeable **result) {
+  /*bool Store::ReadRecord(gid id, Storeable **result) {
     long offset = (long)(id-1) * (long)this->m_recordsize;
     ByteBuffer b = ByteBuffer(this->m_recordsize);
 
@@ -101,15 +106,15 @@ namespace graph {
     *result = this->m_factory->Decode(id, &b);
     return true;
 
-  }
+  }*/
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Store::WriteRecord(Storeable *rec) {
+  /*bool Store::WriteRecord(Storeable *rec) {
     long offset = (long)(rec->GetGraphId()-1) * (long)this->m_recordsize;
     return this->m_file->Write(offset, rec->Buffer()->VoidData(), this->m_recordsize);
-  }
+  }*/
 
   /* ----------------------------------------------------------------------------------------
    *

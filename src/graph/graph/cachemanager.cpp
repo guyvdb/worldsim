@@ -1,14 +1,20 @@
 #include "cachemanager.h"
+#include <entity.h>
+#include <relation.h>
+#include <attribute.h>
+#include <cassert>
 
 namespace graph {
 
 
-  CacheManager::CacheManager(StoreManager *storeManager) : m_storeManager(storeManager){
+  CacheManager::CacheManager(StoreManager *storeManager, Config &config) : m_storeManager(storeManager){
     // we need to create a cache for all the stores
     for(auto &store : *storeManager->Stores()) {
-      Cache *c = new Cache(this,store->Type(),store->RecordSize(), store->PageSize());
+      std::cout << "[CACHE] Load cache for: " << store->Filename() << std::endl;
+      std::size_t max = config.GetCacheMaxPages(store->GetConcept());
+      Cache *c = new Cache(this,store, max);
       this->m_caches.push_back(c);
-      this->m_cacheIndex[store->Type()] = c;
+      this->m_cacheIndex[store->GetConcept()] = c;
     }
   }
 
@@ -40,24 +46,27 @@ namespace graph {
     return 0x0;
   }
 
-  Storeable *CacheManager::FindObjectById(Cache *cache, gid id) {
-    // Pull out a storeable by id
 
-    // compute the pageid for the gid
-
-    // get that page
-
-
-
+  ByteBuffer* CacheManager::GetStoreableBuffer(Storeable::Concept concept, gid id) {
+    Cache *c = this->GetCache(concept);
+    if(c == 0x0) {
+      std::cout << "[CACHEMAN] Error - failed to find cache for concept " << Storeable::ConceptToString(concept) << std::endl;
+      return 0x0;
+    }
+    return c->GetStoreableBuffer(id);
   }
 
-  Entity *CacheManager::FindEntityById(gid id) {
-    // find the store for entities
-
+  bool CacheManager::SetStoreable(Storeable *storeable) {
+    Cache *c = this->GetCache(storeable->GetConcept());
+    if(c == 0x0) {
+      std::cout << "[CACHEMAN] Error - failed to find cache for concept " << storeable->GetConceptString() << std::endl;
+      return false;
+    }
+    return c->SetStoreable(storeable);
   }
 
-  Relation *CacheManager::FindRelationById(gid id) {
 
-  }
+
+
 
 }

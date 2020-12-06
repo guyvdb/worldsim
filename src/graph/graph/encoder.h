@@ -14,8 +14,8 @@ namespace graph {
       virtual ~Encoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) = 0;
       virtual Storeable *Empty() = 0;
-      virtual std::size_t EncodedSize() = 0;
-      virtual bool Encode(Storeable *s, ByteBuffer *buffer) = 0;
+      //virtual std::size_t EncodedSize() = 0;
+      //virtual bool Encode(Storeable *s, ByteBuffer *buffer) = 0;
       virtual bool Decodeable() = 0;
   };
 
@@ -24,8 +24,8 @@ namespace graph {
       virtual Storeable *Decode(gid, ByteBuffer *) { return 0x0; }
       virtual Storeable *Empty() {return 0x0; }
       virtual bool Decodeable() {return false; }
-      virtual std::size_t EncodedSize() { return 0; }
-      virtual bool Encode(Storeable *, ByteBuffer *){ return false; }
+      //virtual std::size_t EncodedSize() { return 0; }
+      //virtual bool Encode(Storeable *, ByteBuffer *){ return false; }
   };
 }
 
