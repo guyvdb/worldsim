@@ -29,12 +29,14 @@ namespace graph {
 
 
   struct CacheOffset {
-      long FileStart;
-      long FileEnd;
-      int PageStart;
-      int PageEnd;
-      int PageOffset;
-      std::size_t Len;
+      long ObjectFileStartOffset;  // the position in the file of the first byte of the object
+      long ObjectFileEndOffset;    // the position in the file of the last byte of the object
+      int PageStartNo;             // the page number where the first byte of the object is located
+      int PageEndNo;               // the page number where the last byte of the object is located
+      int ObjectPageStartOffset;   // the position of the first byte of the object in the first page buffer
+      long PageStartFileOffset;    // the positon of the first byte of the first page in the file
+      long PageEndFileOffset;      // the position of the last byte of the last page in the file
+      std::size_t Len;             // the length of the object in bytes
   };
 
 
@@ -56,7 +58,7 @@ namespace graph {
   class Cache {
     public:
       Cache(CacheManager *manage, Store *store, std::size_t maxpages); // Storeable::Concept concept, std::size_t recordsize, std::size_t pagesize);
-      bool Flush();
+
 
       CacheOffset GetCacheOffset(gid id);
 
@@ -68,12 +70,19 @@ namespace graph {
 
       Page *LockPage(int no);
       void UnlockPage(Page *page);
+      bool IsPageCached(int no);
 
+      void Flush();
+
+      Store* GetStore() { return this->m_store; }
 
     protected:
     private:
+      void Flush(Page *page);
       int BytePageNo(long offset);
       long PageFileOffset(int no);
+
+      bool GrowStore(long amount);
 
       void FetchPageFromDisk(int pageno);
       void ReduceCachePageCount();

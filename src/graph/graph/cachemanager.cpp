@@ -37,6 +37,11 @@ namespace graph {
     return true;
   }
 
+  void CacheManager::Flush() {
+    for(auto cache : this->m_caches) {
+      cache->Flush();
+    }
+  }
 
   Cache *CacheManager::GetCache(Storeable::Concept concept) {
     std::map<Storeable::Concept,Cache*>::iterator it = this->m_cacheIndex.find(concept);

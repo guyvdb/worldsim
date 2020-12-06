@@ -24,6 +24,8 @@ namespace graph {
       ByteBuffer* GetStoreableBuffer(Storeable::Concept concept, gid id);
       bool SetStoreable(Storeable *storeable);
 
+      void Flush();
+
       //Entity *FindEntityById(gid id);
       //Relation *FindRelationById(gid id);
       //AttributeBucket *FindAttributeBucketById(gid id);

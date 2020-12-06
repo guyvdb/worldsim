@@ -92,6 +92,10 @@ namespace graph {
     return this->m_file->Write(offset, buffer->Data(),this->m_pagesize);
   }
 
+  bool Store::Write(long pos, void* ptr, std::size_t size) {
+    return this->m_file->Write(pos, ptr, size);
+  }
+
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/

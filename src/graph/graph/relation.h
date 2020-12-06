@@ -72,16 +72,60 @@ namespace graph {
   };
 
 
-  class RelationCollection {
+  class RelationCollection : public std::vector<Relation*> {
     public:
       RelationCollection();
       ~RelationCollection();
-      std::size_t Size();
-      void Add(Relation *relation);
-      Relation* operator[](std::size_t index);
+      //std::size_t Size();
+      //void Add(Relation *relation);
+      //Relation* operator[](std::size_t index);
     private:
-      std::vector<Relation*> m_relations;
+      //std::vector<Relation*> m_relations;
   };
+
+
+  /*
+
+
+template<size_t S>
+class FixedString {
+public:
+ FixedString() = default;
+ FixedString(const char* str) {
+  if(str)
+   ::strncpy(str_, str, S);
+ }
+
+ const char* c_str() const { return str_; }
+ size_t count() const { return ::strlen(str_); }
+ const char& operator[](size_t i) const { return str_[i]; }
+
+ // default memberwise copies
+
+ // Minimum required for range-for loop
+ template<typename T>
+ struct Iterator {
+  T* p;
+  T& operator*() { return *p; }
+  bool operator != (const Iterator& rhs) {
+    return p != rhs.p;
+  }
+  void operator ++() { ++p; }
+ };
+
+  // auto return requires C++14
+ auto begin() const { // const version
+   return Iterator<const char>{str_};
+ }
+ auto end() const { // const version
+  return Iterator<const char>{str_+count()};
+ }
+
+private:
+ char str_[S+1]{}; // '\0' everywhere
+};
+*/
+
 
   class RelationEncoder : public Encoder {
     public:

@@ -76,6 +76,7 @@ namespace graph {
       std::cout << "Need to save object type=" << obj->GetConceptString() << ", id=" << obj->GetGraphId() << std::endl;
     }
 
+    tx.ChangeState(Transaction::Committed);
 
     // the log is in locked state
     // add frame records to the log
@@ -87,7 +88,7 @@ namespace graph {
 
 
     //this->m_log->TransactionRelease();
-    //return result;
+    return result;
 
   }
 

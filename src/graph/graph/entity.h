@@ -52,7 +52,9 @@ namespace graph {
       virtual Concept GetConcept() { return Storeable::Concept::CEntity; }
 
       // API
-      RelationCollection *Relations();
+      RelationCollection *InRelations();
+      RelationCollection *OutRelations();
+
       AttributeCollection *Attributes();
       //Attribute* AddAttribute();
     private:

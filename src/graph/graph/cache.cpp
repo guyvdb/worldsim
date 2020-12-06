@@ -1,6 +1,7 @@
 #include "cache.h"
 #include "cachemanager.h"
-
+#include <stdlib.h>
+#include <cstring>
 
 namespace graph {
 
@@ -19,8 +20,26 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  bool Cache::Flush() {
-    return true;
+  void Cache::Flush() {
+
+    this->m_mutex.lock();
+    for(auto page : this->m_pageQueue) {
+      if(page->IsDirty()) {
+        if(!page->Locked()) {
+          page->Lock();
+          this->Flush(page);
+          page->Unlock();
+        }
+      }
+    }
+    this->m_mutex.unlock();
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  void Cache::Flush(Page *page) {
+    this->GetStore()->WritePage(page->Number(), page->Buffer());
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -28,11 +47,13 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   CacheOffset Cache::GetCacheOffset(gid id) {
     CacheOffset info;
-    info.FileStart = ((long)id-1) * (long)this->m_recsize;
-    info.FileEnd = info.FileStart + ((long)this->m_recsize-1);
-    info.PageStart = (int)info.FileStart / (int)this->m_pagesize;
-    info.PageEnd = (int)info.FileEnd / (int)this->m_pagesize;
-    info.PageOffset = info.FileStart - (info.PageStart* (long)this->m_pagesize);
+    info.ObjectFileStartOffset = ((long)id-1) * (long)this->m_recsize;
+    info.ObjectFileEndOffset = info.ObjectFileStartOffset + ((long)this->m_recsize-1);
+    info.PageStartNo = (int)info.ObjectFileStartOffset / (int)this->m_pagesize;
+    info.PageEndNo = (int)info.ObjectFileEndOffset / (int)this->m_pagesize;
+    info.ObjectPageStartOffset = info.ObjectFileStartOffset - (info.PageStartNo* (long)this->m_pagesize);
+    info.PageStartFileOffset = info.PageStartNo * this->m_pagesize;
+    info.PageEndFileOffset = ((info.PageEndNo + 1) * this->m_pagesize) - 1;
     info.Len = (int)this->m_recsize;
     return info;
   }
@@ -54,8 +75,70 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
+  bool Cache::IsPageCached(int no) {
+    this->m_mutex.lock();
+    bool found = !(this->m_pageIndex.find(no) == this->m_pageIndex.end());
+    this->m_mutex.unlock();
+    return found;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Page* Cache::LockPage(int no) {
+    Page *page = 0x0;
+
     // is the page in the cache
+    bool exists = this->IsPageCached(no);
+
+    if(!exists) {
+      // check if the page actually exists in the store
+      long reqsize = ((no+1) * this->m_pagesize);
+      long storesize = this->GetStore()->Size();
+
+      this->m_mutex.lock();
+
+      page = new Page(no, this->m_pagesize);
+
+      if(reqsize > storesize) {
+        // new page create in file
+        if(!this->GrowStore(reqsize - storesize)) {
+          std::cout << "[CACHE] Error - failed to grow the store." << std::endl;
+          this->m_mutex.unlock();
+          return 0x0;
+        }
+      } else {
+        // old page read from file
+        if(!this->GetStore()->ReadPage(no, page->Buffer())) {
+          std::cout << "[CACHE] Error - failed to read page from file." << std::endl;
+          delete page;
+          this->m_mutex.unlock();
+          return 0x0;
+        }
+      }
+
+
+      this->m_pageIndex[no] = page;
+      this->m_pageQueue.push_back(page);
+      page->MarkAccessed();
+      page->Lock();
+
+      this->m_mutex.unlock();
+      return page;
+
+
+    } else {
+      // return page from the cache...
+      this->m_mutex.lock();
+      page = this->m_pageIndex[no];
+      this->m_mutex.unlock();
+      page->Lock();
+      return page;
+    }
+
+
+
+/*
 
     // lock the cache mutex
     this->m_mutex.lock();
@@ -86,19 +169,28 @@ namespace graph {
       this->m_mutex.unlock();
       return page;
     }
+    */
   }
 
   void Cache::UnlockPage(Page *page) {
     page->Unlock();
   }
 
+  bool Cache::GrowStore(long amount) {
+    // We are going to write amount bytes of 0x0 to the end of the store file.
+    long pos = this->GetStore()->Size();
+    void *ptr = malloc(amount);
+    std::memset(ptr,0x0,(std::size_t)amount);
+    return this->GetStore()->Write(pos, ptr, (std::size_t)amount);
+  }
+
   ByteBuffer* Cache::GetStoreableBuffer(gid id) {
     int bytecount = 0;
     CacheOffset offset = this->GetCacheOffset(id);
     ByteBuffer *result = new ByteBuffer(this->m_recsize);
-    int pageOffset = offset.PageOffset;
+    int pageOffset = offset.ObjectPageStartOffset;
 
-    for(int i = offset.PageStart; i <= offset.PageEnd; i++) {
+    for(int i = offset.PageStartNo; i <= offset.PageEndNo; i++) {
       Page *page = this->LockPage(i);
       if(page != 0x0) {
         for(int pagePtr = pageOffset; pagePtr < (int)this->m_pagesize; pagePtr++) {
@@ -132,10 +224,10 @@ namespace graph {
 
 
     CacheOffset offset = this->GetCacheOffset(storeable->GetGraphId());
-    int pageOffset = offset.PageOffset;
+    int pageOffset = offset.ObjectPageStartOffset;
     int bytecount = 0;
 
-    for(int i = offset.PageStart; i <= offset.PageEnd; i++) {
+    for(int i = offset.PageStartNo; i <= offset.PageEndNo; i++) {
       Page *page = this->LockPage(i);
       if(page != 0x0) {
         for(int pagePtr = pageOffset; (int)this->m_pagesize; pagePtr++) {

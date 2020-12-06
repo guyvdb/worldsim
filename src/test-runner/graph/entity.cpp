@@ -20,7 +20,7 @@ TEST_CASE("Entity should encode and decode from a byte stream","[graph][entity]"
   REQUIRE(t1->GetGraphId() == t2->GetGraphId());
   REQUIRE(t1->GetRootAttributesBucketId() == t2->GetRootAttributesBucketId());
   REQUIRE(t1->GetRootOutRelationId() == t2->GetRootOutRelationId());
-  //REQUIRE(t1->GetRootInRelationId() == t2->GetRootInRelationId());
+  REQUIRE(t1->GetRootInRelationId() == t2->GetRootInRelationId());
 
   delete t1;
   delete t2;

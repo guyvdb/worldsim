@@ -73,14 +73,14 @@ namespace graph {
 
 
 
-  RelationCollection::RelationCollection() {
+  RelationCollection::RelationCollection() : std::vector<Relation *>(){
 
   }
 
   RelationCollection::~RelationCollection() {
-
+    //~std::vector<Relation*>();
   }
-
+/*
   void RelationCollection::Add(Relation *relation) {
     this->m_relations.push_back(relation);
   }
@@ -91,5 +91,6 @@ namespace graph {
     }
     return 0x0;
   }
+  */
 
 }

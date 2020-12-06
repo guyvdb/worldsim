@@ -5,8 +5,7 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   Page::Page(int no, std::size_t pagesize) : m_pageNo(no),
-    //m_lastAccessed(std::chrono::steady_clock::now()), m_pagesize(pagesize),
-    m_counter(0), m_locked(false), m_dirty(false), m_pagesize(pagesize) {
+    m_pagesize(pagesize), m_counter(0), m_locked(false), m_dirty(false)  {
     this->m_buffer = new ByteBuffer(this->m_pagesize);
   }
 

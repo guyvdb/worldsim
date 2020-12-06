@@ -17,14 +17,27 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>380</y>
-      <width>80</width>
+      <x>20</x>
+      <y>20</y>
+      <width>201</width>
       <height>26</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Create 2 Entities &amp;&amp; Relation</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>201</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Read 2 Entities</string>
     </property>
    </widget>
   </widget>

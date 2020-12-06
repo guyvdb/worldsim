@@ -128,6 +128,7 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   bool Graph::Flush() {
+    this->m_cacheManager->Flush();
     return true;
   }
 

@@ -144,6 +144,23 @@ namespace graph {
     return e;
   }
 
+  Entity *Transaction::FindEntityById(gid id) {
+    if(!this->IsReadable()) {
+      std::cout << "[TX] Error - transaction is not readable." << std::endl;
+      return 0x0;
+    }
+
+
+    ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::CEntity, id);
+    if(b == 0x0) {
+      std::cout << "[TX] Error - failed to load entity from cache." << std::endl;
+      return 0x0;
+    }
+    Entity *e = new Entity(id, b);
+    this->m_allocatedObjects.push_back(e);
+    return e;
+  }
+
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/

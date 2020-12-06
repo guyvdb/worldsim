@@ -11,7 +11,10 @@ namespace graph {
 
   ByteBuffer::ByteBuffer(std::size_t len) {
     this->m_data.reserve(len);
-    std::fill(this->m_data.begin(), this->m_data.end(), 0x0);
+    for(std::size_t i =0;i<len;i++) {
+      this->m_data.push_back(0x0);
+    }
+    //std::fill(this->m_data.begin(), this->m_data.end(), 0x0);
   }
 
 

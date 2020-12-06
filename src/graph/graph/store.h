@@ -25,9 +25,11 @@ namespace graph {
       ErrorNo LastError() { return m_lastError; }
       bool IsOpen() { return m_isopen; }
       std::string Filename() { return this->m_filename; }
+      long Size() { return this->m_file->Size(); }
 
       bool ReadPage(int page, ByteBuffer *buffer);
       bool WritePage(int page, ByteBuffer *buffer);
+      bool Write(long pos, void *ptr, std::size_t size);
       //bool ReadRecord(gid id, Storeable **result);
       //bool WriteRecord(Storeable *rec);
 

@@ -20,7 +20,7 @@ namespace graph {
 
       Page(int no, std::size_t pagesize);
       ~Page();
-      int PageNo() { return m_pageNo; }
+      int Number() { return m_pageNo; }
       bool IsDirty() { return m_dirty;}
       void SetDirty(bool value) { this->m_dirty = value; }
       std::size_t PageSize() { return m_pagesize; }
