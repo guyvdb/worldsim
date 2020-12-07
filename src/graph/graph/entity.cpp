@@ -9,17 +9,17 @@
 namespace graph {
 
 
-  Entity::Entity() : StoreableWithAttributes(InvalidGraphId, Storeable::EntitySize) {
-    this->Load(ROOT_OUT_REL_ID_OFFSET, InvalidGraphId);
-    this->Load(ROOT_IN_REL_ID_OFFSET, InvalidGraphId);
+  Entity::Entity() : StoreableWithAttributes(NullGraphId, Storeable::EntitySize) {
+    this->Load(ROOT_OUT_REL_ID_OFFSET, NullGraphId);
+    this->Load(ROOT_IN_REL_ID_OFFSET, NullGraphId);
     this->m_inRelations = new RelationCollection();
     this->m_outRelations = new RelationCollection();
   }
 
 
   Entity::Entity(gid id) : StoreableWithAttributes(id, Storeable::EntitySize) {
-    this->Load(ROOT_OUT_REL_ID_OFFSET, InvalidGraphId);
-    this->Load(ROOT_IN_REL_ID_OFFSET, InvalidGraphId);
+    this->Load(ROOT_OUT_REL_ID_OFFSET, NullGraphId);
+    this->Load(ROOT_IN_REL_ID_OFFSET, NullGraphId);
     this->m_inRelations = new RelationCollection();
     this->m_outRelations = new RelationCollection();
   }
@@ -76,13 +76,13 @@ namespace graph {
     }
 
     if(!this->m_outRelations->IsLoaded()) {
-      if(this->GetRootOutRelationId() != InvalidGraphId) {
+      if(this->GetRootOutRelationId() != NullGraphId) {
         std::cout << "FindRelationById - 1\n";
         Relation *r = this->Tx()->FindRelationById(this->GetRootOutRelationId());
         if(r != 0x0) {
           r->SetTransaction(this->Tx());
           this->m_outRelations->Add(r);
-          while(r->GetPrevOutRelationId() != InvalidGraphId) {
+          while(r->GetPrevOutRelationId() != NullGraphId) {
             std::cout << "FindRelationById - 2\n";
             r = this->Tx()->FindRelationById(r->GetPrevOutRelationId());
             if(r != 0x0) {
@@ -113,7 +113,7 @@ namespace graph {
     }
 
     // add this relation id to our in relation chain
-    if(this->GetRootInRelationId() == InvalidGraphId) {
+    if(this->GetRootInRelationId() == NullGraphId) {
       // Relation list is empty -- set r as root
       this->Update(ROOT_IN_REL_ID_OFFSET, r->GetGraphId());
     } else {
@@ -128,7 +128,7 @@ namespace graph {
       // Are we the from or the to entity?
       if(r->GetFromEntityId() == this->GetGraphId()) {
         // we are the from entity
-        while(child->GetNextOutRelationId() != InvalidGraphId) {
+        while(child->GetNextOutRelationId() != NullGraphId) {
           std::cout << "FindRelationById - 4\n";
           child = this->Tx()->FindRelationById(child->GetNextOutRelationId());
           if(child == 0x0) {
@@ -143,7 +143,7 @@ namespace graph {
 
       } else {
         // we are the to entity
-        while(child->GetNextInRelationId() != InvalidGraphId) {
+        while(child->GetNextInRelationId() != NullGraphId) {
           std::cout << "FindRelationById - 5\n";
           child = this->Tx()->FindRelationById(child->GetNextInRelationId());
           if(child == 0x0) {
@@ -164,7 +164,7 @@ namespace graph {
     }
 
     // add this relation id to our out relation chain
-    if(this->GetRootOutRelationId() == InvalidGraphId) {
+    if(this->GetRootOutRelationId() == NullGraphId) {
       // Relation list is empty -- set r as root
       this->Update(ROOT_OUT_REL_ID_OFFSET, r->GetGraphId());
     } else {
@@ -184,7 +184,7 @@ namespace graph {
         std::cout << "GetNextOutRelationId=" << child->GetNextOutRelationId() << std::endl;
 
         // we are the from entity
-        while(child->GetNextOutRelationId() != InvalidGraphId) {
+        while(child->GetNextOutRelationId() != NullGraphId) {
           std::cout << "FindRelationById - 7, childid=" << child->GetGraphId() << std::endl;
           child = this->Tx()->FindRelationById(child->GetNextOutRelationId());
           if(child == 0x0) {
@@ -199,7 +199,7 @@ namespace graph {
 
       } else {
         // we are the to entity
-        while(child->GetPrevInRelationId() != InvalidGraphId) {
+        while(child->GetPrevInRelationId() != NullGraphId) {
           std::cout << "FindRelationById - 8\n";
           child = this->Tx()->FindRelationById(child->GetPrevInRelationId());
           if(child == 0x0) {

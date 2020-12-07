@@ -13,6 +13,8 @@ namespace graph {
       bool Contains(gid id);
       Storeable* Get(gid id);
       Storeable::Concept GetConcept() { return this->m_concept; }
+      std::size_t Size() { return this->m_cache.size(); }
+      std::map<gid, Storeable*>* GetCache() { return &this->m_cache; }
     private:
       Storeable::Concept m_concept;
       std::map<gid, Storeable*> m_cache;
@@ -26,6 +28,8 @@ namespace graph {
       void Add(Storeable *storeable);
       bool Contains(Storeable::Concept concept, gid id);
       Storeable* Get(Storeable::Concept concept, gid id);
+      std::vector<Storeable*> GetModifiedObjects();
+      std::size_t Size();
     private:
       bool Contains(Storeable::Concept concept);
       std::map<Storeable::Concept, TransactionCache*> m_cache;

@@ -223,7 +223,7 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   StoreableWithAttributes::StoreableWithAttributes(gid id, std::size_t size) : StoreableWithType(id, size) {
-    this->Load(ROOT_ATTRIB_BUCKET_ID_OFFSET, InvalidGraphId);
+    this->Load(ROOT_ATTRIB_BUCKET_ID_OFFSET, NullGraphId);
   }
 
   /* ----------------------------------------------------------------------------------------

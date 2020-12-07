@@ -149,7 +149,7 @@ private:
     public:
       RelationEncoder() : Encoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new Relation(id, buffer); }
-      virtual Storeable *Empty() { return new Relation(InvalidGraphId); }
+      virtual Storeable *Empty() { return new Relation(NullGraphId); }
       virtual bool Decodeable() { return true; }
   };
 

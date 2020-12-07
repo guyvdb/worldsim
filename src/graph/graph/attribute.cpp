@@ -8,7 +8,7 @@ namespace graph {
 
 
   AttributeBucket::AttributeBucket(gid id) : Storeable(id, Storeable::AttributeBucketSize) {
-    this->SetNextBucketId(InvalidGraphId);
+    this->SetNextBucketId(NullGraphId);
   }
 
   AttributeBucket::AttributeBucket(gid id, ByteBuffer *buffer) : Storeable(id, buffer) {

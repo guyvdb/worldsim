@@ -29,8 +29,11 @@ namespace graph {
 
   TransactionCacheManager::~TransactionCacheManager() {
     // delete all the TransactionCache * ptrs
-    for (auto const& item : this->m_cache) {
-      delete item.second;
+    for (auto const& c : this->m_cache) {
+      for(auto const &item : *c.second->GetCache()) {
+        delete item.second;
+      }
+      delete c.second;
     }
   }
 
@@ -66,6 +69,39 @@ namespace graph {
     }
   }
 
+  std::size_t TransactionCacheManager::Size() {
+    std::size_t count = 0;
+    for(auto const &item : this->m_cache) {
+      count += item.second->Size();
+    }
+    return count;
+  }
+
+  std::vector<Storeable*> TransactionCacheManager::GetModifiedObjects() {
+    std::vector<Storeable*> v;
+    v.reserve(this->Size());
+    for(auto const &c : this->m_cache) {
+      for(auto const &item : *c.second->GetCache()) {
+        if(item.second->IsDirty()) {
+          v.push_back(item.second);
+        }
+      }
+    }
+    return v;
+  }
+
+
+
+  /*
+    std::vector<Storeable*> v;
+    v.reserve(this->m_allocatedObjects.size());
+
+    for(auto obj : this->m_allocatedObjects) {
+      if(obj->IsDirty()) {
+        v.push_back(obj);
+      }
+    }
+    */
 
 }
 

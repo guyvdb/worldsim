@@ -21,7 +21,7 @@ namespace graph {
   gid IdCacheItem::NextId() {
     if(!this->m_active) {
       std::cout << "[ID MANAGER] Error - trying to get id while cache item is inactive." << std::endl;
-      return (gid)InvalidGraphId;
+      return (gid)NullGraphId;
     }
 
 
@@ -183,13 +183,13 @@ namespace graph {
   gid IdManager::NextGraphId(Storeable::Concept concept){
     if (!this->m_isopen) {
       std::cout << "[ID MANAGER] Error - trying to get an id while closed." << std::endl;
-      return  InvalidGraphId;
+      return  NullGraphId;
     }
 
     IdCacheItem *item = this->m_cache[concept];
     if(item == 0x0) {
       std::cout << "[ID MANAGER] Error - trying to get an id from a nonregistered type."<< std::endl;
-      return InvalidGraphId;
+      return NullGraphId;
     }
 
     // this will lock a mutex

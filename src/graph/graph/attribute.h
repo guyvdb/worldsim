@@ -90,7 +90,7 @@ namespace graph {
     public:
       AttributeBucketEncoder() : Encoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new AttributeBucket(id, buffer); }
-      virtual Storeable *Empty() { return new AttributeBucket(InvalidGraphId); }
+      virtual Storeable *Empty() { return new AttributeBucket(NullGraphId); }
       virtual bool Decodeable() { return true; }
   };
 
@@ -98,7 +98,7 @@ namespace graph {
     public:
       AttributeDefinitionEncoder() : Encoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new AttributeDefinition(id, buffer); }
-      virtual Storeable *Empty() { return new AttributeDefinition(InvalidGraphId); }
+      virtual Storeable *Empty() { return new AttributeDefinition(NullGraphId); }
       virtual bool Decodeable() { return true; }
   };
 }

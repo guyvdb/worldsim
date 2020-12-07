@@ -98,6 +98,8 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   std::vector<Storeable*> Transaction::ModifiedObjects() {
+    return this->m_transactionCacheManager.GetModifiedObjects();
+    /*
     std::vector<Storeable*> v;
     v.reserve(this->m_allocatedObjects.size());
 
@@ -107,6 +109,7 @@ namespace graph {
       }
     }
     return v;
+    */
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -124,7 +127,8 @@ namespace graph {
     e->SetTransaction(this);
     e->SetDirty(true);
 
-    this->m_allocatedObjects.push_back(e);
+    this->m_transactionCacheManager.Add(e);
+    //this->m_allocatedObjects.push_back(e);
     this->m_allocatedIds.push_back(rec);
     return e;
   }
@@ -138,6 +142,11 @@ namespace graph {
       return 0x0;
     }
 
+    // is the entity in the transaction cache?
+    if(this->m_transactionCacheManager.Contains(Storeable::CEntity, id)) {
+      return (Entity*)this->m_transactionCacheManager.Get(Storeable::CEntity, id);
+    }
+
     ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::CEntity, id);
     if(b == 0x0) {
       std::cout << "[TX] Error - failed to load entity from cache." << std::endl;
@@ -145,7 +154,8 @@ namespace graph {
     }
     Entity *e = new Entity(id, b);
     e->SetTransaction(this);
-    this->m_allocatedObjects.push_back(e);
+    this->m_transactionCacheManager.Add(e);
+    //this->m_allocatedObjects.push_back(e);
     return e;
   }
 
@@ -164,7 +174,8 @@ namespace graph {
     rel->SetTypeId(type);
     rel->SetTransaction(this);
     rel->SetDirty(true);
-    this->m_allocatedObjects.push_back(rel);
+    this->m_transactionCacheManager.Add(rel);
+    //this->m_allocatedObjects.push_back(rel);
     this->m_allocatedIds.push_back(rec);
     return rel;
   }
@@ -178,6 +189,11 @@ namespace graph {
         return 0x0;
       }
 
+      // is the relation in the transaction cache?
+      if(this->m_transactionCacheManager.Contains(Storeable::CRelation, id)) {
+        return (Relation*)this->m_transactionCacheManager.Get(Storeable::CRelation, id);
+      }
+
 
       ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::CRelation, id);
       if(b == 0x0) {
@@ -186,7 +202,8 @@ namespace graph {
       }
       Relation *r = new Relation(id, b);
 
-      this->m_allocatedObjects.push_back(r);
+      this->m_transactionCacheManager.Add(r);
+      //this->m_allocatedObjects.push_back(r);
       return r;
   }
 
@@ -239,9 +256,11 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   void Transaction::ReleaseResources() {
 
-    for(auto obj : this->m_allocatedObjects) {
+    // allocated object are deleted when the TransactionCacheManage is destroyed
+
+    /*for(auto obj : this->m_allocatedObjects) {
       delete obj;
-    }
+    }*/
 
     for(auto obj : this->m_attributeCollections) {
       delete obj;

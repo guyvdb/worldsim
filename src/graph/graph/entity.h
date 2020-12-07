@@ -80,7 +80,7 @@ namespace graph {
     public:
       EntityEncoder() : Encoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new Entity(id, buffer); }
-      virtual Storeable *Empty() { return new Entity(InvalidGraphId); }
+      virtual Storeable *Empty() { return new Entity(NullGraphId); }
       virtual bool Decodeable() { return true; }
   };
 }

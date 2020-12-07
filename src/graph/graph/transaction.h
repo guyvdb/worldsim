@@ -6,6 +6,7 @@
 
 #include <types.h>
 #include <storeable.h>
+#include <transactioncache.h>
 
 namespace graph {
 
@@ -78,11 +79,12 @@ namespace graph {
 
       bool m_readonly;
       TransactionManager *m_transactionManager;
+      TransactionCacheManager m_transactionCacheManager;
       ErrorNo m_lastError;
       txid m_txid;
       TransactionState m_state;      
 
-      std::vector<Storeable*> m_allocatedObjects;
+      //std::vector<Storeable*> m_allocatedObjects;
       std::vector<StoreableId> m_allocatedIds;
 
       std::vector<AttributeCollection*> m_attributeCollections;

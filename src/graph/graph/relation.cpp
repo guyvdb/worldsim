@@ -9,12 +9,12 @@ namespace graph {
 
   Relation::Relation(gid id) : StoreableWithAttributes(id, Storeable::RelationSize) {
     std::cout << "Create Relation(gid id)\n";
-    this->Load(FROM_ENTITY_ID_OFFSET, InvalidGraphId);
-    this->Load(TO_ENTITY_ID_OFFSET, InvalidGraphId);
-    this->Load(NEXT_OUT_REL_ID_OFFSET, InvalidGraphId);
-    this->Load(PREV_OUT_REL_ID_OFFSET, InvalidGraphId);
-    this->Load(NEXT_IN_REL_ID_OFFSET, InvalidGraphId);
-    this->Load(PREV_IN_REL_ID_OFFSET, InvalidGraphId);
+    this->Load(FROM_ENTITY_ID_OFFSET, NullGraphId);
+    this->Load(TO_ENTITY_ID_OFFSET, NullGraphId);
+    this->Load(NEXT_OUT_REL_ID_OFFSET, NullGraphId);
+    this->Load(PREV_OUT_REL_ID_OFFSET, NullGraphId);
+    this->Load(NEXT_IN_REL_ID_OFFSET, NullGraphId);
+    this->Load(PREV_IN_REL_ID_OFFSET, NullGraphId);
     this->m_fromEntity = 0x0;
     this->m_toEntity = 0x0;
 
