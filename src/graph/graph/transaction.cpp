@@ -94,6 +94,9 @@ namespace graph {
     return true;
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   std::vector<Storeable*> Transaction::ModifiedObjects() {
     std::vector<Storeable*> v;
     v.reserve(this->m_allocatedObjects.size());
@@ -107,27 +110,9 @@ namespace graph {
   }
 
   /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
- /* Entity *Transaction::CopyEntity(Entity *src) {
-    if(this->m_state != Started) {
-      std::cout << "[TX] Error - transaction in wrong state to copy entity." << std::endl;
-      return 0x0;
-    }
-    StoreableId rec = this->AllocateId(Storeable::Concept::CEntity);
-    Entity *e = new Entity(rec.Id, src->Buffer());
-    e->SetTypeId(src->GetTypeId());
-    e->SetTransaction(this);
-    this->m_createdObjects.push_back(e);
-    this->m_allocatedIds.push_back(rec);
-    return e;
-  }*/
-
-  /* ----------------------------------------------------------------------------------------
    * Create a new entity.
    * --------------------------------------------------------------------------------------*/
   Entity *Transaction::CreateEntity(gid type) {
-
     if(!this->IsWriteable()) {
       std::cout << "[TX] Error - transaction is not writeable." << std::endl;
       return  0x0;
@@ -144,12 +129,14 @@ namespace graph {
     return e;
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Entity *Transaction::FindEntityById(gid id) {
     if(!this->IsReadable()) {
       std::cout << "[TX] Error - transaction is not readable." << std::endl;
       return 0x0;
     }
-
 
     ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::CEntity, id);
     if(b == 0x0) {
@@ -157,6 +144,7 @@ namespace graph {
       return 0x0;
     }
     Entity *e = new Entity(id, b);
+    e->SetTransaction(this);
     this->m_allocatedObjects.push_back(e);
     return e;
   }
@@ -246,7 +234,9 @@ namespace graph {
 
   }
 
-
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   void Transaction::ReleaseResources() {
 
     for(auto obj : this->m_allocatedObjects) {

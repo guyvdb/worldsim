@@ -66,9 +66,6 @@ namespace graph {
        gid GetNextBucketId();
        AttributeBucket *NextBucket();
     private:
-       //Attribute* m_allocatedAttributes;
-       //std::vector<Attribute*> m_allocatedAttributes;
-
   };
 
 

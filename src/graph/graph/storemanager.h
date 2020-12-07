@@ -25,7 +25,9 @@ namespace graph {
 
       //const char * ID_STORE_FILENAME = "id.db";
       const char * ENTITY_STORE_FILENAME = "entity.db";
+      const char * ENTITY_DEFINITION_STORE_FILENAME = "entity.def";
       const char * RELATION_STORE_FILENAME = "relation.db";
+      const char * RELATION_DEFINITION_STORE_FILENAME = "relation.def";
       const char * ATTRIBUTE_BUCKET_STORE_FILENAME = "attribute.db";
       const char * ATTRIBUTE_DEFINITION_STORE_FILENAME = "attribute.def";
 
@@ -44,21 +46,11 @@ namespace graph {
       std::size_t m_pagesize;
       const char *m_datadir;
 
-      // the stores...
-      //IdStore *m_idStore;
-
       Store *m_entityStore;
       Store *m_relationStore;
       Store *m_attributeBucketStore;
       Store *m_attributeDefinitionStore;
-      //Store *m_entityTypeStore;
-      //Store *m_entityPropertyStore;
-      //Store *m_entityPropertyTypeStore;
 
-
-      //Store *m_relationTypeStore;
-      //Store *m_relationPropertyStore;
-      //Store *m_relationPropertyTypeStore;
 
       std::vector<Store*> m_dataStores;
       std::map<Storeable::Concept, Store*> m_dataStoreIndex;

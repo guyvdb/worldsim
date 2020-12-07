@@ -1,26 +1,83 @@
 #include "relation.h"
 
 #include <iostream>
+#include <entity.h>
 
 namespace graph {
 
 
 
   Relation::Relation(gid id) : StoreableWithAttributes(id, Storeable::RelationSize) {
+    std::cout << "Create Relation(gid id)\n";
     this->Load(FROM_ENTITY_ID_OFFSET, InvalidGraphId);
     this->Load(TO_ENTITY_ID_OFFSET, InvalidGraphId);
-    this->Load(NEXT_FROM_IN_REL_ID_OFFSET, InvalidGraphId);
-    this->Load(NEXT_FROM_OUT_REL_ID_OFFSET, InvalidGraphId);
-    this->Load(NEXT_TO_IN_REL_ID_OFFSET, InvalidGraphId);
-    this->Load(NEXT_TO_OUT_REL_ID_OFFSET, InvalidGraphId);
+    this->Load(NEXT_OUT_REL_ID_OFFSET, InvalidGraphId);
+    this->Load(PREV_OUT_REL_ID_OFFSET, InvalidGraphId);
+    this->Load(NEXT_IN_REL_ID_OFFSET, InvalidGraphId);
+    this->Load(PREV_IN_REL_ID_OFFSET, InvalidGraphId);
+    this->m_fromEntity = 0x0;
+    this->m_toEntity = 0x0;
+
+    std::cout << "NEW REL(" << id << ") -- ";
+    std::cout << "FROM_ENTITY_ID_OFFSET=" << this->GetUint32(FROM_ENTITY_ID_OFFSET);
+    std::cout << ", TO_ENTITY_ID_OFFSET=" << this->GetUint32(TO_ENTITY_ID_OFFSET);
+    std::cout << ", NEXT_OUT_REL_ID_OFFSET=" << this->GetUint32(NEXT_OUT_REL_ID_OFFSET);
+    std::cout << ", PREV_OUT_REL_ID_OFFSET=" << this->GetUint32(PREV_OUT_REL_ID_OFFSET);
+    std::cout << ", NEXT_IN_REL_ID_OFFSET=" << this->GetUint32(NEXT_IN_REL_ID_OFFSET);
+    std::cout << ", PREV_IN_REL_ID_OFFSET=" << this->GetUint32(PREV_IN_REL_ID_OFFSET);
+    std::cout << std::endl;
+
+
   }
 
   Relation::Relation(gid id, ByteBuffer *buffer) : StoreableWithAttributes(id, buffer) {
+    std::cout << "Create Relation(gid id, ByteBuffer *buffer)\n";
+    std::cout << "NEW REL(" << id << ") -- ";
+    std::cout << "FROM_ENTITY_ID_OFFSET=" << this->GetUint32(FROM_ENTITY_ID_OFFSET);
+    std::cout << ", TO_ENTITY_ID_OFFSET=" << this->GetUint32(TO_ENTITY_ID_OFFSET);
+    std::cout << ", NEXT_OUT_REL_ID_OFFSET=" << this->GetUint32(NEXT_OUT_REL_ID_OFFSET);
+    std::cout << ", PREV_OUT_REL_ID_OFFSET=" << this->GetUint32(PREV_OUT_REL_ID_OFFSET);
+    std::cout << ", NEXT_IN_REL_ID_OFFSET=" << this->GetUint32(NEXT_IN_REL_ID_OFFSET);
+    std::cout << ", PREV_IN_REL_ID_OFFSET=" << this->GetUint32(PREV_IN_REL_ID_OFFSET);
+    std::cout << std::endl;
+
     // values loaded from buffer
+    this->m_fromEntity = 0x0;
+    this->m_toEntity = 0x0;
   }
 
 
   Relation::~Relation() {
+  }
+
+  Entity *Relation::From() {
+    if(!this->IsReadable()) {
+      std::cout << "[RELATION] Error - relation is not readable." << std::endl;
+      return 0x0;
+    }
+
+    if(this->m_fromEntity == 0x0) {
+      this->m_fromEntity = this->Tx()->FindEntityById(this->GetFromEntityId());
+      if(this->m_fromEntity != 0x0) {
+        this->m_fromEntity->SetTransaction(this->Tx());
+      }
+    }
+    return this->m_fromEntity;
+  }
+
+  Entity *Relation::To() {
+    if(!this->IsReadable()) {
+      std::cout << "[RELATION] Error - relation is not readable." << std::endl;
+      return 0x0;
+    }
+
+    if(this->m_toEntity == 0x0) {
+      this->m_toEntity = this->Tx()->FindEntityById(this->GetToEntityId());
+      if(this->m_toEntity != 0x0) {
+        this->m_toEntity->SetTransaction(this->Tx());
+      }
+    }
+    return this->m_toEntity;
   }
 
   gid Relation::GetFromEntityId() {
@@ -39,58 +96,39 @@ namespace graph {
     this->Update(TO_ENTITY_ID_OFFSET, id);
   }
 
-  gid Relation::GetNextFromInRelationId() {
-    return this->GetUint32(NEXT_FROM_IN_REL_ID_OFFSET);
+  gid Relation::GetNextOutRelationId() {
+    return this->GetUint32(NEXT_OUT_REL_ID_OFFSET);
   }
 
-  void Relation::SetNextFromInRelationId(gid id) {
-    this->Update(NEXT_FROM_IN_REL_ID_OFFSET, id);
+  void Relation::SetNextOutRelationId(gid id) {
+    this->Update(NEXT_OUT_REL_ID_OFFSET, id);
   }
 
-  gid Relation::GetNextFromOutRelationId() {
-    return this->GetUint32(NEXT_FROM_OUT_REL_ID_OFFSET);
+  gid Relation::GetPrevOutRelationId() {
+    return this->GetUint32(PREV_OUT_REL_ID_OFFSET);
   }
 
-  void Relation::SetNextFromOutRelationId(gid id) {
-    this->Update(NEXT_FROM_OUT_REL_ID_OFFSET, id);
+  void Relation::SetPrevOutRelationId(gid id) {
+    this->Update(PREV_OUT_REL_ID_OFFSET, id);
   }
 
-  gid Relation::GetNextToInRelationId() {
-    return this->GetUint32(NEXT_TO_IN_REL_ID_OFFSET);
+  gid Relation::GetNextInRelationId() {
+    return this->GetUint32(NEXT_IN_REL_ID_OFFSET);
   }
 
-  void Relation::SetNextToInRelationId(gid id) {
-    this->Update(NEXT_TO_IN_REL_ID_OFFSET, id);
+  void Relation::SetNextInRelationId(gid id) {
+    this->Update(NEXT_IN_REL_ID_OFFSET, id);
   }
 
-  gid Relation::GetNextToOutRelationId() {
-    return this->GetUint32(NEXT_TO_OUT_REL_ID_OFFSET);
+  gid Relation::GetPrevInRelationId() {
+    return this->GetUint32(PREV_IN_REL_ID_OFFSET);
   }
 
-  void Relation::SetNextToOutRelationId(gid id) {
-    this->Update(NEXT_TO_OUT_REL_ID_OFFSET,id);
+  void Relation::SetPrevInRelationId(gid id) {
+    this->Update(PREV_IN_REL_ID_OFFSET,id);
   }
 
 
 
-  RelationCollection::RelationCollection() : std::vector<Relation *>(){
-
-  }
-
-  RelationCollection::~RelationCollection() {
-    //~std::vector<Relation*>();
-  }
-/*
-  void RelationCollection::Add(Relation *relation) {
-    this->m_relations.push_back(relation);
-  }
-
-  Relation* RelationCollection::operator[](std::size_t index) {
-    if(index < this->m_relations.size() && index >=0) {
-      return this->m_relations[index];
-    }
-    return 0x0;
-  }
-  */
 
 }

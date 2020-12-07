@@ -55,6 +55,22 @@ namespace graph {
     info.PageStartFileOffset = info.PageStartNo * this->m_pagesize;
     info.PageEndFileOffset = ((info.PageEndNo + 1) * this->m_pagesize) - 1;
     info.Len = (int)this->m_recsize;
+
+    std::cout << "--------------------------------------\n";
+    std::cout << "GET CACHE OFFSET: id=" << id;
+    std::cout << ", ObjectFileStartOffset=" << info.ObjectFileStartOffset;
+    std::cout << ", ObjectFileEndOffset=" << info.ObjectFileEndOffset;
+    std::cout << ", PageStartNo=" << info.PageStartNo;
+    std::cout << ", PageEndNo=" << info.PageEndNo;
+    std::cout << ", ObjectPageStartOffset=" << info.ObjectPageStartOffset;
+    std::cout << ", PageStartFileOffset=" << info.PageStartFileOffset;
+    std::cout << ", PageEndFileOffset=" << info.PageEndFileOffset;
+    std::cout << ", Len=" << info.Len;
+    std::cout << std::endl;
+    std::cout << "--------------------------------------\n";
+
+
+
     return info;
   }
 

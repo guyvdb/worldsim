@@ -82,10 +82,6 @@ namespace graph {
       txid m_txid;
       TransactionState m_state;      
 
-      /*
-      std::vector<Storeable*> m_createdObjects;
-      std::vector<Storeable*> m_updatedObjects;
-      std::vector<Storeable*> m_deletedObjects;*/
       std::vector<Storeable*> m_allocatedObjects;
       std::vector<StoreableId> m_allocatedIds;
 

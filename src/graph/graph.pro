@@ -28,6 +28,7 @@ SOURCES += \
     graph/storeable.cpp \
     graph/storemanager.cpp \
     graph/transaction.cpp \
+    graph/transactioncache.cpp \
     graph/transactionlog.cpp \
     graph/transactionmanager.cpp \
     query/parser.cpp
@@ -53,6 +54,7 @@ HEADERS += \
     graph/storeable.h \
     graph/storemanager.h \
     graph/transaction.h \
+    graph/transactioncache.h \
     graph/transactionlog.h \
     graph/transactionmanager.h \
     graph/types.h \

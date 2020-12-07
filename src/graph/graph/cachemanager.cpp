@@ -53,6 +53,7 @@ namespace graph {
 
 
   ByteBuffer* CacheManager::GetStoreableBuffer(Storeable::Concept concept, gid id) {
+    std::cout << "GetStoreableBuffer: type=" << Storeable::ConceptToString(concept) << ", id=" << id << std::endl;
     Cache *c = this->GetCache(concept);
     if(c == 0x0) {
       std::cout << "[CACHEMAN] Error - failed to find cache for concept " << Storeable::ConceptToString(concept) << std::endl;

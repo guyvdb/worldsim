@@ -58,6 +58,8 @@ namespace graph {
       AttributeCollection *Attributes();
       //Attribute* AddAttribute();
     private:
+      RelationCollection *m_inRelations;
+      RelationCollection *m_outRelations;
   };
 
   class EntityCollection {

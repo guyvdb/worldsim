@@ -23,12 +23,12 @@ namespace graph {
    * | flag      | typeid            | Root AttribBucket Id |
    * |-----------|-------------------|----------------------| ...
    *
-   * |-----------------------------------------------------------------------------------------------------|
-   * | Relation                                                                                            |
-   * |----------------|--------------|---------------------------------------------------------------------|
-   * | 9 10 11 12     | 13 14 15 16  | 17 18 19 20     | 21 22 23 24      | 25 26 27 28   | 29 30 31 32    |
-   * | From Entity Id | To Entity Id | NextFromInRelId | NextFromOutRelId | NextToInRelId | NextToOutRelId |
-   * |----------------|--------------|-----------------|------------------|---------------|----------------|
+   * |-----------------------------------------------------------------------------------------|
+   * | Relation                                                                                |
+   * |----------------|--------------|---------------------------------------------------------|
+   * | 9 10 11 12     | 13 14 15 16  | 17 18 19 20  | 21 22 23 24  | 25 26 27 28 | 29 30 31 32 |
+   * | From Entity Id | To Entity Id | NextOutRelId | PrevOutRelId | NextInRelId | PrevInRelId |
+   * |----------------|--------------|--------------|--------------|-------------|-------------|
    *
    *
    * Relation padded to 34 bytes long
@@ -39,10 +39,10 @@ namespace graph {
     public:
       const static int FROM_ENTITY_ID_OFFSET = 9;
       const static int TO_ENTITY_ID_OFFSET = 13;
-      const static int NEXT_FROM_IN_REL_ID_OFFSET = 17;
-      const static int NEXT_FROM_OUT_REL_ID_OFFSET = 21;
-      const static int NEXT_TO_IN_REL_ID_OFFSET = 25;
-      const static int NEXT_TO_OUT_REL_ID_OFFSET = 29;
+      const static int NEXT_OUT_REL_ID_OFFSET = 17;
+      const static int PREV_OUT_REL_ID_OFFSET = 21;
+      const static int NEXT_IN_REL_ID_OFFSET = 25;
+      const static int PREV_IN_REL_ID_OFFSET = 29;
 
 
       Relation(gid id);
@@ -50,39 +50,57 @@ namespace graph {
       Relation(gid id, std::uint8_t *buffer, std::size_t size);
       ~Relation();
 
+      Entity* From();
+      Entity* To();
+
       gid GetFromEntityId();
       void SetFromEntityId(gid id);
       gid GetToEntityId();
       void SetToEntityId(gid id);
 
-      gid GetNextFromInRelationId();
-      void SetNextFromInRelationId(gid id);
-      gid GetNextFromOutRelationId();
-      void SetNextFromOutRelationId(gid id);
+      gid GetNextOutRelationId();
+      void SetNextOutRelationId(gid id);
+      gid GetPrevOutRelationId();
+      void SetPrevOutRelationId(gid id);
 
-      gid GetNextToInRelationId();
-      void SetNextToInRelationId(gid id);
-      gid GetNextToOutRelationId();
-      void SetNextToOutRelationId(gid id);
-
-
+      gid GetNextInRelationId();
+      void SetNextInRelationId(gid id);
+      gid GetPrevInRelationId();
+      void SetPrevInRelationId(gid id);
 
       virtual Concept GetConcept() {return Concept::CRelation; }
     private:
+      Entity *m_fromEntity;
+      Entity *m_toEntity;
   };
 
 
   class RelationCollection : public std::vector<Relation*> {
     public:
-      RelationCollection();
-      ~RelationCollection();
+      RelationCollection() : std::vector<Relation*>(), m_loaded(false) {}
+      ~RelationCollection() {}
+      bool IsLoaded() { return this->m_loaded; }
+      void SetLoaded(bool value) { this->m_loaded = value; }
+      void Add(Relation *relation) { this->push_back(relation); }
       //std::size_t Size();
       //void Add(Relation *relation);
       //Relation* operator[](std::size_t index);
     private:
       //std::vector<Relation*> m_relations;
+      bool m_loaded;
   };
 
+
+  /*
+   *   RelationCollection::RelationCollection() : std::vector<Relation *>(), m_loaded(false) {
+
+  }
+
+  RelationCollection::~RelationCollection() {
+
+  }
+
+  */
 
   /*
 

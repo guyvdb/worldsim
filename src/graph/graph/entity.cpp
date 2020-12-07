@@ -12,34 +12,37 @@ namespace graph {
   Entity::Entity() : StoreableWithAttributes(InvalidGraphId, Storeable::EntitySize) {
     this->Load(ROOT_OUT_REL_ID_OFFSET, InvalidGraphId);
     this->Load(ROOT_IN_REL_ID_OFFSET, InvalidGraphId);
+    this->m_inRelations = new RelationCollection();
+    this->m_outRelations = new RelationCollection();
   }
 
 
   Entity::Entity(gid id) : StoreableWithAttributes(id, Storeable::EntitySize) {
     this->Load(ROOT_OUT_REL_ID_OFFSET, InvalidGraphId);
     this->Load(ROOT_IN_REL_ID_OFFSET, InvalidGraphId);
+    this->m_inRelations = new RelationCollection();
+    this->m_outRelations = new RelationCollection();
   }
 
 
   // The entity takes ownership of the buffer
   Entity::Entity(gid id, ByteBuffer *buffer) : StoreableWithAttributes(id, buffer) {
     // Load of in and out rel id is within buffer
+    this->m_inRelations = new RelationCollection();
+    this->m_outRelations = new RelationCollection();
   }
 
   Entity::Entity(gid id, gid attribid, gid outRelId, gid inRelid) : StoreableWithAttributes(id, Storeable::EntitySize) {
     this->Load(ROOT_ATTRIB_BUCKET_ID_OFFSET, attribid);
     this->Load(ROOT_OUT_REL_ID_OFFSET, outRelId);
     this->Load(ROOT_IN_REL_ID_OFFSET, inRelid);
-
-    std::cout << "Entity() constructed: outrelid(set)=" << outRelId;
-    std::cout << ", outrelid(get)=" << this->GetRootOutRelationId();
-    std::cout << ", inrelid(set)=" << inRelid;
-    std::cout << ", inrelid(get)=" << this->GetRootInRelationId() << std::endl;
-
-
+    this->m_inRelations = new RelationCollection();
+    this->m_outRelations = new RelationCollection();
   }
 
   Entity::~Entity()  {
+    delete this->m_inRelations;
+    delete this->m_outRelations;
   }
 
   gid Entity::GetRootOutRelationId() {
@@ -56,6 +59,42 @@ namespace graph {
 
   void Entity::SetRootInRelationId(gid id) {
     this->Update(ROOT_IN_REL_ID_OFFSET, id);
+  }
+
+  RelationCollection *Entity::InRelations() {
+    if(!this->m_inRelations->IsLoaded()) {
+      // load the collection
+    }
+
+    return this->m_inRelations;
+  }
+
+  RelationCollection *Entity::OutRelations() {
+    if (!this->IsReadable()) {
+      std::cout << "[ENTITY] Error - entity is not readable." << std::endl;
+      return 0x0;
+    }
+
+    if(!this->m_outRelations->IsLoaded()) {
+      if(this->GetRootOutRelationId() != InvalidGraphId) {
+        std::cout << "FindRelationById - 1\n";
+        Relation *r = this->Tx()->FindRelationById(this->GetRootOutRelationId());
+        if(r != 0x0) {
+          r->SetTransaction(this->Tx());
+          this->m_outRelations->Add(r);
+          while(r->GetPrevOutRelationId() != InvalidGraphId) {
+            std::cout << "FindRelationById - 2\n";
+            r = this->Tx()->FindRelationById(r->GetPrevOutRelationId());
+            if(r != 0x0) {
+              r->SetTransaction(this->Tx());
+              this->m_outRelations->Add(r);
+            }
+          }
+        }
+      }
+      this->m_outRelations->SetLoaded(true);
+    }
+    return this->m_outRelations;
   }
 
   AttributeCollection* Entity::Attributes() {
@@ -79,6 +118,7 @@ namespace graph {
       this->Update(ROOT_IN_REL_ID_OFFSET, r->GetGraphId());
     } else {
       // Relation list is not empty -- find the tail
+      std::cout << "FindRelationById - 3\n";
       Relation *child = this->Tx()->FindRelationById(this->GetRootInRelationId());
       if(child == 0x0) {
         std::cout << "[ENTITY] Error - cannot find root in relation." << std::endl;
@@ -88,8 +128,9 @@ namespace graph {
       // Are we the from or the to entity?
       if(r->GetFromEntityId() == this->GetGraphId()) {
         // we are the from entity
-        while(child->GetNextFromInRelationId() != InvalidGraphId) {
-          child = this->Tx()->FindRelationById(child->GetNextFromInRelationId());
+        while(child->GetNextOutRelationId() != InvalidGraphId) {
+          std::cout << "FindRelationById - 4\n";
+          child = this->Tx()->FindRelationById(child->GetNextOutRelationId());
           if(child == 0x0) {
             std::cout << "[ENTITY] Error - cannot find root in relation." << std::endl;
             return;
@@ -97,20 +138,21 @@ namespace graph {
         }
 
         // we are at the last from in relation in the chain
-        child->SetNextFromInRelationId(this->GetGraphId());
+        child->SetNextOutRelationId(this->GetGraphId());
         // done
 
       } else {
         // we are the to entity
-        while(child->GetNextToInRelationId() != InvalidGraphId) {
-          child = this->Tx()->FindRelationById(child->GetNextToInRelationId());
+        while(child->GetNextInRelationId() != InvalidGraphId) {
+          std::cout << "FindRelationById - 5\n";
+          child = this->Tx()->FindRelationById(child->GetNextInRelationId());
           if(child == 0x0) {
             std::cout << "[ENTITY] Error - cannot find root in relation." << std::endl;
             return;
           }
         }
 
-        child->SetNextToInRelationId(this->GetGraphId());
+        child->SetNextInRelationId(this->GetGraphId());
       }
     }
   }
@@ -126,7 +168,10 @@ namespace graph {
       // Relation list is empty -- set r as root
       this->Update(ROOT_OUT_REL_ID_OFFSET, r->GetGraphId());
     } else {
+      std::cout << "RootOutRelationId=" << this->GetRootOutRelationId() << std::endl;
+
       // Relation list is not empty -- find the tail
+      std::cout << "FindRelationById - 6\n";
       Relation *child = this->Tx()->FindRelationById(this->GetRootOutRelationId());
       if(child == 0x0) {
         std::cout << "[ENTITY] Error - cannot find root out relation." << std::endl;
@@ -135,9 +180,13 @@ namespace graph {
 
       // Are we the from or the to entity?
       if(r->GetFromEntityId() == this->GetGraphId()) {
+
+        std::cout << "GetNextOutRelationId=" << child->GetNextOutRelationId() << std::endl;
+
         // we are the from entity
-        while(child->GetNextFromOutRelationId() != InvalidGraphId) {
-          child = this->Tx()->FindRelationById(child->GetNextFromOutRelationId());
+        while(child->GetNextOutRelationId() != InvalidGraphId) {
+          std::cout << "FindRelationById - 7, childid=" << child->GetGraphId() << std::endl;
+          child = this->Tx()->FindRelationById(child->GetNextOutRelationId());
           if(child == 0x0) {
             std::cout << "[ENTITY] Error - cannot find root out relation." << std::endl;
             return;
@@ -145,20 +194,21 @@ namespace graph {
         }
 
         // we are at the last from out relation in the chain
-        child->SetNextFromOutRelationId(this->GetGraphId());
+        child->SetNextOutRelationId(this->GetGraphId());
         // done
 
       } else {
         // we are the to entity
-        while(child->GetNextToOutRelationId() != InvalidGraphId) {
-          child = this->Tx()->FindRelationById(child->GetNextToOutRelationId());
+        while(child->GetPrevInRelationId() != InvalidGraphId) {
+          std::cout << "FindRelationById - 8\n";
+          child = this->Tx()->FindRelationById(child->GetPrevInRelationId());
           if(child == 0x0) {
             std::cout << "[ENTITY] Error - cannot find root out relation." << std::endl;
             return;
           }
         }
 
-        child->SetNextToOutRelationId(this->GetGraphId());
+        child->SetPrevInRelationId(this->GetGraphId());
       }
     }
   }

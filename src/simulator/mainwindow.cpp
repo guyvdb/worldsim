@@ -49,13 +49,10 @@ void MainWindow::on_pushButton_clicked() {
   graph::Transaction tx;
   if(g->Update(tx)){
     graph::Entity *e1 = tx.CreateEntity(1343);
-    std::cout << "ENTITY ID=" << e1->GetGraphId() << "\n";
-
-    graph::Entity *e2 = tx.CreateEntity(145);
-    std::cout << "ENTITY ID=" << e2->GetGraphId() << "\n";
-
-    graph::Relation *r = e1->CreateRelation(e2, 675);
-
+    for(int i=0;i<5;i++) {
+      graph::Entity *e2 = tx.CreateEntity(145);
+       e1->CreateRelation(e2, 675);
+    }
     tx.Commit();
     g->Flush();
   }
@@ -79,17 +76,22 @@ void MainWindow::on_pushButton_2_clicked() {
       std::cout << "typeid=" << e1->GetTypeId() << std::endl;
       std::cout << std::endl;
 
-      graph::Relation *r = tx.FindRelationById(e1->GetRootOutRelationId());
-      std::cout << "RELATION ID=" << r->GetGraphId() << std::endl;
-      std::cout << "ToEntityId=" << r->GetToEntityId() << std::endl;
-      std::cout << "typeid=" << r->GetTypeId() << std::endl;
-      std::cout << std::endl;
+      for(auto r : *e1->OutRelations()) {
+        /*std::cout << "RELATION ID=" << r->GetGraphId() << std::endl;
+        std::cout << "ToEntityId=" << r->GetToEntityId() << std::endl;
+        std::cout << "typeid=" << r->GetTypeId() << std::endl;
+        std::cout << std::endl;
+        */
 
+        std::cout << "E:" << r->From()->GetGraphId() << " <R" << r->GetGraphId() << "> E:" << r->To()->GetGraphId() << std::endl;
+      }
 
+/*
       graph::Entity *e2 = tx.FindEntityById(r->GetToEntityId());
       std::cout << "ENTITY ID=" << e2->GetGraphId() << std::endl;
       std::cout << "typeid=" << e2->GetTypeId() << std::endl;
       std::cout << std::endl;
+      */
     }
 
     g->Close();
