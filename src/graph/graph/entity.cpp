@@ -8,211 +8,206 @@
 
 namespace graph {
 
-
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Entity::Entity() : StoreableWithAttributes(NullGraphId, Storeable::EntitySize) {
     this->Load(ROOT_OUT_REL_ID_OFFSET, NullGraphId);
     this->Load(ROOT_IN_REL_ID_OFFSET, NullGraphId);
-    this->m_inRelations = new RelationCollection();
-    this->m_outRelations = new RelationCollection();
   }
 
-
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Entity::Entity(gid id) : StoreableWithAttributes(id, Storeable::EntitySize) {
     this->Load(ROOT_OUT_REL_ID_OFFSET, NullGraphId);
     this->Load(ROOT_IN_REL_ID_OFFSET, NullGraphId);
-    this->m_inRelations = new RelationCollection();
-    this->m_outRelations = new RelationCollection();
   }
 
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   // The entity takes ownership of the buffer
   Entity::Entity(gid id, ByteBuffer *buffer) : StoreableWithAttributes(id, buffer) {
     // Load of in and out rel id is within buffer
-    this->m_inRelations = new RelationCollection();
-    this->m_outRelations = new RelationCollection();
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Entity::Entity(gid id, gid attribid, gid outRelId, gid inRelid) : StoreableWithAttributes(id, Storeable::EntitySize) {
     this->Load(ROOT_ATTRIB_BUCKET_ID_OFFSET, attribid);
     this->Load(ROOT_OUT_REL_ID_OFFSET, outRelId);
     this->Load(ROOT_IN_REL_ID_OFFSET, inRelid);
-    this->m_inRelations = new RelationCollection();
-    this->m_outRelations = new RelationCollection();
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Entity::~Entity()  {
-    delete this->m_inRelations;
-    delete this->m_outRelations;
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   gid Entity::GetRootOutRelationId() {
     return this->GetUint32(ROOT_OUT_REL_ID_OFFSET);
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   void Entity::SetRootOutRelId(gid id) {
     this->Update(ROOT_OUT_REL_ID_OFFSET, id);
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   gid Entity::GetRootInRelationId() {
     return this->GetUint32(ROOT_IN_REL_ID_OFFSET);
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   void Entity::SetRootInRelationId(gid id) {
     this->Update(ROOT_IN_REL_ID_OFFSET, id);
   }
 
-  RelationCollection *Entity::InRelations() {
-    if(!this->m_inRelations->IsLoaded()) {
-      // load the collection
-    }
-
-    return this->m_inRelations;
-  }
-
-  RelationCollection *Entity::OutRelations() {
-    if (!this->IsReadable()) {
-      std::cout << "[ENTITY] Error - entity is not readable." << std::endl;
-      return 0x0;
-    }
-
-    if(!this->m_outRelations->IsLoaded()) {
-      if(this->GetRootOutRelationId() != NullGraphId) {
-        std::cout << "FindRelationById - 1\n";
-        Relation *r = this->Tx()->FindRelationById(this->GetRootOutRelationId());
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  std::vector<Relation*> Entity::InRelations() {
+    std::vector<Relation*> v;
+    if(this->IsReadable()) {
+      if(this->GetRootInRelationId() != NullGraphId) {
+        Relation *r = this->Tx()->FindRelationById(this->GetRootInRelationId());
         if(r != 0x0) {
-          r->SetTransaction(this->Tx());
-          this->m_outRelations->Add(r);
-          while(r->GetPrevOutRelationId() != NullGraphId) {
-            std::cout << "FindRelationById - 2\n";
-            r = this->Tx()->FindRelationById(r->GetPrevOutRelationId());
+          v.push_back(r);
+          while(r->GetNextInRelationId() != NullGraphId) {
+            r = this->Tx()->FindRelationById(r->GetNextInRelationId());
             if(r != 0x0) {
-              r->SetTransaction(this->Tx());
-              this->m_outRelations->Add(r);
+              v.push_back(r);
+            } else {
+              break;
             }
           }
         }
       }
-      this->m_outRelations->SetLoaded(true);
+    } else {
+      std::cout << "[ENTITY] Error - failed to load out relations. Entity is not readable." << std::endl;
     }
-    return this->m_outRelations;
+    return v;
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  std::vector<Relation*>Entity::OutRelations() {
+    std::vector<Relation*> v;
+    if(this->IsReadable()) {
+      if(this->GetRootOutRelationId() != NullGraphId) {
+        Relation *r = this->Tx()->FindRelationById(this->GetRootOutRelationId());
+        if(r != 0x0) {
+          v.push_back(r);
+          while(r->GetNextOutRelationId() != NullGraphId) {
+            r = this->Tx()->FindRelationById(r->GetNextOutRelationId());
+            if(r != 0x0) {
+              v.push_back(r);
+            } else {
+              break;
+            }
+          }
+        }
+      }
+    } else {
+      std::cout << "[ENTITY] Error - failed to load out relations. Entity is not readable." << std::endl;
+    }
+    return v;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   AttributeCollection* Entity::Attributes() {
     if (this->m_transaction == 0x0){
       std::cout << "[ENTITY] Error - no transaction attached." << std::endl;
       return 0x0;
     }
-
     return this->m_transaction->LoadAttributes(this);
   }
 
-  void Entity::AddInRelation(Relation *r) {
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  bool Entity::LinkInRelation(Relation *r) {
     if(!this->IsWriteable()) {
-      std::cout << "[ENTITY] Error - cannot add relation. Entity is not writeable." << std::endl;
-      return;
+      std::cout << "[ENTITY] Error - cannot link relation. Entity is not writeable." << std::endl;
+      return false;
     }
 
-    // add this relation id to our in relation chain
     if(this->GetRootInRelationId() == NullGraphId) {
-      // Relation list is empty -- set r as root
-      this->Update(ROOT_IN_REL_ID_OFFSET, r->GetGraphId());
+      // link on root
+      this->SetRootInRelationId(r->GetGraphId());
+      return true;
     } else {
-      // Relation list is not empty -- find the tail
-      std::cout << "FindRelationById - 3\n";
-      Relation *child = this->Tx()->FindRelationById(this->GetRootInRelationId());
-      if(child == 0x0) {
-        std::cout << "[ENTITY] Error - cannot find root in relation." << std::endl;
-        return;
-      }
-
-      // Are we the from or the to entity?
-      if(r->GetFromEntityId() == this->GetGraphId()) {
-        // we are the from entity
-        while(child->GetNextOutRelationId() != NullGraphId) {
-          std::cout << "FindRelationById - 4\n";
-          child = this->Tx()->FindRelationById(child->GetNextOutRelationId());
-          if(child == 0x0) {
-            std::cout << "[ENTITY] Error - cannot find root in relation." << std::endl;
-            return;
-          }
-        }
-
-        // we are at the last from in relation in the chain
-        child->SetNextOutRelationId(this->GetGraphId());
-        // done
-
+      // link at end of chain
+      std::vector<Relation*> v = this->InRelations();
+      // should be the last one in v
+      Relation *c = v.back();
+      if(c->GetNextInRelationId() == NullGraphId) {
+        c->SetNextInRelationId(r->GetGraphId());
+        r->SetPrevInRelationId(c->GetGraphId());
+        return true;
       } else {
-        // we are the to entity
-        while(child->GetNextInRelationId() != NullGraphId) {
-          std::cout << "FindRelationById - 5\n";
-          child = this->Tx()->FindRelationById(child->GetNextInRelationId());
-          if(child == 0x0) {
-            std::cout << "[ENTITY] Error - cannot find root in relation." << std::endl;
-            return;
-          }
-        }
-
-        child->SetNextInRelationId(this->GetGraphId());
+        std::cout << "[ENTITY] Error - the last element of InRelations does not have a NULL pointer to next element." << std::endl;
+        return false;
       }
     }
   }
 
-  void Entity::AddOutRelation(Relation *r) {
+  /* ----------------------------------------------------------------------------------------
+   * The out relations are in a double linked list:
+   *
+   * Root -> r1 -> r2 -> r3 -> rn -> 0x0  (next id)
+   *         rn -> r3 -> r2 -> r1 -> 0x0  (prev id)
+   *
+   * If there are no out relations for this entity, the relation is linked to the root
+   * located on the entity. If the entity has at least one relation linked then the new
+   * relation is linked at the end of the chain
+   * --------------------------------------------------------------------------------------*/
+  bool Entity::LinkOutRelation(Relation *r) {
     if(!this->IsWriteable()) {
-      std::cout << "[ENTITY] Error - cannot add relation. Entity is not writeable." << std::endl;
-      return;
+      std::cout << "[ENTITY] Error - cannot link relation. Entity is not writeable." << std::endl;
+      return false;
     }
 
-    // add this relation id to our out relation chain
     if(this->GetRootOutRelationId() == NullGraphId) {
-      // Relation list is empty -- set r as root
-      this->Update(ROOT_OUT_REL_ID_OFFSET, r->GetGraphId());
+      // link on root
+      this->SetRootOutRelId(r->GetGraphId());
+      return true;
     } else {
-      std::cout << "RootOutRelationId=" << this->GetRootOutRelationId() << std::endl;
-
-      // Relation list is not empty -- find the tail
-      std::cout << "FindRelationById - 6\n";
-      Relation *child = this->Tx()->FindRelationById(this->GetRootOutRelationId());
-      if(child == 0x0) {
-        std::cout << "[ENTITY] Error - cannot find root out relation." << std::endl;
-        return;
-      }
-
-      // Are we the from or the to entity?
-      if(r->GetFromEntityId() == this->GetGraphId()) {
-
-        std::cout << "GetNextOutRelationId=" << child->GetNextOutRelationId() << std::endl;
-
-        // we are the from entity
-        while(child->GetNextOutRelationId() != NullGraphId) {
-          std::cout << "FindRelationById - 7, childid=" << child->GetGraphId() << std::endl;
-          child = this->Tx()->FindRelationById(child->GetNextOutRelationId());
-          if(child == 0x0) {
-            std::cout << "[ENTITY] Error - cannot find root out relation." << std::endl;
-            return;
-          }
-        }
-
-        // we are at the last from out relation in the chain
-        child->SetNextOutRelationId(this->GetGraphId());
-        // done
-
+      // link at end of chain
+      std::vector<Relation*> v = this->OutRelations();
+      // should be the last one in v
+      Relation *c = v.back();
+      if(c->GetNextOutRelationId() == NullGraphId) {
+        c->SetNextOutRelationId(r->GetGraphId());
+        r->SetPrevOutRelationId(c->GetGraphId());
+        return true;
       } else {
-        // we are the to entity
-        while(child->GetPrevInRelationId() != NullGraphId) {
-          std::cout << "FindRelationById - 8\n";
-          child = this->Tx()->FindRelationById(child->GetPrevInRelationId());
-          if(child == 0x0) {
-            std::cout << "[ENTITY] Error - cannot find root out relation." << std::endl;
-            return;
-          }
-        }
-
-        child->SetPrevInRelationId(this->GetGraphId());
+        std::cout << "[ENTITY] Error - the last element of OutRelations does not have a NULL pointer to next element." << std::endl;
+        return false;
       }
     }
   }
 
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Relation* Entity::CreateRelation(Entity *to, tid relType) {
     // we are the from entity and the passed in entity is the to entity
     if(!this->IsWriteable()) {
@@ -230,26 +225,38 @@ namespace graph {
     // now set the relation id on the from entity chain and the to entity chain
 
     // from is an out relation
-    this->AddOutRelation(r);
+    this->LinkOutRelation(r);
 
     // to is an in relation
-    to->AddInRelation(r);
+    to->LinkInRelation(r);
 
     // return the relation
     return r;
   }
 
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   EntityCollection::EntityCollection() {
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   EntityCollection::~EntityCollection() {
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   void EntityCollection::Add(Entity *entity) {
     this->m_entities.push_back(entity);
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Entity* EntityCollection::operator[](std::size_t index){
     if(index < this->m_entities.size() && index >= 0) {
       return this->m_entities[index];

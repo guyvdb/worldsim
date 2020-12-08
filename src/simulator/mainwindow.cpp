@@ -49,7 +49,7 @@ void MainWindow::on_pushButton_clicked() {
   graph::Transaction tx;
   if(g->Update(tx)){
     graph::Entity *e1 = tx.CreateEntity(1343);
-    for(int i=0;i<5;i++) {
+    for(int i=0;i<50;i++) {
       graph::Entity *e2 = tx.CreateEntity(145);
        e1->CreateRelation(e2, 675);
     }
@@ -70,28 +70,32 @@ void MainWindow::on_pushButton_2_clicked() {
 
     graph::Transaction tx;
     if(g->Read(tx)) {
+
+      // E-1
       graph::Entity *e1 = tx.FindEntityById(1);
       std::cout << "ENTITY ID=" << e1->GetGraphId() << std::endl;
-      std::cout << "OutRelId=" << e1->GetRootOutRelationId() << std::endl;
-      std::cout << "typeid=" << e1->GetTypeId() << std::endl;
-      std::cout << std::endl;
-
-      for(auto r : *e1->OutRelations()) {
-        /*std::cout << "RELATION ID=" << r->GetGraphId() << std::endl;
-        std::cout << "ToEntityId=" << r->GetToEntityId() << std::endl;
-        std::cout << "typeid=" << r->GetTypeId() << std::endl;
-        std::cout << std::endl;
-        */
-
-        std::cout << "E:" << r->From()->GetGraphId() << " <R" << r->GetGraphId() << "> E:" << r->To()->GetGraphId() << std::endl;
+      for(auto r : e1->OutRelations()) {
+        std::cout << "E:" << r->From()->GetGraphId() << "-> [R:" << r->GetGraphId() << "] -> E:" << r->To()->GetGraphId() << std::endl;
       }
 
-/*
-      graph::Entity *e2 = tx.FindEntityById(r->GetToEntityId());
-      std::cout << "ENTITY ID=" << e2->GetGraphId() << std::endl;
-      std::cout << "typeid=" << e2->GetTypeId() << std::endl;
       std::cout << std::endl;
-      */
+
+      // E-2
+      graph::Entity *e2 = tx.FindEntityById(2);
+      std::cout << "ENTITY ID=" << e2->GetGraphId() << std::endl;
+      for(auto r : e2->InRelations()) {
+        std::cout << "E:" << r->To()->GetGraphId() << "<- [R:" << r->GetGraphId() << "] <- E:" << r->From()->GetGraphId() << std::endl;
+      }
+
+      std::cout << std::endl;
+
+      // E3
+      graph::Entity *e3 = tx.FindEntityById(2);
+      std::cout << "ENTITY ID=" << e3->GetGraphId() << std::endl;
+      for(auto r : e3->InRelations()) {
+        std::cout << "E:" << r->To()->GetGraphId() << "<- [R:" << r->GetGraphId() << "] <- E:" << r->From()->GetGraphId() << std::endl;
+      }
+
     }
 
     g->Close();

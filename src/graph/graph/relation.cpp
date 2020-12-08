@@ -8,7 +8,7 @@ namespace graph {
 
 
   Relation::Relation(gid id) : StoreableWithAttributes(id, Storeable::RelationSize) {
-    std::cout << "Create Relation(gid id)\n";
+    //std::cout << "Create Relation(gid id)\n";
     this->Load(FROM_ENTITY_ID_OFFSET, NullGraphId);
     this->Load(TO_ENTITY_ID_OFFSET, NullGraphId);
     this->Load(NEXT_OUT_REL_ID_OFFSET, NullGraphId);
@@ -18,28 +18,28 @@ namespace graph {
     this->m_fromEntity = 0x0;
     this->m_toEntity = 0x0;
 
-    std::cout << "NEW REL(" << id << ") -- ";
-    std::cout << "FROM_ENTITY_ID_OFFSET=" << this->GetUint32(FROM_ENTITY_ID_OFFSET);
-    std::cout << ", TO_ENTITY_ID_OFFSET=" << this->GetUint32(TO_ENTITY_ID_OFFSET);
-    std::cout << ", NEXT_OUT_REL_ID_OFFSET=" << this->GetUint32(NEXT_OUT_REL_ID_OFFSET);
-    std::cout << ", PREV_OUT_REL_ID_OFFSET=" << this->GetUint32(PREV_OUT_REL_ID_OFFSET);
-    std::cout << ", NEXT_IN_REL_ID_OFFSET=" << this->GetUint32(NEXT_IN_REL_ID_OFFSET);
-    std::cout << ", PREV_IN_REL_ID_OFFSET=" << this->GetUint32(PREV_IN_REL_ID_OFFSET);
-    std::cout << std::endl;
+//    std::cout << "NEW REL(" << id << ") -- ";
+//    std::cout << "FROM_ENTITY_ID_OFFSET=" << this->GetUint32(FROM_ENTITY_ID_OFFSET);
+//    std::cout << ", TO_ENTITY_ID_OFFSET=" << this->GetUint32(TO_ENTITY_ID_OFFSET);
+//    std::cout << ", NEXT_OUT_REL_ID_OFFSET=" << this->GetUint32(NEXT_OUT_REL_ID_OFFSET);
+//    std::cout << ", PREV_OUT_REL_ID_OFFSET=" << this->GetUint32(PREV_OUT_REL_ID_OFFSET);
+//    std::cout << ", NEXT_IN_REL_ID_OFFSET=" << this->GetUint32(NEXT_IN_REL_ID_OFFSET);
+//    std::cout << ", PREV_IN_REL_ID_OFFSET=" << this->GetUint32(PREV_IN_REL_ID_OFFSET);
+//    std::cout << std::endl;
 
 
   }
 
   Relation::Relation(gid id, ByteBuffer *buffer) : StoreableWithAttributes(id, buffer) {
-    std::cout << "Create Relation(gid id, ByteBuffer *buffer)\n";
-    std::cout << "NEW REL(" << id << ") -- ";
-    std::cout << "FROM_ENTITY_ID_OFFSET=" << this->GetUint32(FROM_ENTITY_ID_OFFSET);
-    std::cout << ", TO_ENTITY_ID_OFFSET=" << this->GetUint32(TO_ENTITY_ID_OFFSET);
-    std::cout << ", NEXT_OUT_REL_ID_OFFSET=" << this->GetUint32(NEXT_OUT_REL_ID_OFFSET);
-    std::cout << ", PREV_OUT_REL_ID_OFFSET=" << this->GetUint32(PREV_OUT_REL_ID_OFFSET);
-    std::cout << ", NEXT_IN_REL_ID_OFFSET=" << this->GetUint32(NEXT_IN_REL_ID_OFFSET);
-    std::cout << ", PREV_IN_REL_ID_OFFSET=" << this->GetUint32(PREV_IN_REL_ID_OFFSET);
-    std::cout << std::endl;
+//    std::cout << "Create Relation(gid id, ByteBuffer *buffer)\n";
+//    std::cout << "NEW REL(" << id << ") -- ";
+//    std::cout << "FROM_ENTITY_ID_OFFSET=" << this->GetUint32(FROM_ENTITY_ID_OFFSET);
+//    std::cout << ", TO_ENTITY_ID_OFFSET=" << this->GetUint32(TO_ENTITY_ID_OFFSET);
+//    std::cout << ", NEXT_OUT_REL_ID_OFFSET=" << this->GetUint32(NEXT_OUT_REL_ID_OFFSET);
+//    std::cout << ", PREV_OUT_REL_ID_OFFSET=" << this->GetUint32(PREV_OUT_REL_ID_OFFSET);
+//    std::cout << ", NEXT_IN_REL_ID_OFFSET=" << this->GetUint32(NEXT_IN_REL_ID_OFFSET);
+//    std::cout << ", PREV_IN_REL_ID_OFFSET=" << this->GetUint32(PREV_IN_REL_ID_OFFSET);
+//    std::cout << std::endl;
 
     // values loaded from buffer
     this->m_fromEntity = 0x0;

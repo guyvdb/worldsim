@@ -74,7 +74,7 @@ namespace graph {
       Entity *m_toEntity;
   };
 
-
+/*
   class RelationCollection : public std::vector<Relation*> {
     public:
       RelationCollection() : std::vector<Relation*>(), m_loaded(false) {}
@@ -89,7 +89,7 @@ namespace graph {
       //std::vector<Relation*> m_relations;
       bool m_loaded;
   };
-
+*/
 
   /*
    *   RelationCollection::RelationCollection() : std::vector<Relation *>(), m_loaded(false) {

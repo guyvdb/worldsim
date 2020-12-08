@@ -162,7 +162,7 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  class Relation* Transaction::CreateRelation(gid type) {
+  Relation* Transaction::CreateRelation(gid type) {
 
     if(!this->IsWriteable()) {
       std::cout << "[TX] Error - transaction is not writeable." << std::endl;
@@ -170,14 +170,13 @@ namespace graph {
     }
 
     StoreableId rec = this->AllocateId(Storeable::Concept::CRelation);
-    class Relation *rel = new Relation(rec.Id);
-    rel->SetTypeId(type);
-    rel->SetTransaction(this);
-    rel->SetDirty(true);
-    this->m_transactionCacheManager.Add(rel);
-    //this->m_allocatedObjects.push_back(rel);
+    Relation *r = new Relation(rec.Id);
+    r->SetTypeId(type);
+    r->SetTransaction(this);
+    r->SetDirty(true);
+    this->m_transactionCacheManager.Add(r);
     this->m_allocatedIds.push_back(rec);
-    return rel;
+    return r;
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -201,6 +200,7 @@ namespace graph {
         return 0x0;
       }
       Relation *r = new Relation(id, b);
+      r->SetTransaction(this);
 
       this->m_transactionCacheManager.Add(r);
       //this->m_allocatedObjects.push_back(r);

@@ -31,35 +31,45 @@ namespace graph {
       const static int ROOT_OUT_REL_ID_OFFSET = 9;
       const static int ROOT_IN_REL_ID_OFFSET = 13;
 
+      // Constructors/Destructor
       Entity();
       Entity(gid id);
       Entity(gid id, ByteBuffer *buffer);
       Entity(gid id, gid attribid, gid outRelId, gid inRelid);
       ~Entity();
 
-
+      // Root Out Relation
       gid GetRootOutRelationId();
       void SetRootOutRelId(gid id);
+
+      // Root In Relation
       gid GetRootInRelationId();
       void SetRootInRelationId(gid id);
 
+      // Create a relation
       Relation *CreateRelation(Entity *to, tid relType);
 
-      void AddInRelation(Relation *r);
-      void AddOutRelation(Relation *r);
+      // Attach a relation to the linked list - in & out
+      // Relations are in a double linked list. There are two linked lists.
+      // One for in and one for out.
+      bool LinkInRelation(Relation *r);
+      bool LinkOutRelation(Relation *r);
+      bool UnlinkInRelation(Relation *r);
+      bool UnlinkOutRelation(Relation *r);
 
 
+
+      // Get the concept of this storeable
       virtual Concept GetConcept() { return Storeable::Concept::CEntity; }
 
-      // API
-      RelationCollection *InRelations();
-      RelationCollection *OutRelations();
+      // Get A list of relations
+      std::vector<Relation*> InRelations();
+      std::vector<Relation*> OutRelations();
 
+      // Get a list of attributes
       AttributeCollection *Attributes();
-      //Attribute* AddAttribute();
+
     private:
-      RelationCollection *m_inRelations;
-      RelationCollection *m_outRelations;
   };
 
   class EntityCollection {
