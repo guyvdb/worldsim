@@ -99,17 +99,6 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   std::vector<Storeable*> Transaction::ModifiedObjects() {
     return this->m_transactionCacheManager.GetModifiedObjects();
-    /*
-    std::vector<Storeable*> v;
-    v.reserve(this->m_allocatedObjects.size());
-
-    for(auto obj : this->m_allocatedObjects) {
-      if(obj->IsDirty()) {
-        v.push_back(obj);
-      }
-    }
-    return v;
-    */
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -121,7 +110,7 @@ namespace graph {
       return  0x0;
     }
 
-    StoreableId rec = this->AllocateId(Storeable::Concept::CEntity);
+    StoreableId rec = this->AllocateId(Storeable::Concept::EntityConcept);
     Entity *e = new Entity(rec.Id);
     e->SetTypeId(type);
     e->SetTransaction(this);
@@ -143,11 +132,11 @@ namespace graph {
     }
 
     // is the entity in the transaction cache?
-    if(this->m_transactionCacheManager.Contains(Storeable::CEntity, id)) {
-      return (Entity*)this->m_transactionCacheManager.Get(Storeable::CEntity, id);
+    if(this->m_transactionCacheManager.Contains(Storeable::EntityConcept, id)) {
+      return (Entity*)this->m_transactionCacheManager.Get(Storeable::EntityConcept, id);
     }
 
-    ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::CEntity, id);
+    ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::EntityConcept, id);
     if(b == 0x0) {
       std::cout << "[TX] Error - failed to load entity from cache." << std::endl;
       return 0x0;
@@ -163,13 +152,12 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   Relation* Transaction::CreateRelation(gid type) {
-
     if(!this->IsWriteable()) {
       std::cout << "[TX] Error - transaction is not writeable." << std::endl;
       return  0x0;
     }
 
-    StoreableId rec = this->AllocateId(Storeable::Concept::CRelation);
+    StoreableId rec = this->AllocateId(Storeable::Concept::RelationConcept);
     Relation *r = new Relation(rec.Id);
     r->SetTypeId(type);
     r->SetTransaction(this);
@@ -189,22 +177,21 @@ namespace graph {
       }
 
       // is the relation in the transaction cache?
-      if(this->m_transactionCacheManager.Contains(Storeable::CRelation, id)) {
-        return (Relation*)this->m_transactionCacheManager.Get(Storeable::CRelation, id);
+      if(this->m_transactionCacheManager.Contains(Storeable::RelationConcept, id)) {
+        // return from transaction cache
+        return (Relation*)this->m_transactionCacheManager.Get(Storeable::RelationConcept, id);
+      } else {
+        // return from file cache
+        ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::RelationConcept, id);
+        if(b == 0x0) {
+          std::cout << "[TX] Error - failed to load relation from cache." << std::endl;
+          return 0x0;
+        }
+        Relation *r = new Relation(id, b);
+        r->SetTransaction(this);
+        this->m_transactionCacheManager.Add(r);
+        return r;
       }
-
-
-      ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::CRelation, id);
-      if(b == 0x0) {
-        std::cout << "[TX] Error - failed to load relation from cache." << std::endl;
-        return 0x0;
-      }
-      Relation *r = new Relation(id, b);
-      r->SetTransaction(this);
-
-      this->m_transactionCacheManager.Add(r);
-      //this->m_allocatedObjects.push_back(r);
-      return r;
   }
 
 

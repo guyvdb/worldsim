@@ -6,7 +6,7 @@
 #include <storeable.h>
 
 #include <buffer.h>
-#include <encoder.h>
+#include <decoder.h>
 
 namespace graph {
 
@@ -18,13 +18,13 @@ namespace graph {
     public:
       static const std::size_t MaxNameLen = 27;
 
-      virtual Concept GetConcept() { return Storeable::Concept::CAttributeDefinition; }
+      virtual Concept GetConcept() { return Storeable::Concept::AttributeDefinitionConcept; }
       AttributeDefinition(gid id);
       AttributeDefinition(gid id, ByteBuffer *buffer);
       cid GetTarget();
       void SetTarget(cid id);
-      DataType GetDataType();
-      void SetDataType(DataType type);
+      //DataType GetDataType();
+      //void SetDataType(DataType type);
       std::uint16_t GetLen();
       void SetLen(std::uint16_t len);
       std::string GetName();
@@ -61,7 +61,7 @@ namespace graph {
      public:
        AttributeBucket(gid id);
        AttributeBucket(gid id, ByteBuffer *buffer);
-       virtual Concept GetConcept() { return Storeable::Concept::CAttributeBucket; }
+       virtual Concept GetConcept() { return Storeable::Concept::AttributeBucketConcept; }
        void SetNextBucketId(gid id);
        gid GetNextBucketId();
        AttributeBucket *NextBucket();
@@ -86,17 +86,17 @@ namespace graph {
 
 
 
-  class AttributeBucketEncoder : public Encoder {
+  class AttributeBucketEncoder : public Decoder {
     public:
-      AttributeBucketEncoder() : Encoder() {}
+      AttributeBucketEncoder() : Decoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new AttributeBucket(id, buffer); }
       virtual Storeable *Empty() { return new AttributeBucket(NullGraphId); }
       virtual bool Decodeable() { return true; }
   };
 
-  class AttributeDefinitionEncoder : public Encoder {
+  class AttributeDefinitionEncoder : public Decoder {
     public:
-      AttributeDefinitionEncoder() : Encoder() {}
+      AttributeDefinitionEncoder() : Decoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new AttributeDefinition(id, buffer); }
       virtual Storeable *Empty() { return new AttributeDefinition(NullGraphId); }
       virtual bool Decodeable() { return true; }

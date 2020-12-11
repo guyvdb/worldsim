@@ -1,0 +1,65 @@
+
+
+K-Lines
+-------------
+1.25 Million assertions
+
+ConceptuallyRelatedTo  - bad breath -> mint
+ThematicKLine - wedding dress -> veil
+SuperThematicKLine - western civilisation -> civilisation
+
+Things
+---------------
+52 thousand assertions
+
+IsA - horse -> mammal
+PropertyOf - fire -> dangerous
+PartOf - butterfly -> wing
+MadeOf - bacon -> pig
+DefinedAs - meat -> flesh of animal
+
+Agents
+----------------
+104 thousand assertions
+
+CapableOf - dentist -> pull tooth
+
+Events
+-------------------
+38 thousand assertions
+
+PrerequisiteEventOf - read letter -> open envelope
+FirstSubeventOf - start fire -> light match
+SubeventOf - play sport -> score goal
+LastSubeventOf - attend classical concert -> applaud
+
+Spatial
+----------------------
+36 thousand assertions
+
+LocationOf - army -> in war
+
+Causal
+-----------------------
+EffectOf - view video -> entertainment
+DesirousEffectOf - sweat -> take shower
+
+Functional
+----------------------
+115 thousand assertions
+
+UsedFor - fireplace -> burn wood
+CapableOfReceivingAction - drink -> serve
+
+
+Affective
+---------------------
+34 thousand assertions
+
+MotivationOf - play gam -> compete
+DesireOf - person -> not be depressed
+
+
+
+
+

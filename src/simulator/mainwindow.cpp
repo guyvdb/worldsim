@@ -90,7 +90,7 @@ void MainWindow::on_pushButton_2_clicked() {
       std::cout << std::endl;
 
       // E3
-      graph::Entity *e3 = tx.FindEntityById(2);
+      graph::Entity *e3 = tx.FindEntityById(3);
       std::cout << "ENTITY ID=" << e3->GetGraphId() << std::endl;
       for(auto r : e3->InRelations()) {
         std::cout << "E:" << r->To()->GetGraphId() << "<- [R:" << r->GetGraphId() << "] <- E:" << r->From()->GetGraphId() << std::endl;

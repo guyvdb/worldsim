@@ -29,6 +29,8 @@ namespace graph {
       bool Flush();
       ErrorNo LastError();
 
+      bool Register(type::Type *type);
+      bool Register(std::vector<type::Type*> types);
 
       bool Read(Transaction &tx);
       bool Update(Transaction &tx);

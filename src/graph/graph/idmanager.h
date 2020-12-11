@@ -58,10 +58,10 @@ namespace graph {
       void Close();
 
       void Reclaim(gid id, Storeable::Concept type);
-      void Reclaim(tid id, Storeable::Concept type);
+      //void Reclaim(gid id, Storeable::Concept type);
       bool Register(Store *store, Storeable::Concept type);
       gid NextGraphId(Storeable::Concept type);
-      tid NextTypeId(Storeable::Concept type);
+      //tid NextTypeId(Storeable::Concept type);
     private:
       void MarkItemState(bool active);
       bool Scan();

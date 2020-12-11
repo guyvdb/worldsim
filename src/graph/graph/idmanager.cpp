@@ -150,9 +150,9 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * Mark this id as reclaimed for the given type
    * --------------------------------------------------------------------------------------*/
-  void IdManager::Reclaim(tid id, Storeable::Concept concept){
-    this->Reclaim((gid)id, concept);
-  }
+//  void IdManager::Reclaim(tid id, Storeable::Concept concept){
+//    this->Reclaim((gid)id, concept);
+//  }
 
   /* ----------------------------------------------------------------------------------------
    * Register a data store for a given type with the manager. This function should be called
@@ -199,9 +199,9 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    * Get the next tid for the given type (reclaimed or new)
    * --------------------------------------------------------------------------------------*/
-  tid IdManager::NextTypeId(Storeable::Concept type){
-    return (tid)this->NextGraphId(type);
-  }
+//  tid IdManager::NextTypeId(Storeable::Concept type){
+//    return (tid)this->NextGraphId(type);
+//  }
 
   /* ----------------------------------------------------------------------------------------
    * If the item state is inactive it will not provide ids

@@ -30,19 +30,19 @@ namespace graph {
 
   std::string Storeable::ConceptToString(Concept concept) {
     switch(concept) {
-    case CNotStoreable:
+    case NotStoreableConcept:
       return "NotStoreable";
-    case CEntity:
+    case EntityConcept:
       return "Entity";
-    case CRelation:
+    case RelationConcept:
       return "Relation";
-    case CAttributeBucket:
+    case AttributeBucketConcept:
       return "AttributeBucket";
-    case CAttributeDefinition:
+    case AttributeDefinitionConcept:
       return "AttributeDefinition";
-    case CId:
+    case IdConcept:
       return "Id";
-    case CTest:
+    case TestConcept:
       return "Test";
     default:
       return "Unknown";

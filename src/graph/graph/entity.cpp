@@ -208,7 +208,7 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Relation* Entity::CreateRelation(Entity *to, tid relType) {
+  Relation* Entity::CreateRelation(Entity *to, gid type) {
     // we are the from entity and the passed in entity is the to entity
     if(!this->IsWriteable()) {
       std::cout << "[ENTITY] Error - entity is not writeable." << std::endl;
@@ -216,7 +216,7 @@ namespace graph {
     }
 
 
-    Relation *r = this->Tx()->CreateRelation(relType);
+    Relation *r = this->Tx()->CreateRelation(type);
 
     // set the entity ids on the relation
     r->SetFromEntityId(this->GetGraphId());
@@ -238,31 +238,31 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  EntityCollection::EntityCollection() {
-  }
+//  EntityCollection::EntityCollection() {
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  EntityCollection::~EntityCollection() {
-  }
+//  EntityCollection::~EntityCollection() {
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  void EntityCollection::Add(Entity *entity) {
-    this->m_entities.push_back(entity);
-  }
+//  void EntityCollection::Add(Entity *entity) {
+//    this->m_entities.push_back(entity);
+//  }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Entity* EntityCollection::operator[](std::size_t index){
-    if(index < this->m_entities.size() && index >= 0) {
-      return this->m_entities[index];
-    }
-    return 0x0;
-  }
+//  Entity* EntityCollection::operator[](std::size_t index){
+//    if(index < this->m_entities.size() && index >= 0) {
+//      return this->m_entities[index];
+//    }
+//    return 0x0;
+//  }
 
 
 

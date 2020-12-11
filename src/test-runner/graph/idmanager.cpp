@@ -55,28 +55,28 @@ TEST_CASE("The id manager should recycle id's","[graph][id-manager]") {
   std::size_t pagesize = 1024;
   std::size_t recordsize = 16;
   std::filesystem::path filename = CreateFilePath("entity.db");
-  graph::Encoder *factory = new graph::EntityEncoder();
+  graph::Decoder *factory = new graph::EntityDecoder();
 
   // Create & open store
-  graph::Store *store = new graph::Store(filename.c_str(), pagesize, recordsize, factory, graph::Storeable::Concept::CEntity);
+  graph::Store *store = new graph::Store(filename.c_str(), pagesize, recordsize, factory, graph::Storeable::Concept::EntityConcept);
   REQUIRE(store->Open());
 
   // Create and open the manager
   graph::IdManager *manager = new graph::IdManager(datadir);
-  manager->Register(store, graph::Storeable::Concept::CEntity);
+  manager->Register(store, graph::Storeable::Concept::EntityConcept);
   REQUIRE(manager->Open());
 
   // The entity store is empty and there was no data file so
   // the id manager should have done a store scan and set next id to 1
-  graph::gid id = manager->NextGraphId(graph::Storeable::Concept::CEntity);
+  graph::gid id = manager->NextGraphId(graph::Storeable::Concept::EntityConcept);
   REQUIRE(id == 1);
 
   // call next id 10 times
   for(int i=0;i<10;i++) {
-    manager->NextGraphId(graph::Storeable::Concept::CEntity);
+    manager->NextGraphId(graph::Storeable::Concept::EntityConcept);
   }
   // the next id should now be 12
-  id = manager->NextGraphId(graph::Storeable::Concept::CEntity);
+  id = manager->NextGraphId(graph::Storeable::Concept::EntityConcept);
   REQUIRE(id == 12);
 
   // close the manager this will store the data file
@@ -112,11 +112,11 @@ TEST_CASE("The id manager should recycle id's","[graph][id-manager]") {
     // data file. If we then call next id we should get 13
     delete  manager;
     manager = new graph::IdManager(datadir);
-    manager->Register(store, graph::Storeable::Concept::CEntity);
+    manager->Register(store, graph::Storeable::Concept::EntityConcept);
 
     REQUIRE(manager->Open());
 
-    id = manager->NextGraphId(graph::Storeable::Concept::CEntity);
+    id = manager->NextGraphId(graph::Storeable::Concept::EntityConcept);
     REQUIRE(id == 13); // lucky 13
 
 

@@ -28,6 +28,10 @@ namespace graph {
       const char * ENTITY_DEFINITION_STORE_FILENAME = "entity.def";
       const char * RELATION_STORE_FILENAME = "relation.db";
       const char * RELATION_DEFINITION_STORE_FILENAME = "relation.def";
+      const char * TYPE_STORE_FILENAME = "type.db";
+      const char * HEIRACHY_STORE_FILENAME = "heirachy.db";
+
+
       const char * ATTRIBUTE_BUCKET_STORE_FILENAME = "attribute.db";
       const char * ATTRIBUTE_DEFINITION_STORE_FILENAME = "attribute.def";
 
@@ -40,7 +44,7 @@ namespace graph {
       Store *GetStore(Storeable::Concept concept);
     private:
 
-      Store *CreateStore(std::string filename, std::size_t size, Storeable::Concept concept, Encoder *encoder);
+      Store *CreateStore(std::string filename, std::size_t size, Storeable::Concept concept, Decoder *encoder);
       std::string fn(std::string filename );
 
       std::size_t m_pagesize;
@@ -50,6 +54,8 @@ namespace graph {
       Store *m_relationStore;
       Store *m_attributeBucketStore;
       Store *m_attributeDefinitionStore;
+      Store *m_typeStore;
+      Store *m_heirachyStore;
 
 
       std::vector<Store*> m_dataStores;

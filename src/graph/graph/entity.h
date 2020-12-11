@@ -4,7 +4,7 @@
 #include <types.h>
 #include <storeable.h>
 #include <buffer.h>
-#include <encoder.h>
+#include <decoder.h>
 
 namespace graph {
   class Relation;
@@ -47,7 +47,7 @@ namespace graph {
       void SetRootInRelationId(gid id);
 
       // Create a relation
-      Relation *CreateRelation(Entity *to, tid relType);
+      Relation *CreateRelation(Entity *to, gid type);
 
       // Attach a relation to the linked list - in & out
       // Relations are in a double linked list. There are two linked lists.
@@ -60,7 +60,7 @@ namespace graph {
 
 
       // Get the concept of this storeable
-      virtual Concept GetConcept() { return Storeable::Concept::CEntity; }
+      virtual Concept GetConcept() { return Storeable::Concept::EntityConcept; }
 
       // Get A list of relations
       std::vector<Relation*> InRelations();
@@ -72,6 +72,7 @@ namespace graph {
     private:
   };
 
+  /*
   class EntityCollection {
     public:
       EntityCollection();
@@ -84,11 +85,11 @@ namespace graph {
     private:
       std::vector<Entity*> m_entities;
   };
+*/
 
-
-  class EntityEncoder : public Encoder {
+  class EntityDecoder : public Decoder {
     public:
-      EntityEncoder() : Encoder() {}
+      EntityDecoder() : Decoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new Entity(id, buffer); }
       virtual Storeable *Empty() { return new Entity(NullGraphId); }
       virtual bool Decodeable() { return true; }

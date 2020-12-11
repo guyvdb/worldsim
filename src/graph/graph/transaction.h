@@ -8,6 +8,8 @@
 #include <storeable.h>
 #include <transactioncache.h>
 
+#include <type/type.h>
+
 namespace graph {
 
   class Entity;
@@ -51,6 +53,10 @@ namespace graph {
       //Entity *CopyEntity(Entity *src);
       Entity *CreateEntity(gid type);
       Entity *FindEntityById(gid id);
+      type::Type * CreateEntityType(type::Type *superclass);
+
+
+
 
       AttributeCollection *LoadAttributes(StoreableWithAttributes *storeable);
 
@@ -58,7 +64,7 @@ namespace graph {
 
       Relation *CreateRelation(gid type);
       Relation *FindRelationById(gid id);
-      Attribute *CreateAttribute(tid type);
+      Attribute *CreateAttribute(gid type);
 
 
       void SetTransactionManager(TransactionManager *manager) {this->m_transactionManager = manager; }

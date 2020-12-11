@@ -31,18 +31,22 @@ namespace graph {
       static const std::size_t RelationSize = 34;
       static const std::size_t AttributeBucketSize = 16;
       static const std::size_t AttributeDefinitionSize = 32;
-      static const std::size_t TypeSize = 16;
+      static const std::size_t TypeSize = 74;
+      static const std::size_t HeirarchSize = 26;
       static const std::size_t BucketSize = 64;
+      static const std::size_t PropertyDefSize = 82;
 
       // The storable type id's
       enum Concept : cid {
-        CNotStoreable,
-        CEntity,
-        CRelation,
-        CAttributeBucket,
-        CAttributeDefinition,
-        CId,
-        CTest
+        NotStoreableConcept,
+        EntityConcept,
+        RelationConcept,
+        TypeConcept,
+        HeirachyConcept,
+        AttributeBucketConcept,
+        AttributeDefinitionConcept,
+        IdConcept,
+        TestConcept
       };
 
       // When data is placed into the byte buffer

@@ -4,7 +4,7 @@
 #include <storeable.h>
 #include <transaction.h>
 #include <buffer.h>
-#include <encoder.h>
+#include <decoder.h>
 
 
 
@@ -68,86 +68,17 @@ namespace graph {
       gid GetPrevInRelationId();
       void SetPrevInRelationId(gid id);
 
-      virtual Concept GetConcept() {return Concept::CRelation; }
+      virtual Concept GetConcept() {return Concept::RelationConcept; }
     private:
       Entity *m_fromEntity;
       Entity *m_toEntity;
   };
 
-/*
-  class RelationCollection : public std::vector<Relation*> {
+
+
+  class RelationDecoder : public Decoder {
     public:
-      RelationCollection() : std::vector<Relation*>(), m_loaded(false) {}
-      ~RelationCollection() {}
-      bool IsLoaded() { return this->m_loaded; }
-      void SetLoaded(bool value) { this->m_loaded = value; }
-      void Add(Relation *relation) { this->push_back(relation); }
-      //std::size_t Size();
-      //void Add(Relation *relation);
-      //Relation* operator[](std::size_t index);
-    private:
-      //std::vector<Relation*> m_relations;
-      bool m_loaded;
-  };
-*/
-
-  /*
-   *   RelationCollection::RelationCollection() : std::vector<Relation *>(), m_loaded(false) {
-
-  }
-
-  RelationCollection::~RelationCollection() {
-
-  }
-
-  */
-
-  /*
-
-
-template<size_t S>
-class FixedString {
-public:
- FixedString() = default;
- FixedString(const char* str) {
-  if(str)
-   ::strncpy(str_, str, S);
- }
-
- const char* c_str() const { return str_; }
- size_t count() const { return ::strlen(str_); }
- const char& operator[](size_t i) const { return str_[i]; }
-
- // default memberwise copies
-
- // Minimum required for range-for loop
- template<typename T>
- struct Iterator {
-  T* p;
-  T& operator*() { return *p; }
-  bool operator != (const Iterator& rhs) {
-    return p != rhs.p;
-  }
-  void operator ++() { ++p; }
- };
-
-  // auto return requires C++14
- auto begin() const { // const version
-   return Iterator<const char>{str_};
- }
- auto end() const { // const version
-  return Iterator<const char>{str_+count()};
- }
-
-private:
- char str_[S+1]{}; // '\0' everywhere
-};
-*/
-
-
-  class RelationEncoder : public Encoder {
-    public:
-      RelationEncoder() : Encoder() {}
+      RelationDecoder() : Decoder() {}
       virtual Storeable *Decode(gid id, ByteBuffer *buffer) { return new Relation(id, buffer); }
       virtual Storeable *Empty() { return new Relation(NullGraphId); }
       virtual bool Decodeable() { return true; }

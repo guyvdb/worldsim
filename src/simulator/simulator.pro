@@ -32,3 +32,8 @@ else:unix: LIBS += -L$$OUT_PWD/../../bin -lgraph
 INCLUDEPATH += $$PWD/../graph/graph
 DEPENDPATH += $$PWD/../graph
 
+
+unix|win32: LIBS += -L$$OUT_PWD/../culture/ -lculture
+
+INCLUDEPATH += $$PWD/../culture
+DEPENDPATH += $$PWD/../culture

@@ -8,7 +8,7 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Store::Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Encoder *factory, Storeable::Concept concept) :
+  Store::Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Decoder *factory, Storeable::Concept concept) :
     m_filename(filename), m_pagesize(pagesize), m_recordsize(recordsize), m_factory(factory),    
     m_isopen(false), m_lastError(ErrorNone),m_concept(concept), m_file(0x0),m_accumulator(0x0) {
     std::filesystem::path fn(filename);

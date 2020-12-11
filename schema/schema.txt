@@ -1,67 +1,53 @@
 
 
-// This is the schema language
-
-
 define:
+  gender list,
+    male,
+    female;
 
 
-  person is entity,
-         has full-name,
-         has age,
-         has gender;
-
-
-
-  organism is entity;
-
+  person is type of entity,
+    has full-name [string],
+    has age [integer],
+    has gender [gender];
 
 
 
-   person is entity,
-          key full-name,
-          has age,
-          plays spouse,
-          plays worker,
-          plays hero;
+  weapon is type of entity;
 
 
-   monster is abstract entity,
-           key full-name,
-           has hitpoints;
+  bladed weapon is type of weapon;
 
 
-   job is relation,
-       relates employee,
-       relates employer;
-
-  marrage is relation,
-    relates husband,
-    relates wife;
-
-  
-commit;
+  sword is type of bladed weapon;
 
 
+  bow is type of weapon;
+
+
+  crossbow is type of bow;
+
+
+
+  clothing is type of entity;
+
+
+  armor is type of clothing;
+
+
+    
 insert:
 
-  $joe is person,
-       has name "Joe",
-       has age 43,
-       has gender 'M';
+  armor - banded mail,
+        description: A type of armor that is made of bands of linked metal hoops.,
+        
 
 
-  $jane is person,
-        has name "Jane",
-        has age 39,
-        has gender 'F';
 
 
-  $marage1 is marrage,
-           relates husband $joe,
-           relates wife $jane;
 
-commit;
+
+
 
 
 

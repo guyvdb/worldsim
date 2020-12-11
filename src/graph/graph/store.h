@@ -9,7 +9,7 @@
 #include <storeable.h>
 #include <idaccumulator.h>
 #include <file.h>
-#include <encoder.h>
+#include <decoder.h>
 #include <buffer.h>
 
 namespace graph {
@@ -17,7 +17,7 @@ namespace graph {
   // This is the base class of all data stores
   class Store {
     public:
-      Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Encoder *factory, Storeable::Concept concept);
+      Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Decoder *factory, Storeable::Concept concept);
       ~Store();
       bool Open();
       void Close();
@@ -43,7 +43,7 @@ namespace graph {
       std::string m_filename;
       std::size_t m_pagesize;
       std::size_t m_recordsize;
-      Encoder *m_factory;
+      Decoder *m_factory;
       bool m_isopen;
       ErrorNo m_lastError;
       Storeable::Concept m_concept;
