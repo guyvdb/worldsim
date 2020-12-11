@@ -29,7 +29,7 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../bin/ -lgraph
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../bin -lgraph
 else:unix: LIBS += -L$$OUT_PWD/../../bin -lgraph
 
-INCLUDEPATH += $$PWD/../graph/graph
+INCLUDEPATH += $$PWD/../graph
 DEPENDPATH += $$PWD/../graph
 
 

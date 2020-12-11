@@ -46,7 +46,7 @@ void MainWindow::on_pushButton_clicked() {
   if(g == 0x0) return ;
 
 
-  graph::Transaction tx;
+  graph::tx::Transaction tx;
   if(g->Update(tx)){
     graph::Entity *e1 = tx.CreateEntity(1343);
     for(int i=0;i<50;i++) {
@@ -68,7 +68,7 @@ void MainWindow::on_pushButton_2_clicked() {
     graph::Graph *g = this->CreateGraph();
     if(g == 0x0) return;
 
-    graph::Transaction tx;
+    graph::tx::Transaction tx;
     if(g->Read(tx)) {
 
       // E-1
