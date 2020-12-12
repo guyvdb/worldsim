@@ -8,11 +8,13 @@
 #include <filesystem>
 
 #include <type/base.h>
+#include <type/registry.h>
+
 #include <config.h>
 
 #include <storemanager.h>
-
 #include <idmanager.h>
+
 #include <tx/transactionlog.h>
 #include <tx/transactionmanager.h>
 #include <tx/transaction.h>
@@ -29,15 +31,10 @@ namespace graph {
       bool Flush();
       ErrorNo LastError();
 
-      bool Register(type::Type *type);
-      bool Register(std::vector<type::Type*> types);
+      void RegisterType(type::TypeDefinition definition);
 
       bool Read(tx::Transaction &tx);
       bool Update(tx::Transaction &tx);
-
-
-      //Tx *Read();
-      //Tx *Update();
 
 
     private:

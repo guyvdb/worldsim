@@ -7,7 +7,7 @@
 #include <string>
 #include <page.h>
 #include <storeable.h>
-#include <idaccumulator.h>
+#include <idmanager.h>
 #include <file.h>
 #include <decoder.h>
 #include <buffer.h>
@@ -15,6 +15,8 @@
 
 
 namespace graph {
+
+
 
   // This is the base class of all data stores
   class Store {

@@ -12,9 +12,17 @@ Culture includes:
  - Community
  - Religion
  - Government
+     - Law & Order
+     - Defence (Armies)
  - Art & Artifact
  - Library (books, scrolls, oral)
  - Music & Dance
  - Housing & Architecture
  - Science, Technology & Magic
+ - History
 
+
+
+
+
+-- This module should include laws/rules of state, history/civilisation and language

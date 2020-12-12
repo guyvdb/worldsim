@@ -150,15 +150,9 @@ namespace graph {
   }
 
 
-  bool Graph::Register(type::Type *type) {
+  void Graph::RegisterType(type::TypeDefinition definition) {
 
-
-
-    return true;
   }
 
-  bool Graph::Register(std::vector<type::Type *> types) {
-    return true;
-  }
 
 }

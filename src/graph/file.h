@@ -8,6 +8,7 @@
 namespace graph {
 
 
+  // TODO need to create a readonly file and a read write file
 
   class File {
     public:

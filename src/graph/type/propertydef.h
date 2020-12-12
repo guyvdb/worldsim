@@ -42,8 +42,8 @@ namespace graph {
         void SetTypeId(gid id);
         FixedString GetName();
         void SetName(FixedString name);
-        dtid GetDataTypeId();
-        void SetDataTypeId(dtid id);
+        stid GetDataTypeId();
+        void SetDataTypeId(stid id);
         std::uint8_t GetOrdinal();
         void SetOrdinal(std::uint8_t ordinal);
         bool GetRequired();

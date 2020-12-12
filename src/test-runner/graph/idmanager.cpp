@@ -10,7 +10,7 @@
 #include <idmanager.h>
 #include <entity.h>
 //#include <entityencoder.h>
-#include <types.h>
+#include <type/base.h>
 
 TEST_CASE("Check Byte Order","[bytes]") {
 
@@ -68,7 +68,7 @@ TEST_CASE("The id manager should recycle id's","[graph][id-manager]") {
 
   // The entity store is empty and there was no data file so
   // the id manager should have done a store scan and set next id to 1
-  graph::gid id = manager->NextGraphId(graph::Storeable::Concept::EntityConcept);
+  graph::type::gid id = manager->NextGraphId(graph::Storeable::Concept::EntityConcept);
   REQUIRE(id == 1);
 
   // call next id 10 times

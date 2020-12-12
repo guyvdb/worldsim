@@ -14,15 +14,14 @@ namespace graph {
     typedef std::uint32_t gid;      // Graph Id
     typedef std::uint32_t txid;     // Transaction Id
     typedef std::uint32_t pid;      // Page Id
-    //typedef std::uint32_t tid;      // Type Id
     typedef std::uint8_t  cid;      // Concept Id
     typedef std::uint8_t  stateid;  // Action Id
-    typedef std::uint8_t dtid;      // Data Type Id (base types)
+    typedef std::uint8_t  stid;     // Simple Type Id
 
-    const gid NullGraphId = 0x0; //0xFFFFFFFF;
+    const gid NullGraphId = 0x0;
 
 
-    enum DataType : dtid {
+    enum SimpleType : stid {
       ComplexType,
       IntegerType,
       FloatType,

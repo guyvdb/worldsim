@@ -1,14 +1,14 @@
 #include <catch2.hpp>
 #include <utils.h>
 #include <filesystem>
-#include <transactionlog.h>
+#include <tx/transactionlog.h>
 #include <iostream>
 
 
-graph::TransactionLog* CreateTestTransactionLog() {
+graph::tx::TransactionLog* CreateTestTransactionLog() {
   RemoveTestDirectory();
   std::filesystem::path fn(CreateTestDirectory());
-  graph::TransactionLog *l = new graph::TransactionLog(fn.c_str());
+  graph::tx::TransactionLog *l = new graph::tx::TransactionLog(fn.c_str());
   return l;
 
 }

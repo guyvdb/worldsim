@@ -121,7 +121,8 @@ namespace graph {
   }*/
 
   /* ----------------------------------------------------------------------------------------
-   *
+   * TODO design a scanner interface that can be used for Id scanning and other scanning
+   * purposes.
    * --------------------------------------------------------------------------------------*/
   bool Store::ScanIds(IdAccumulator *accumulator) {
     // need to walk the whole store searching for reclaimable ids and the max id.

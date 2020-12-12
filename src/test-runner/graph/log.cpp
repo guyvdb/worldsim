@@ -2,7 +2,7 @@
 
 #include "../utils.h"
 #include <iostream>
-#include <transactionlog.h>
+#include <tx/transactionlog.h>
 
 
 
@@ -16,7 +16,7 @@ TEST_CASE("The log should create a log file in the log directory", "[graph][log]
 
 
   // Create a log
-  graph::TransactionLog *log = new graph::TransactionLog(dir);
+  graph::tx::TransactionLog *log = new graph::tx::TransactionLog(dir);
 
   // Open the log
   REQUIRE(log->Open());

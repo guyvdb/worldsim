@@ -57,7 +57,7 @@ namespace graph {
     }
 
     if(this->m_fromEntity == 0x0) {
-      this->m_fromEntity = this->Tx()->FindEntityById(this->GetFromEntityId());
+      this->m_fromEntity = this->Tx()->FindEntity(this->GetFromEntityId());
       if(this->m_fromEntity != 0x0) {
         this->m_fromEntity->SetTransaction(this->Tx());
       }
@@ -72,7 +72,7 @@ namespace graph {
     }
 
     if(this->m_toEntity == 0x0) {
-      this->m_toEntity = this->Tx()->FindEntityById(this->GetToEntityId());
+      this->m_toEntity = this->Tx()->FindEntity(this->GetToEntityId());
       if(this->m_toEntity != 0x0) {
         this->m_toEntity->SetTransaction(this->Tx());
       }

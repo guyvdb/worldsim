@@ -4,8 +4,7 @@
 #include <filesystem>
 #include <type/base.h>
 #include <storeable.h>
-#include <store.h>
-#include <idaccumulator.h>
+//#include <store.h>
 #include <file.h>
 #include <mutex>
 #include <vector>
@@ -14,10 +13,20 @@
 
 namespace graph {
 
+  class Store;
 
-  class IdCacheItem : public IdAccumulator{
+  class IdAccumulator {
     public:
-      IdCacheItem(Store *store);
+      IdAccumulator() {}
+      virtual ~IdAccumulator() {}
+      virtual void Reclaim(type::gid id) = 0;
+      virtual void SetCounter(type::gid count) = 0;
+  };
+
+
+  class IdScanner : public IdAccumulator{
+    public:
+      IdScanner(Store *store);
       type::gid NextId();
       virtual void Reclaim(type::gid id);
       void SetActive(bool value) { this->m_active = value; }
@@ -70,7 +79,7 @@ namespace graph {
 
       ExtendedFile *m_file;
       std::filesystem::path m_datadir;
-      std::map<Storeable::Concept, IdCacheItem*> m_cache;
+      std::map<Storeable::Concept, IdScanner*> m_cache;
       bool m_isopen;
   };
 

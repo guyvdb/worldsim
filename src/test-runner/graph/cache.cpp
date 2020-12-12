@@ -5,12 +5,12 @@
 
 //#include <utils.h>
 //#include <store.h>
-#include <cache.h>
+#include <cache/cache.h>
 //#include <file.h>
 
 struct CacheInfoTest {
-    graph::gid Id;
-    graph::CacheOffset Info;
+    graph::type::gid Id;
+    graph::cache::CacheOffset Info;
 };
 
 /*

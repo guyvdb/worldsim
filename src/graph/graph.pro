@@ -50,7 +50,6 @@ HEADERS += \
     graph_global.h \
     graph.h \
     grapherrors.h \
-    idaccumulator.h \
     idmanager.h \
     log.h \
     page.h \

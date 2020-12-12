@@ -6,10 +6,10 @@
 TEST_CASE("Entity should encode and decode from a byte stream","[graph][entity]") {
 
 
-  graph::gid id = RandomGraphId();
-  graph::gid attribid = RandomGraphId();
-  graph::gid inRelid = RandomGraphId();
-  graph::gid outRelId = RandomGraphId();
+  graph::type::gid id = RandomGraphId();
+  graph::type::gid attribid = RandomGraphId();
+  graph::type::gid inRelid = RandomGraphId();
+  graph::type::gid outRelId = RandomGraphId();
 
   graph::Entity *t1 = new graph::Entity(id,attribid,outRelId,inRelid);
   graph::Entity *t2 = new graph::Entity(id, new graph::ByteBuffer(t1->Buffer()));

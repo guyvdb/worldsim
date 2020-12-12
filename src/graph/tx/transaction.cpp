@@ -138,7 +138,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    Entity *Transaction::FindEntityById(type::gid id) {
+    Entity *Transaction::FindEntity(type::gid id) {
       if(!this->IsReadable()) {
         std::cout << "[TX] Error - transaction is not readable." << std::endl;
         return 0x0;
@@ -160,6 +160,19 @@ namespace graph {
       //this->m_allocatedObjects.push_back(e);
       return e;
     }
+
+    type::Type *Transaction::CreateType() {
+
+    }
+
+    type::Type *Transaction::FindType(type::gid id) {
+
+    }
+
+    type::Type *Transaction::FindType(std::string name) {
+
+    }
+
 
     /* ----------------------------------------------------------------------------------------
      *

@@ -1,6 +1,6 @@
 #include <utils.h>
 #include <chrono>
-#include <types.h>
+#include <type/base.h>
 #include <QDir>
 #include <QDebug>
 #define TEST_ROOT "data"
@@ -37,7 +37,7 @@ std::string CreateFilePathString(std::string filename) {
   return CreateFilePath(filename).native();
 }
 
-graph::gid RandomGraphId() {
+graph::type::gid RandomGraphId() {
   // get wall clock time
   std::chrono::time_point time = std::chrono::system_clock::now();
   unsigned int ticks = (unsigned int)time.time_since_epoch().count();
@@ -45,7 +45,7 @@ graph::gid RandomGraphId() {
   // seed RNG
   std::srand(ticks);
 
-  graph::gid result = (graph::gid)std::rand();
+  graph::type::gid result = (graph::type::gid)std::rand();
 
   return result;
 
