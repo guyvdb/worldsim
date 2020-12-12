@@ -140,9 +140,6 @@ namespace graph {
   bool Graph::Read(tx::Transaction &tx) {
     return this->m_transactionManager->StartReadOnlyTransaction(tx);
   }
-  //Tx *Graph::Read() {
-  //  return this->m_transactionManager->ReadOnlyTransaction();
-  //}
 
   /* ----------------------------------------------------------------------------------------
    *
@@ -151,55 +148,17 @@ namespace graph {
     std::cout << "Graph Update: ->\n";
     return this->m_transactionManager->StartReadWriteTransaction(tx);
   }
-  //Tx *Graph::Update() {
-  //  return this->m_transactionManager->ReadWriteTransaction();
-  //}
 
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  /*Entity* Graph::NewEntity() {
-    if(!this->m_isOpen) {
-      this->SetError(ErrorFileNotOpen);
-      return 0x0;
-    }
 
-    Entity *e = new Entity(this);
-    return e;
-  }*/
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-  /*Relation* Graph::NewRelation() {
-    if(!this->m_isOpen) {
-      this->SetError(ErrorFileNotOpen);
-      return 0x0;
-    }
-    Relation *r = new Relation(this);
-    return r;
-  }*/
+  bool Graph::Register(type::Type *type) {
 
 
 
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
- /* void Graph::CloseAllStores() {
-    // Iterate and print values of vector
-    for(Store *s : *this->m_dataStores) {
-      if(s->IsOpen()) {
-        s->Close();
-      }
-    }
-  }*/
+    return true;
+  }
 
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-/*  void Graph::FlushAllCaches() {
-    for(Cache *c : *this->m_caches) {
-      c->Flush();
-    }
-  }*/
+  bool Graph::Register(std::vector<type::Type *> types) {
+    return true;
+  }
+
 }

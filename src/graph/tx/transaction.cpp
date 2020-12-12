@@ -116,6 +116,10 @@ namespace graph {
       }
 
       StoreableId rec = this->AllocateId(Storeable::Concept::EntityConcept);
+
+      // use the type system to create the entity as there might be a more
+      // specialised class available
+
       Entity *e = new Entity(rec.Id);
       e->SetTypeId(type);
       e->SetTransaction(this);
@@ -125,6 +129,10 @@ namespace graph {
       //this->m_allocatedObjects.push_back(e);
       this->m_allocatedIds.push_back(rec);
       return e;
+    }
+
+    Entity *Transaction::CreateEntity(std::string type) {
+
     }
 
     /* ----------------------------------------------------------------------------------------

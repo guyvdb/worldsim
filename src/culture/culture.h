@@ -3,10 +3,15 @@
 
 #include "culture_global.h"
 
-class CULTURE_EXPORT Culture
-{
-  public:
-    Culture();
-};
+namespace culture {
+
+
+  class EXPORT Culture {
+    public:
+      Culture();
+  };
+
+
+}
 
 #endif // CULTURE_H

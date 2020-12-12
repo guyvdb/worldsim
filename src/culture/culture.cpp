@@ -1,5 +1,9 @@
 #include "culture.h"
 
-Culture::Culture()
-{
+namespace culture {
+
+
+
+  Culture::Culture() {
+  }
 }

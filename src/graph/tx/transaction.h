@@ -46,9 +46,13 @@ namespace graph {
         AttributeDefinition *FindAttributeDefinitionById(type::gid id);
         AttributeBucket *CreateAttributeBucket();
         AttributeBucket *FindAttributeBucketById(type::gid id);
+
+        Entity *CreateEntity(std::string type);
         Entity *CreateEntity(type::gid type);
         Entity *FindEntityById(type::gid id);
         type::Type * CreateEntityType(type::Type *superclass);
+
+
         AttributeCollection *LoadAttributes(StoreableWithAttributes *storeable);
         Relation *CreateRelation(type::gid type);
         Relation *FindRelationById(type::gid id);
