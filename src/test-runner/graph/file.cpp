@@ -4,26 +4,26 @@
 #include <cstdint>
 #include <vector>
 #include <utils.h>
-#include <file.h>
+#include <store/file.h>
 
-graph::File* CreateTestFile() {
+graph::store::BlockFile* CreateTestFile() {
   RemoveTestDirectory();
   std::filesystem::path fn(CreateTestDirectory());
   fn /= "file.dat";
-  graph::File *f = new graph::File(fn);
+  graph::store::BlockFile *f = new graph::store::BlockFile(fn);
   return f;
 }
 
-graph::ExtendedFile* CreateTestExtendedFile() {
+graph::store::RecordFile* CreateTestExtendedFile() {
   RemoveTestDirectory();
   std::filesystem::path fn(CreateTestDirectory());
   fn /= "file.dat";
-  graph::ExtendedFile *f = new graph::ExtendedFile(fn);
+  graph::store::RecordFile *f = new graph::store::RecordFile(fn);
   return f;
 }
 
 TEST_CASE("File should open a file, creating it if needed","[graph][file]") {
-  graph::File *f = CreateTestFile();
+  graph::store::BlockFile *f = CreateTestFile();
   REQUIRE(f != 0x0);
 
   REQUIRE(f->Open());
@@ -32,7 +32,7 @@ TEST_CASE("File should open a file, creating it if needed","[graph][file]") {
 }
 
 TEST_CASE("File should read/write uint values", "[graph][file]") {
-  graph::ExtendedFile *f = CreateTestExtendedFile();
+  graph::store::RecordFile *f = CreateTestExtendedFile();
   REQUIRE(f != 0x0);
   REQUIRE(f->Open());
 
@@ -76,7 +76,7 @@ TEST_CASE("File should read/write uint values", "[graph][file]") {
 
 
 TEST_CASE("File should grow when read/written past EOF","[graph][file][file-grow]") {
-  graph::File *f = CreateTestFile();
+  graph::store::BlockFile *f = CreateTestFile();
   REQUIRE(f != 0x0);
   REQUIRE(f->Open());
 

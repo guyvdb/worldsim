@@ -108,7 +108,7 @@ namespace graph {
         bool Roll();
 
         const char *m_logdir;
-        store::ExtendedFile *m_file;
+        store::RecordFile *m_file;
         bool m_isopen;
         ErrorNo m_lastError;
         type::txid m_counter;

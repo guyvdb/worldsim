@@ -9,7 +9,8 @@
 #include <storeable.h>
 #include <idmanager.h>
 #include <store/file.h>
-#include <decoder.h>
+#include <store/scanner.h>
+//#include <decoder.h>
 #include <buffer.h>
 #include <grapherrors.h>
 
@@ -23,7 +24,7 @@ namespace graph {
     // This is the base class of all data stores
     class Store {
       public:
-        Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Decoder *factory, Storeable::Concept concept);
+        Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Storeable::Concept concept);
         ~Store();
         bool Open();
         void Close();
@@ -41,6 +42,8 @@ namespace graph {
 
         bool GrowStorage(int pagecount);
 
+        bool Scan(Scanner *scanner);
+
         bool ScanIds(IdAccumulator *scanner);
         Storeable::Concept GetConcept() { return  this->m_concept;}
         std::size_t RecordSize() { return this->m_recordsize; }
@@ -49,11 +52,11 @@ namespace graph {
         std::string m_filename;
         std::size_t m_pagesize;
         std::size_t m_recordsize;
-        Decoder *m_factory;
+
         bool m_isopen;
         ErrorNo m_lastError;
         Storeable::Concept m_concept;
-        File *m_file;
+        BlockFile *m_file;
         IdAccumulator *m_accumulator;
     };
 

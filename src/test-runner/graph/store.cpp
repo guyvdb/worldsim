@@ -1,6 +1,6 @@
 #include <catch2.hpp>
 #include <utils.h>
-#include <store.h>
+#include <store/store.h>
 #include <filesystem>
 #include <entity.h>
 //#include <entityencoder.h>

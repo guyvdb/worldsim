@@ -61,7 +61,7 @@ namespace graph {
   IdManager::IdManager(std::filesystem::path datadir) : m_file(0x0), m_datadir(datadir),  m_isopen(false) {
     std::filesystem::path fn(this->m_datadir);
     fn /= filename;
-    this->m_file = new store::ExtendedFile(fn);
+    this->m_file = new store::RecordFile(fn);
   }
 
   /* ----------------------------------------------------------------------------------------

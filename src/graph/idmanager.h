@@ -81,7 +81,7 @@ namespace graph {
       bool Load();
       bool Save();
 
-      store::ExtendedFile *m_file;
+      store::RecordFile *m_file;
       std::filesystem::path m_datadir;
       std::map<Storeable::Concept, IdScanner*> m_cache;
       bool m_isopen;

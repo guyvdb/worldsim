@@ -5,7 +5,7 @@
 #include <cstdio>
 
 #include <utils.h>
-#include <store.h>
+#include <store/store.h>
 #include <storeable.h>
 #include <idmanager.h>
 #include <entity.h>
@@ -55,10 +55,10 @@ TEST_CASE("The id manager should recycle id's","[graph][id-manager]") {
   std::size_t pagesize = 1024;
   std::size_t recordsize = 16;
   std::filesystem::path filename = CreateFilePath("entity.db");
-  graph::Decoder *factory = new graph::EntityDecoder();
+
 
   // Create & open store
-  graph::Store *store = new graph::Store(filename.c_str(), pagesize, recordsize, factory, graph::Storeable::Concept::EntityConcept);
+  graph::store::Store *store = new graph::store::Store(filename.c_str(), pagesize, recordsize, graph::Storeable::Concept::EntityConcept);
   REQUIRE(store->Open());
 
   // Create and open the manager

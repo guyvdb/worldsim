@@ -22,35 +22,29 @@ namespace graph {
      // this->m_dataStoreIndex = new std::map<Storeable::Type, Store*>();
       this->m_entityStore = this->CreateStore(ENTITY_STORE_FILENAME,
                                               Storeable::EntitySize,
-                                              Storeable::Concept::EntityConcept,
-                                              new EntityDecoder());
+                                              Storeable::Concept::EntityConcept);
 
       this->m_relationStore = this->CreateStore(RELATION_STORE_FILENAME,
                                                 Storeable::RelationSize,
-                                                Storeable::Concept::RelationConcept,
-                                                new RelationDecoder());
+                                                Storeable::Concept::RelationConcept);
 
       this->m_attributeDefinitionStore = this->CreateStore(ATTRIBUTE_DEFINITION_STORE_FILENAME,
                                                            Storeable::AttributeDefinitionSize,
-                                                           Storeable::Concept::AttributeDefinitionConcept,
-                                                           new AttributeDefinitionEncoder());
+                                                           Storeable::Concept::AttributeDefinitionConcept);
 
       this->m_attributeBucketStore = this->CreateStore(ATTRIBUTE_BUCKET_STORE_FILENAME,
                                                        Storeable::AttributeBucketSize,
-                                                       Storeable::Concept::AttributeBucketConcept,
-                                                       new AttributeBucketEncoder());
+                                                       Storeable::Concept::AttributeBucketConcept);
 
 
 
       this->m_typeStore = this->CreateStore(TYPE_STORE_FILENAME,
                                             Storeable::TypeSize,
-                                            Storeable::TypeConcept,
-                                            new type::TypeDecoder());
+                                            Storeable::TypeConcept);
 
       this->m_heirachyStore = this->CreateStore(HEIRACHY_STORE_FILENAME,
                                                 Storeable::HeirarchSize,
-                                                Storeable::HeirachyConcept,
-                                                new type::HeirachyDecoder());
+                                                Storeable::HeirachyConcept);
 
     }
 
@@ -103,7 +97,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    Store *StoreManager::CreateStore(std::string filename, std::size_t size, Storeable::Concept concept, Decoder *encoder) {
+    Store *StoreManager::CreateStore(std::string filename, std::size_t size, Storeable::Concept concept) {
       std::string fq = fn(filename);
 
       std::cout << "[STOREMANAGER] Create store: " <<
@@ -111,7 +105,7 @@ namespace graph {
                    ", fq=" << fq << std::endl;
 
 
-      Store *s = new Store(fq,this->m_pagesize, size, encoder, concept);
+      Store *s = new Store(fq,this->m_pagesize, size, concept);
       this->m_dataStores.push_back(s);
       this->m_dataStoreIndex[concept] = s;
       return s;

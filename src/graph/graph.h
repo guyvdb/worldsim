@@ -15,7 +15,7 @@
 #include <store/storemanager.h>
 #include <idmanager.h>
 
-#include <tx/transactionlog.h>
+#include <wal/writeaheadlog.h>
 #include <tx/transactionmanager.h>
 #include <tx/transaction.h>
 

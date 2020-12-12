@@ -16,20 +16,19 @@ SOURCES += \
     cache/cachemanager.cpp \
     config.cpp \
     decoder.cpp \
-    entity.cpp \    
+    entity.cpp \     \
+    wal/writeaheadlog.cpp
     graph.cpp \
     idmanager.cpp \
     log.cpp \
     page.cpp \
     relation.cpp \
-    schema.cpp \
     store/store.cpp \
     store/storemanager.cpp \
     store/file.cpp \
     storeable.cpp \
     tx/transaction.cpp \
     tx/transactioncache.cpp \
-    tx/transactionlog.cpp \
     tx/transactionmanager.cpp \
     type/base.cpp \
     type/heirachy.cpp \
@@ -53,21 +52,21 @@ HEADERS += \
     log.h \
     page.h \
     relation.h \
-    schema.h \
+    store/scanner.h \
     store/store.h \
     store/storemanager.h \
     store/file.h \
     storeable.h \
     tx/transaction.h \
     tx/transactioncache.h \
-    tx/transactionlog.h \
     tx/transactionmanager.h \
     type/base.h \
     type/heirachy.h \
     type/propertydef.h \
     type/registry.h \
     type/type.h \
-    query/parser.h
+    query/parser.h \
+    wal/writeaheadlog.h
 
 
 DESTDIR = ../../bin

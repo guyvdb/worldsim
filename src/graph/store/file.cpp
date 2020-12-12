@@ -11,14 +11,14 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    File::File(std::filesystem::path filename) : m_size(0), m_fd(0x0), m_filename(filename), m_isopen(false) {
+    BlockFile::BlockFile(std::filesystem::path filename) : m_size(0), m_fd(0x0), m_filename(filename), m_isopen(false) {
       std::cout << "[FILE] Create file object - filename=" << m_filename << std::endl;
     }
 
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    File::~File() {
+    BlockFile::~BlockFile() {
       if(this->m_isopen) {
         this->Close();
       }
@@ -27,7 +27,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool File::Open() {
+    bool BlockFile::Open() {
       std::cout << "[FILE] Open " << this->m_filename << std::endl;
 
       // Check if the file exists... if not touch it
@@ -55,7 +55,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    void File::Close() {
+    void BlockFile::Close() {
       // if the file is open flush it and close it
       if(this->m_isopen) {
         this->Flush();
@@ -68,7 +68,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      * Write data size long to the pos in the file
      * --------------------------------------------------------------------------------------*/
-    bool File::Write(long pos, void *data, std::size_t size){
+    bool BlockFile::Write(long pos, void *data, std::size_t size){
       if(!this->Seek(pos)) {
         return false;
       }
@@ -78,7 +78,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool File::Write(void *data, std::size_t size) {
+    bool BlockFile::Write(void *data, std::size_t size) {
       // write size bytes at the current position
       std::size_t written = std::fwrite(data,1,size,this->m_fd);
       long pos = this->Tell();
@@ -88,18 +88,18 @@ namespace graph {
       return written == size;
     }
 
-    bool File::Write(long pos, char *data, std::size_t size) {
+    bool BlockFile::Write(long pos, char *data, std::size_t size) {
       return this->Write(pos, (void*)data, size);
     }
 
-    bool File::Write(char *data, std::size_t size) {
+    bool BlockFile::Write(char *data, std::size_t size) {
       return this->Write((void*)data, size);
     }
 
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool File::Read(long pos, void *data, std::size_t size) {
+    bool BlockFile::Read(long pos, void *data, std::size_t size) {
       if(!this->Seek(pos)) {
         return false;
       }
@@ -109,16 +109,16 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool File::Read(void *data, std::size_t size) {
+    bool BlockFile::Read(void *data, std::size_t size) {
       std::size_t read = std::fread(data,1,size,this->m_fd);
       return read == size;
     }
 
-    bool File::Read(long pos, char *data, std::size_t size) {
+    bool BlockFile::Read(long pos, char *data, std::size_t size) {
       return this->Read(pos, (void*)data, size);
     }
 
-    bool File::Read(char *data, std::size_t size) {
+    bool BlockFile::Read(char *data, std::size_t size) {
       return this->Read((void*)data, size);
     }
 
@@ -126,28 +126,28 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool File::Seek(long pos) {
+    bool BlockFile::Seek(long pos) {
       return std::fseek(this->m_fd,pos,SEEK_SET) == 0;
     }
 
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool File::SeekEOF() {
+    bool BlockFile::SeekEOF() {
       return std::fseek(this->m_fd,0,SEEK_END) == 0;
     }
 
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool File::Flush() {
+    bool BlockFile::Flush() {
       return std::fflush(this->m_fd) == 0;
     }
 
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    long File::Tell() {
+    long BlockFile::Tell() {
        return std::ftell(this->m_fd);
     }
 
@@ -155,14 +155,14 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    long File::Size() {
+    long BlockFile::Size() {
       return m_size;
     }
 
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    long File::FileSize() {
+    long BlockFile::FileSize() {
       long pos = this->Tell();
       std::fseek(this->m_fd,0,SEEK_END);
       long size = this->Tell();
@@ -174,7 +174,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool File::Exists() {
+    bool BlockFile::Exists() {
       assert(!this->m_isopen);
 
       // open the file for read... if it fails the file does not exist
@@ -190,7 +190,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    void File::Touch() {
+    void BlockFile::Touch() {
       assert(!this->m_isopen);
       // make sure the file does not exist... open the file for write to create it
       FILE *fd = 0x0;
@@ -224,7 +224,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::WriteInt(long pos, std::uint8_t data){
+    bool RecordFile::WriteInt(long pos, std::uint8_t data){
       if(!this->Seek(pos)) {
         return false;
       }
@@ -234,7 +234,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::WriteInt(long pos, std::uint16_t data){
+    bool RecordFile::WriteInt(long pos, std::uint16_t data){
       if(!this->Seek(pos)) {
         return false;
       }
@@ -244,7 +244,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::WriteInt(long pos, std::uint32_t data){
+    bool RecordFile::WriteInt(long pos, std::uint32_t data){
       if(!this->Seek(pos)) {
         return false;
       }
@@ -254,7 +254,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::WriteInt(long pos, std::uint64_t data) {
+    bool RecordFile::WriteInt(long pos, std::uint64_t data) {
       if(!this->Seek(pos)) {
         return false;
       }
@@ -265,7 +265,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::WriteInt(std::uint8_t data) {
+    bool RecordFile::WriteInt(std::uint8_t data) {
       char buf[1];
       buf[0] = (char)data;
       return this->Write(buf,1);
@@ -274,7 +274,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::WriteInt(std::uint16_t data) {
+    bool RecordFile::WriteInt(std::uint16_t data) {
       char buf[2];
       buf[0] = (char)(data >> 8);
       buf[1] = (char)(data);
@@ -284,7 +284,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::WriteInt(std::uint32_t data) {
+    bool RecordFile::WriteInt(std::uint32_t data) {
       char buf[4];
       buf[0] = (char)(data >> 24);
       buf[1] = (char)(data >> 16);
@@ -296,7 +296,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::WriteInt(std::uint64_t data) {
+    bool RecordFile::WriteInt(std::uint64_t data) {
       char buf[8];
       buf[0] = (char)(data >> 56);
       buf[1] = (char)(data >> 48);
@@ -314,7 +314,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::ReadInt(long pos, std::uint8_t *data){
+    bool RecordFile::ReadInt(long pos, std::uint8_t *data){
       if(!this->Seek(pos)) {
         return false;
       }
@@ -324,7 +324,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::ReadInt(long pos, std::uint16_t *data){
+    bool RecordFile::ReadInt(long pos, std::uint16_t *data){
       if(!this->Seek(pos)) {
         return false;
       }
@@ -334,7 +334,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::ReadInt(long pos, std::uint32_t *data){
+    bool RecordFile::ReadInt(long pos, std::uint32_t *data){
       if(!this->Seek(pos)) {
         return false;
       }
@@ -344,7 +344,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::ReadInt(long pos, std::uint64_t *data) {
+    bool RecordFile::ReadInt(long pos, std::uint64_t *data) {
       if(!this->Seek(pos)) {
         return false;
       }
@@ -355,14 +355,14 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::ReadInt(std::uint8_t *data) {
+    bool RecordFile::ReadInt(std::uint8_t *data) {
       return this->Read((char*)data, 1);
     }
 
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::ReadInt(std::uint16_t *data) {
+    bool RecordFile::ReadInt(std::uint16_t *data) {
       std::uint8_t buf[2];
       if(!this->Read((char*)buf,2)) {
         return false;
@@ -374,7 +374,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::ReadInt(std::uint32_t *data) {
+    bool RecordFile::ReadInt(std::uint32_t *data) {
       std::uint8_t buf[4];
       if(!this->Read((char*)buf,4)) {
         return false;
@@ -386,7 +386,7 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    bool ExtendedFile::ReadInt(std::uint64_t *data) {
+    bool RecordFile::ReadInt(std::uint64_t *data) {
       uint8_t buf[8];
       if(!this->Read((char*)buf,8)) {
         return false;

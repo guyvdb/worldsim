@@ -4,7 +4,7 @@
 #include <shared_mutex>
 
 #include <tx/transaction.h>
-#include <tx/transactionlog.h>
+#include <wal/writeaheadlog.h>
 #include <cache/cachemanager.h>
 #include <idmanager.h>
 

@@ -11,19 +11,18 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    Store::Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Decoder *factory, Storeable::Concept concept) :
-      m_filename(filename), m_pagesize(pagesize), m_recordsize(recordsize), m_factory(factory),
+    Store::Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Storeable::Concept concept) :
+      m_filename(filename), m_pagesize(pagesize), m_recordsize(recordsize),
       m_isopen(false), m_lastError(ErrorNone),m_concept(concept), m_file(0x0),m_accumulator(0x0) {
       std::filesystem::path fn(filename);
 
       std::cout << "[STORE] Create - filename = " << this->m_filename <<
                    ", pagesize = " << this->m_pagesize <<
                    ", recordsize = " << this->m_recordsize <<
-                   ", type = " << (int)this->m_concept <<
-                   ", factory - " << this->m_factory << std::endl;
+                   ", type = " << (int)this->m_concept << std::endl;
 
 
-      this->m_file = new File(fn);
+      this->m_file = new BlockFile(fn);
 
     }
 
@@ -32,7 +31,6 @@ namespace graph {
      * --------------------------------------------------------------------------------------*/
     Store::~Store() {
       delete this->m_file;
-      delete this->m_factory;
     }
 
     /* ----------------------------------------------------------------------------------------
@@ -100,30 +98,6 @@ namespace graph {
     }
 
     /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-    /*bool Store::ReadRecord(gid id, Storeable **result) {
-      long offset = (long)(id-1) * (long)this->m_recordsize;
-      ByteBuffer b = ByteBuffer(this->m_recordsize);
-
-      if(!this->m_file->Read(offset,b.CharData(), this->m_recordsize)) {
-        return false;
-      }
-
-      *result = this->m_factory->Decode(id, &b);
-      return true;
-
-    }*/
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-    /*bool Store::WriteRecord(Storeable *rec) {
-      long offset = (long)(rec->GetGraphId()-1) * (long)this->m_recordsize;
-      return this->m_file->Write(offset, rec->Buffer()->VoidData(), this->m_recordsize);
-    }*/
-
-    /* ----------------------------------------------------------------------------------------
      * TODO design a scanner interface that can be used for Id scanning and other scanning
      * purposes.
      * --------------------------------------------------------------------------------------*/
@@ -151,82 +125,6 @@ namespace graph {
       accumulator->SetCounter((type::gid)count+1);
       return true;
     }
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-  //  bool Store::Read(char *data, std::size_t size) {
-  //    std::size_t read = std::fread((void*)data,1,size,this->m_fd);
-  //    return read == size;
-  //  }
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-  //  bool Store::Read(long pos, char *data, std::size_t size) {
-  //    if(!this->Seek(pos)) {
-  //      return false;
-  //    }
-  //    return this->Read(data,size);
-  //  }
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-  //  bool Store::Write(const char *data, std::size_t size) {
-  //    std::size_t written = std::fwrite((void*)data,1,size,this->m_fd);
-  //    return written == size;
-  //  }
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-  //  bool Store::Write(long pos, const char *data, std::size_t size) {
-  //    if(!this->Seek(pos)) {
-  //      return false;
-  //    }
-  //    return this->Write(data,size);
-  //  }
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-  //  bool Store::Seek(long pos) {
-  //    return std::fseek(this->m_fd,pos,SEEK_SET) == 0;
-  //  }
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-  //  bool Store::Flush() {
-  //    return std::fflush(this->m_fd) == 0;
-  //  }
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-  //  long Store::Tell() {
-  //    return std::ftell(this->m_fd);
-  //  }
-
-    /* ----------------------------------------------------------------------------------------
-     *
-     * --------------------------------------------------------------------------------------*/
-  //  long Store::FileSize() {
-  //    // keep point to return to
-  //    long pos = this->Tell();
-
-  //    // seek to eof
-  //    std::fseek(this->m_fd,0,SEEK_END);
-
-  //    // tell position
-  //    long result = this->Tell();
-
-  //    // seek back to where we where
-  //    this->Seek(pos);
-
-  //    return result;
-  //  }
 
   }
 }

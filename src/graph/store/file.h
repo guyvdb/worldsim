@@ -13,10 +13,10 @@ namespace graph {
 
     // TODO need to create a readonly file and a read write file
 
-    class File {
+    class BlockFile {
       public:
-        File(std::filesystem::path filename);
-        ~File();
+        BlockFile(std::filesystem::path filename);
+        ~BlockFile();
         bool Open();
         void Close();
         bool Exists();
@@ -57,9 +57,9 @@ namespace graph {
     };
 
 
-    class ExtendedFile : public File {
+    class RecordFile : public BlockFile {
       public:
-        ExtendedFile(std::filesystem::path filename) : File(filename) {}
+        RecordFile(std::filesystem::path filename) : BlockFile(filename) {}
 
 
 

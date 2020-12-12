@@ -1,4 +1,4 @@
-#include "transactionlog.h"
+#include "writeaheadlog.h"
 #include <filesystem>
 #include <iostream>
 #include <cerrno>
@@ -16,7 +16,7 @@ namespace graph {
       m_file(0x0), m_isopen(false), m_lastError(ErrorNone) {
       std::filesystem::path fn(this->m_logdir);
       fn /= LOG_NAME;
-      this->m_file = new store::ExtendedFile(fn);
+      this->m_file = new store::RecordFile(fn);
     }
 
     /* ----------------------------------------------------------------------------------------

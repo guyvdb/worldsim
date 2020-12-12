@@ -47,7 +47,7 @@ namespace graph {
         Store *GetStore(Storeable::Concept concept);
       private:
 
-        Store *CreateStore(std::string filename, std::size_t size, Storeable::Concept concept, Decoder *encoder);
+        Store *CreateStore(std::string filename, std::size_t size, Storeable::Concept concept);
         std::string fn(std::string filename );
 
         std::size_t m_pagesize;
