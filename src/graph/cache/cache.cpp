@@ -13,7 +13,7 @@ namespace graph {
      *
      * --------------------------------------------------------------------------------------*/
 
-    Cache::Cache(CacheManager *manage, Store *store, std::size_t maxpages) : m_cacheManager(manage), m_store(store), m_maxPages(maxpages) {
+    Cache::Cache(CacheManager *manage, store::Store *store, std::size_t maxpages) : m_cacheManager(manage), m_store(store), m_maxPages(maxpages) {
       this->m_concept = store->GetConcept();
       this->m_recsize = store->RecordSize();
       this->m_pagesize = store->PageSize();

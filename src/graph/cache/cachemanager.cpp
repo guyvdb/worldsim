@@ -10,7 +10,7 @@ namespace graph {
 
 
 
-    CacheManager::CacheManager(StoreManager *storeManager, Config &config) : m_storeManager(storeManager){
+    CacheManager::CacheManager(store::StoreManager *storeManager, Config &config) : m_storeManager(storeManager){
       // we need to create a cache for all the stores
       for(auto &store : *storeManager->Stores()) {
         std::cout << "[CACHE] Load cache for: " << store->Filename() << std::endl;

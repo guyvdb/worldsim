@@ -9,7 +9,7 @@
 #include <type/base.h>
 #include <page.h>
 #include <storeable.h>
-#include <store.h>
+#include <store/store.h>
 #include <mutex>
 
 namespace graph {
@@ -57,7 +57,7 @@ namespace graph {
 
     class Cache {
       public:
-        Cache(CacheManager *manage, Store *store, std::size_t maxpages); // Storeable::Concept concept, std::size_t recordsize, std::size_t pagesize);
+        Cache(CacheManager *manage, store::Store *store, std::size_t maxpages); // Storeable::Concept concept, std::size_t recordsize, std::size_t pagesize);
 
 
         CacheOffset GetCacheOffset(type::gid id);
@@ -74,7 +74,7 @@ namespace graph {
 
         void Flush();
 
-        Store* GetStore() { return this->m_store; }
+        store::Store* GetStore() { return this->m_store; }
 
       protected:
       private:
@@ -88,7 +88,7 @@ namespace graph {
         void ReduceCachePageCount();
 
         CacheManager *m_cacheManager;
-        Store *m_store;
+        store::Store *m_store;
         Storeable::Concept m_concept;
         std::size_t m_maxPages;
         std::size_t m_recsize;

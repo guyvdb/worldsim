@@ -1,7 +1,7 @@
 #include "idmanager.h"
 #include <iostream>
 #include <string>
-#include <store.h>
+#include <store/store.h>
 #include <type/base.h>
 
 const std::string filename("id.db");
@@ -11,7 +11,7 @@ char InvalidFileMarker[2] = {0x0,0x0};
 namespace graph {
 
 
-  IdScanner::IdScanner(Store *store) : IdAccumulator() ,m_store(store),m_active(false){
+  IdScanner::IdScanner(store::Store *store) : IdAccumulator() ,m_store(store),m_active(false){
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ namespace graph {
   IdManager::IdManager(std::filesystem::path datadir) : m_file(0x0), m_datadir(datadir),  m_isopen(false) {
     std::filesystem::path fn(this->m_datadir);
     fn /= filename;
-    this->m_file = new ExtendedFile(fn);
+    this->m_file = new store::ExtendedFile(fn);
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ namespace graph {
    * an appropriate number of times prior to the store being opened. Once the store is open
    * no more stores can be registerd. The register method is not thread safe.
    * --------------------------------------------------------------------------------------*/
-  bool IdManager::Register(Store *store, Storeable::Concept concept){
+  bool IdManager::Register(store::Store *store, Storeable::Concept concept){
     if(this->m_isopen) {
       std::cout << "[ID MANAGER] Error - trying to register a store after the manager has been opened." << std::endl;
       return false;
@@ -217,8 +217,8 @@ namespace graph {
    * --------------------------------------------------------------------------------------*/
   bool IdManager::Scan(){
     for(const auto &pair : this->m_cache) {
-      Store *store = pair.second->GetStore();
-      store->ScanIds(pair.second);
+      store::Store *s = pair.second->GetStore();
+      s->ScanIds(pair.second);
     }
     return true;
   }

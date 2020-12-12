@@ -16,17 +16,17 @@ SOURCES += \
     cache/cachemanager.cpp \
     config.cpp \
     decoder.cpp \
-    entity.cpp \
-    file.cpp \
+    entity.cpp \    
     graph.cpp \
     idmanager.cpp \
     log.cpp \
     page.cpp \
     relation.cpp \
     schema.cpp \
-    store.cpp \
+    store/store.cpp \
+    store/storemanager.cpp \
+    store/file.cpp \
     storeable.cpp \
-    storemanager.cpp \
     tx/transaction.cpp \
     tx/transactioncache.cpp \
     tx/transactionlog.cpp \
@@ -46,7 +46,6 @@ HEADERS += \
     config.h \
     decoder.h \
     entity.h \
-    file.h \
     graph_global.h \
     graph.h \
     grapherrors.h \
@@ -55,9 +54,10 @@ HEADERS += \
     page.h \
     relation.h \
     schema.h \
-    store.h \
+    store/store.h \
+    store/storemanager.h \
+    store/file.h \
     storeable.h \
-    storemanager.h \
     tx/transaction.h \
     tx/transactioncache.h \
     tx/transactionlog.h \

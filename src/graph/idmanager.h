@@ -4,8 +4,9 @@
 #include <filesystem>
 #include <type/base.h>
 #include <storeable.h>
+//#include <store/store.h>
 //#include <store.h>
-#include <file.h>
+#include <store/file.h>
 #include <mutex>
 #include <vector>
 #include <map>
@@ -13,7 +14,10 @@
 
 namespace graph {
 
-  class Store;
+  namespace store {
+    class Store;
+  }
+
 
   class IdAccumulator {
     public:
@@ -26,11 +30,11 @@ namespace graph {
 
   class IdScanner : public IdAccumulator{
     public:
-      IdScanner(Store *store);
+      IdScanner(store::Store *store);
       type::gid NextId();
       virtual void Reclaim(type::gid id);
       void SetActive(bool value) { this->m_active = value; }
-      Store *GetStore() { return m_store; }
+      store::Store *GetStore() { return m_store; }
       int ReclaimedIdCount() { return this->m_data.size(); }
       long FileOffset() { return this->m_fileoffset; }
       void SetFileOffset(long offset) { this->m_fileoffset = offset; }
@@ -43,7 +47,7 @@ namespace graph {
       type::gid m_counter;
       std::mutex m_mutex;
       std::vector<type::gid> m_data;
-      Store *m_store;
+      store::Store *m_store;
       bool m_active;
       long m_fileoffset; // used in storing this is the offset in the file
                          // where the data offset is written
@@ -68,7 +72,7 @@ namespace graph {
 
       void Reclaim(type::gid id, Storeable::Concept type);
       //void Reclaim(gid id, Storeable::Concept type);
-      bool Register(Store *store, Storeable::Concept type);
+      bool Register(store::Store *store, Storeable::Concept type);
       type::gid NextGraphId(Storeable::Concept type);
       //tid NextTypeId(Storeable::Concept type);
     private:
@@ -77,7 +81,7 @@ namespace graph {
       bool Load();
       bool Save();
 
-      ExtendedFile *m_file;
+      store::ExtendedFile *m_file;
       std::filesystem::path m_datadir;
       std::map<Storeable::Concept, IdScanner*> m_cache;
       bool m_isopen;

@@ -3,7 +3,7 @@
 
 #include <type/base.h>
 #include <storeable.h>
-#include <storemanager.h>
+#include <store/storemanager.h>
 #include <cache/cache.h>
 #include <config.h>
 
@@ -19,7 +19,7 @@ namespace graph {
 
     class CacheManager {
       public:
-        CacheManager(StoreManager *storeManager, Config &config);
+        CacheManager(store::StoreManager *storeManager, Config &config);
         ~CacheManager();
         bool Open();
         bool Close();
@@ -34,7 +34,7 @@ namespace graph {
         //AttributeBucket *FindAttributeBucketById(gid id);
       private:
         Storeable *FindObjectById(Cache *cache, type::gid id);
-        StoreManager *m_storeManager;
+        store::StoreManager *m_storeManager;
         std::vector<Cache*> m_caches;
         std::map<Storeable::Concept, Cache*> m_cacheIndex;
     };

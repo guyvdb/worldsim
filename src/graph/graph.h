@@ -12,7 +12,7 @@
 
 #include <config.h>
 
-#include <storemanager.h>
+#include <store/storemanager.h>
 #include <idmanager.h>
 
 #include <tx/transactionlog.h>
@@ -48,7 +48,7 @@ namespace graph {
       bool m_isOpen;
       Config &m_config;
       IdManager *m_idManager;
-      StoreManager *m_storeManager;
+      store::StoreManager *m_storeManager;
       tx::TransactionManager *m_transactionManager;
       cache::CacheManager *m_cacheManager;
       tx::TransactionLog *m_log;

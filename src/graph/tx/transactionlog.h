@@ -2,7 +2,7 @@
 #define TRANSACTIONLOG_H
 
 #include <type/base.h>
-#include <file.h>
+#include <store/file.h>
 #include <mutex>
 #include <vector>
 #include <storeable.h>
@@ -108,7 +108,7 @@ namespace graph {
         bool Roll();
 
         const char *m_logdir;
-        ExtendedFile *m_file;
+        store::ExtendedFile *m_file;
         bool m_isopen;
         ErrorNo m_lastError;
         type::txid m_counter;

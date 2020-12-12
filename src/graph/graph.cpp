@@ -19,7 +19,7 @@ namespace graph {
     //std::cout << "Create id manager\n";
     this->m_idManager = new IdManager(config.DataDirectory());
     //std::cout << "Create store manager\n";
-    this->m_storeManager = new StoreManager(config.DataDirectory(), config.PageSize());
+    this->m_storeManager = new store::StoreManager(config.DataDirectory(), config.PageSize());
     //std::cout << "Create cache manager\n";
     this->m_cacheManager = new cache::CacheManager(this->m_storeManager,config);
     //std::cout << "Create log\n";
