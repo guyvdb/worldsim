@@ -7,7 +7,7 @@
 #include <utils.h>
 #include <store/store.h>
 #include <storeable.h>
-#include <idmanager.h>
+#include <id/idmanager.h>
 #include <entity.h>
 //#include <entityencoder.h>
 #include <type/base.h>
@@ -62,7 +62,7 @@ TEST_CASE("The id manager should recycle id's","[graph][id-manager]") {
   REQUIRE(store->Open());
 
   // Create and open the manager
-  graph::IdManager *manager = new graph::IdManager(datadir);
+  graph::id::IdManager *manager = new graph::id::IdManager(datadir);
   manager->Register(store, graph::Storeable::Concept::EntityConcept);
   REQUIRE(manager->Open());
 
@@ -111,7 +111,7 @@ TEST_CASE("The id manager should recycle id's","[graph][id-manager]") {
     // If we open the manager again it should read its state from its
     // data file. If we then call next id we should get 13
     delete  manager;
-    manager = new graph::IdManager(datadir);
+    manager = new graph::id::IdManager(datadir);
     manager->Register(store, graph::Storeable::Concept::EntityConcept);
 
     REQUIRE(manager->Open());

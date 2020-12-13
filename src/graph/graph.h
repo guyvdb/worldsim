@@ -39,6 +39,7 @@ namespace graph {
 
     private:
 
+      void EnsureBaseTypes();
       void SetError(ErrorNo no);
       //void CloseAllStores();
       //void FlushAllCaches();
@@ -52,6 +53,7 @@ namespace graph {
       tx::TransactionManager *m_transactionManager;
       cache::CacheManager *m_cacheManager;
       tx::TransactionLog *m_log;
+      type::Registry *m_registry;
 
 
 

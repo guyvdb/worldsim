@@ -1,7 +1,8 @@
 #include <catch2.hpp>
 #include <utils.h>
 #include <filesystem>
-#include <tx/transactionlog.h>
+//#include <tx/transactionlog.h>
+#include <wal/writeaheadlog.h>
 #include <iostream>
 
 

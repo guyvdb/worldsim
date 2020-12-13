@@ -84,7 +84,7 @@ namespace graph {
   };
 
 
-
+/*
 
   class AttributeBucketEncoder : public Decoder {
     public:
@@ -101,5 +101,6 @@ namespace graph {
       virtual Storeable *Empty() { return new AttributeDefinition(type::NullGraphId); }
       virtual bool Decodeable() { return true; }
   };
+  */
 }
 #endif // ATTRIBUTE_H

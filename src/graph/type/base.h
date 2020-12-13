@@ -47,14 +47,17 @@ namespace graph {
     // All strings are padded so the structure is alway 65 bytes long
     class FixedString {
       public:
+        static const int MAX_FIXED_STRING_LEN = 64;
+        FixedString(ByteBuffer *buffer, int offset);
         FixedString(std::string value);
         FixedString();
         ~FixedString();
         std::string GetValue();
         void SetValue(std::string value);
+        void WriteValue(ByteBuffer *buffer, int offset);
         int Size();
       private:
-        ByteBuffer *m_buffer;
+        std::string m_value;
     };
 
     // A dynamic string is a variable size string. The string is written into property buckets.

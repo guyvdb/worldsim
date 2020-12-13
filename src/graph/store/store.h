@@ -16,11 +16,7 @@
 
 
 namespace graph {
-
   namespace store {
-
-
-
     // This is the base class of all data stores
     class Store {
       public:
@@ -28,22 +24,14 @@ namespace graph {
         ~Store();
         bool Open();
         void Close();
-        void SetIdAccumulator(id::IdAccumulator *accumulator) {this->m_accumulator = accumulator;}
         ErrorNo LastError() { return m_lastError; }
         bool IsOpen() { return m_isopen; }
         std::string Filename() { return this->m_filename; }
         long Size() { return this->m_file->Size(); }
-
         bool ReadPage(int page, ByteBuffer *buffer);
         bool WritePage(int page, ByteBuffer *buffer);
         bool Write(long pos, void *ptr, std::size_t size);
-        //bool ReadRecord(gid id, Storeable **result);
-        //bool WriteRecord(Storeable *rec);
-
-        bool GrowStorage(int pagecount);
-
         bool Scan(Scanner *scanner);
-
         bool ScanIds(id::IdAccumulator *scanner);
         Storeable::Concept GetConcept() { return  this->m_concept;}
         std::size_t RecordSize() { return this->m_recordsize; }
@@ -52,14 +40,11 @@ namespace graph {
         std::string m_filename;
         std::size_t m_pagesize;
         std::size_t m_recordsize;
-
         bool m_isopen;
         ErrorNo m_lastError;
         Storeable::Concept m_concept;
         BlockFile *m_file;
-        id::IdAccumulator *m_accumulator;
     };
-
   }
 }
 

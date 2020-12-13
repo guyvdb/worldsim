@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Create 2 Entities &amp;&amp; Relation</string>
+     <string>Create Entities &amp;&amp; Relation</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
@@ -37,7 +37,33 @@
      </rect>
     </property>
     <property name="text">
-     <string>Read 2 Entities</string>
+     <string>Read Entities</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>100</y>
+      <width>191</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Create Types</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>140</y>
+      <width>191</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Open &amp;&amp; Close Graph</string>
     </property>
    </widget>
   </widget>

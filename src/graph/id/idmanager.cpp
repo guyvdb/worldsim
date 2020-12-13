@@ -78,10 +78,7 @@ namespace graph {
 
       // clear the cache
       this->m_cache.clear();
-
-
       delete this->m_file;
-
     }
 
     /* ----------------------------------------------------------------------------------------
@@ -104,6 +101,7 @@ namespace graph {
         return true;
       }
 
+      // failed to load file -- scan the stores
       if(this->Scan()) {
         this->MarkItemState(true);
         this->m_isopen = true;

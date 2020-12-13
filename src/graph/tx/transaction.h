@@ -49,16 +49,24 @@ namespace graph {
 
         Entity *CreateEntity(std::string type);
         Entity *CreateEntity(type::gid type);
+        Entity *CreateEntity(type::Type *type);
         Entity *FindEntity(type::gid id);
 
-        type::Type *CreateType();
+        type::Type *CreateType(Storeable::Concept concept, std::string name, type::Type *superclass=0x0);
         type::Type *FindType(type::gid id);
         type::Type *FindType(std::string name);
 
 
         AttributeCollection *LoadAttributes(StoreableWithAttributes *storeable);
+
+        Relation *CreateRelation(std::string type);
         Relation *CreateRelation(type::gid type);
+        Relation *CreateRelation(type::Type *type);
+
         Relation *FindRelationById(type::gid id);
+
+
+
         Attribute *CreateAttribute(type::gid type);
         void SetTransactionManager(TransactionManager *manager) {this->m_transactionManager = manager; }
         void ChangeState(TransactionState state) {this->m_state = state;}

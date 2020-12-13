@@ -58,7 +58,7 @@ namespace graph {
         virtual Concept GetConcept() { return Concept::HeirachyConcept; }
     };
 
-
+/*
     class HeirachyDecoder : public Decoder {
       public:
         HeirachyDecoder() : Decoder() {}
@@ -66,7 +66,7 @@ namespace graph {
         virtual Storeable *Empty() { return new Heirachy(NullGraphId); }
         virtual bool Decodeable() { return true; }
     };
-
+*/
   }
 
 }

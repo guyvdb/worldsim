@@ -12,7 +12,7 @@ namespace graph {
 
     CacheManager::CacheManager(store::StoreManager *storeManager, Config &config) : m_storeManager(storeManager){
       // we need to create a cache for all the stores
-      for(auto &store : *storeManager->Stores()) {
+      for(auto &store : storeManager->GetStores()) {
         std::cout << "[CACHE] Load cache for: " << store->Filename() << std::endl;
         std::size_t max = config.GetCacheMaxPages(store->GetConcept());
         Cache *c = new Cache(this,store, max);

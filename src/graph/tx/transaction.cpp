@@ -121,6 +121,7 @@ namespace graph {
       // specialised class available
 
       Entity *e = new Entity(rec.Id);
+      e->SetFlag(0x1);
       e->SetTypeId(type);
       e->SetTransaction(this);
       e->SetDirty(true);
@@ -161,16 +162,97 @@ namespace graph {
       return e;
     }
 
-    type::Type *Transaction::CreateType() {
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
+    type::Type *Transaction::CreateType(Storeable::Concept concept, std::string name, type::Type *superclass) {
+      type::Type *super = superclass;
 
+      if(!this->IsWriteable()) {
+        std::cout << "[TX] Error - transaction is not writeable." << std::endl;
+        return 0x0;
+      }
+
+      // make sure type name is unique
+      if(this->m_transactionManager->GetTypeRegistry()->TypeExists(name)) {
+        std::cout << "[TX] Error - type " << name << " already exists." << std::endl;
+        return 0x0;
+      }
+
+      // Only create types derived from entity and relation
+      if(concept != Storeable::Concept::EntityConcept && concept != Storeable::Concept::RelationConcept) {
+        std::cout << "[TX] Error - can only create types for entities and relations." << std::endl;
+        return 0x0;
+      }
+
+      // entity and relation will have null superclasses
+      // every other type has a superclass even if not provided
+      if(super == 0x0 && name != "entity" && name != "relation") {
+        if(concept == Storeable::Concept::EntityConcept) {
+          super = this->FindType("entity");
+        } else {
+          super = this->FindType("relation");
+        }
+      }
+
+      // create the type
+      StoreableId rec = this->AllocateId(Storeable::Concept::TypeConcept);
+      type::Type *t = new type::Type(rec.Id);
+      t->SetFlag(0x1);
+      t->SetTransaction(this);
+      t->SetDirty(true);
+      t->SetName(name);
+      t->SetTargetConcept(concept);
+
+      // set up the heirachy
+      if(super != 0x0) {
+        t->SetSuperclassId(super->GetGraphId());
+        super->AddSubclass(t);
+      }
+
+      // house keeping
+      this->m_transactionCacheManager.Add(t);
+      this->m_allocatedIds.push_back(rec);
+      this->m_transactionManager->GetTypeRegistry()->IndexTypeName(rec.Id, name);
+
+      return t;
     }
 
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
     type::Type *Transaction::FindType(type::gid id) {
+      if(!this->IsReadable()) {
+        std::cout << "[TX] Error - transaction is not readable." << std::endl;
+        return 0x0;
+      }
 
+      // is the entity in the transaction cache?
+      if(this->m_transactionCacheManager.Contains(Storeable::TypeConcept, id)) {
+        return (type::Type*)this->m_transactionCacheManager.Get(Storeable::TypeConcept, id);
+      }
+
+      ByteBuffer *b = this->CacheMan()->GetStoreableBuffer(Storeable::Concept::TypeConcept, id);
+      if(b == 0x0) {
+        std::cout << "[TX] Error - failed to load type from cache." << std::endl;
+        return 0x0;
+      }
+
+      type::Type *t = new type::Type(id, b);
+      t->SetTransaction(this);
+      this->m_transactionCacheManager.Add(t);
+      return t;
     }
 
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
     type::Type *Transaction::FindType(std::string name) {
-
+      if(!this->m_transactionManager->GetTypeRegistry()->TypeExists(name)) {
+        return 0x0;
+      }
+      type::gid id = this->m_transactionManager->GetTypeRegistry()->GetTypeId(name);
+      return this->FindType(id);
     }
 
 
@@ -185,6 +267,7 @@ namespace graph {
 
       StoreableId rec = this->AllocateId(Storeable::Concept::RelationConcept);
       Relation *r = new Relation(rec.Id);
+      r->SetFlag(0x1);
       r->SetTypeId(type);
       r->SetTransaction(this);
       r->SetDirty(true);

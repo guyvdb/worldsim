@@ -13,7 +13,7 @@ namespace graph {
      * --------------------------------------------------------------------------------------*/
     Store::Store(std::string filename, std::size_t pagesize, std::size_t recordsize, Storeable::Concept concept) :
       m_filename(filename), m_pagesize(pagesize), m_recordsize(recordsize),
-      m_isopen(false), m_lastError(ErrorNone),m_concept(concept), m_file(0x0),m_accumulator(0x0) {
+      m_isopen(false), m_lastError(ErrorNone),m_concept(concept), m_file(0x0)/*,m_accumulator(0x0)*/ {
       std::filesystem::path fn(filename);
 
       std::cout << "[STORE] Create - filename = " << this->m_filename <<
@@ -62,14 +62,14 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      * This can only be called once an accumulator is set
      * --------------------------------------------------------------------------------------*/
-    bool Store::GrowStorage(int pagecount) {
-      if(!this->m_isopen || this->m_accumulator == 0x0) {
-        return false;
-      }
+//    bool Store::GrowStorage(int pagecount) {
+//      if(!this->m_isopen || this->m_accumulator == 0x0) {
+//        return false;
+//      }
 
 
 
-    }
+//    }
 
 
     /* ----------------------------------------------------------------------------------------
@@ -93,8 +93,33 @@ namespace graph {
       return this->m_file->Write(offset, buffer->Data(),this->m_pagesize);
     }
 
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
     bool Store::Write(long pos, void* ptr, std::size_t size) {
       return this->m_file->Write(pos, ptr, size);
+    }
+
+    /* ----------------------------------------------------------------------------------------
+     * Scan every record in the store
+     * --------------------------------------------------------------------------------------*/
+    bool Store::Scan(Scanner *scanner) {
+      long filesize = this->m_file->Size();
+      long count = filesize / (long) this->m_recordsize;
+      //std::vector<std::uint8_t> buffer(this->m_recordsize, 0x0);
+
+      ByteBuffer buffer(this->m_recordsize);
+
+      for(long id = 1; id <= count; id++) {
+        long offset = (id-1) * (long)this->m_recordsize;
+        if(!this->m_file->Read(offset, buffer.Data(),this->m_recordsize)) {
+          return false;
+        }
+        bool active = buffer.At(0) == 0x1;
+
+        scanner->Scan((type::gid)id, active, &buffer, this->m_recordsize);
+      }
+      return true;
     }
 
     /* ----------------------------------------------------------------------------------------

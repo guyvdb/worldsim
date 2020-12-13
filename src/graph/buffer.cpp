@@ -10,24 +10,22 @@ namespace graph {
   }
 
   ByteBuffer::ByteBuffer(std::size_t len) {
+    this->m_data = std::vector<std::uint8_t>(len,0x0);
+    /*
     this->m_data.reserve(len);
     for(std::size_t i =0;i<len;i++) {
       this->m_data.push_back(0x0);
     }
-    //std::fill(this->m_data.begin(), this->m_data.end(), 0x0);
+    */
   }
 
 
   ByteBuffer::ByteBuffer(ByteBuffer *buf) {
-    std::cout << "New Buffer: buf=" << buf->Size() << std::endl;
-
     this->Reserve(buf->Size());
     std::uint8_t *ptr = (std::uint8_t*)buf->Data();
     for(std::size_t i =0; i<buf->Size();i++) {
       this->m_data.push_back(ptr[i]);
     }
-
-    std::cout << "New Buffer: this=" << this->Size() << std::endl;
   }
 
   bool ByteBuffer::Equal(ByteBuffer *buf) {

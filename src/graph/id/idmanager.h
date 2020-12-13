@@ -4,13 +4,12 @@
 #include <filesystem>
 #include <type/base.h>
 #include <storeable.h>
-//#include <store/store.h>
-//#include <store.h>
 #include <store/file.h>
+#include <store/scanner.h>
 #include <mutex>
 #include <vector>
 #include <map>
-//#include <cstdio>
+
 
 namespace graph {
 
@@ -58,6 +57,7 @@ namespace graph {
                            //
                            // used in loading this is the actual data offset
         std::uint16_t m_idloadcount;
+        type::gid m_lastId;
     };
 
     // The Id manager manages Graph & Type Id's. It maintains its own

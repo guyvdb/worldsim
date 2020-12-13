@@ -7,13 +7,14 @@
 #include <wal/writeaheadlog.h>
 #include <cache/cachemanager.h>
 #include <id/idmanager.h>
+#include <type/registry.h>
 
 namespace graph {
   namespace tx {
       class TransactionManager {
        friend Transaction;
       public:
-        TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager, id::IdManager *idManager);
+        TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager, id::IdManager *idManager, type::Registry *registry);
         ~TransactionManager();
         bool StartReadOnlyTransaction(Transaction &tx);
         bool StartReadWriteTransaction(Transaction &tx);
@@ -21,6 +22,7 @@ namespace graph {
         void Rollback(Transaction &tx);
         cache::CacheManager *GetCacheManager() { return this->m_cacheManager; }
         TransactionLog *GetLog() { return this->m_log; }
+        type::Registry *GetTypeRegistry() { return this->m_typeRegistry; }
       protected:
         StoreableId AllocateId(Storeable::Concept concept);
         // Allow the id manager to reclaim an id that was not used
@@ -30,6 +32,7 @@ namespace graph {
         TransactionLog* m_log;
         cache::CacheManager* m_cacheManager;
         id::IdManager *m_idManager;
+        type::Registry *m_typeRegistry;
     };
   }
 }

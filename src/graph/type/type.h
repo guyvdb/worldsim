@@ -38,14 +38,17 @@ namespace graph {
         Type(gid id);
         Type(gid id, ByteBuffer *buffer);
         virtual Concept GetConcept() { return Concept::TypeConcept; }
-        Storeable::Concept GetTypeConcept();
-        void SetTypeConcept(Storeable::Concept concept);
-        FixedString GetName();
-        void SetName(FixedString name);
+        Storeable::Concept GetTargetConcept();
+        void SetTargetConcept(Storeable::Concept concept);
+        std::string GetName();
+        void SetName(std::string name);
         gid GetSuperclassId();
         void SetSuperclassId(gid id);
         gid GetRootSubclassId();
         void SetRootSubclassId(gid id);
+        void AddSubclass(Type *subclass);
+
+        type::Type *Superclass();
 
 
         //     * | flag      | type id | name    | Dtid | ordinal | Required | Next ProfDef Id | Prev PropDef Id |
@@ -57,7 +60,7 @@ namespace graph {
     };
 
 
-
+/*
     class TypeDecoder : public Decoder {
       public:
         TypeDecoder() : Decoder() {}
@@ -65,7 +68,7 @@ namespace graph {
         virtual Storeable *Empty() { return new Type(NullGraphId); }
         virtual bool Decodeable() { return true; }
     };
-
+*/
   }
 }
 #endif // TYPE_H

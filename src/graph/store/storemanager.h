@@ -43,7 +43,7 @@ namespace graph {
 
         bool Open();
         bool Close();
-        std::vector<Store*> *Stores() { return &this->m_dataStores; }
+        std::vector<Store*> GetStores() { return this->m_dataStores; }
         Store *GetStore(Storeable::Concept concept);
       private:
 

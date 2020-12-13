@@ -86,14 +86,14 @@ namespace graph {
       std::vector<Entity*> m_entities;
   };
 */
-
+/*
   class EntityDecoder : public Decoder {
     public:
       EntityDecoder() : Decoder() {}
       virtual Storeable *Decode(type::gid id, ByteBuffer *buffer) { return new Entity(id, buffer); }
       virtual Storeable *Empty() { return new Entity(type::NullGraphId); }
       virtual bool Decodeable() { return true; }
-  };
+  };*/
 }
 #endif // ENTITY_H
 

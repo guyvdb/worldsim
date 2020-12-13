@@ -75,7 +75,7 @@ namespace graph {
   };
 
 
-
+/*
   class RelationDecoder : public Decoder {
     public:
       RelationDecoder() : Decoder() {}
@@ -83,7 +83,7 @@ namespace graph {
       virtual Storeable *Empty() { return new Relation(type::NullGraphId); }
       virtual bool Decodeable() { return true; }
   };
-
+*/
 }
 #endif // RELATION_H
 

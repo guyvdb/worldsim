@@ -6,12 +6,18 @@ namespace graph {
   namespace tx {
 
 
-
-    TransactionManager::TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager, id::IdManager *idManager) :
-      m_mutex(0x0), m_log(log), m_cacheManager(cacheManager), m_idManager(idManager) {
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
+    TransactionManager::TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager,
+                                           id::IdManager *idManager, type::Registry *registry) :
+      m_mutex(0x0), m_log(log), m_cacheManager(cacheManager), m_idManager(idManager), m_typeRegistry(registry) {
       this->m_mutex = new std::shared_mutex();
     }
 
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
     TransactionManager::~TransactionManager() {
       // check that there are no locks held
 

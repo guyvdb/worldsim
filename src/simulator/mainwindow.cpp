@@ -11,6 +11,7 @@
 
 #include <entity.h>
 #include <relation.h>
+#include <type/type.h>
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
@@ -102,3 +103,44 @@ void MainWindow::on_pushButton_2_clicked() {
     delete g;
 }
 
+
+
+void MainWindow::on_pushButton_3_clicked()
+{
+
+  graph::Graph *g = this->CreateGraph();
+  if(g == 0x0) return;
+
+
+  graph::tx::Transaction tx;
+  if(g->Update(tx)){
+    graph::type::Type *t1 = tx.CreateType(graph::Storeable::EntityConcept, "weapon");
+    if(t1 != 0x0) {
+      std::cout <<  t1->GetName() << " <- " << t1->Superclass()->GetName() << std::endl;
+
+      graph::type::Type *t2= tx.CreateType(graph::Storeable::EntityConcept, "bow", t1);
+      if(t2 != 0x0) {
+        std::cout <<  t2->GetName() << " <- " << t2->Superclass()->GetName() << std::endl;
+      }
+    }
+
+
+
+    tx.Commit();
+    g->Flush();
+  }
+
+  // Close & Dispose
+  g->Close();
+  delete g;
+
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+  graph::Graph *g = this->CreateGraph();
+  if(g == 0x0) return;
+  // Close & Dispose
+  g->Close();
+  delete g;
+}

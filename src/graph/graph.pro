@@ -19,6 +19,7 @@ SOURCES += \
     config.cpp \
     decoder.cpp \
     entity.cpp \
+    id/idscanner.cpp \
     store/storemanager.cpp \
     tx/transactioncache.cpp \
     tx/transactionmanager.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     graph.h \
     grapherrors.h \
     id/idmanager.h \
+    id/idscanner.h \
     log.h \
     relation.h \
     store/scanner.h \
@@ -71,7 +73,6 @@ HEADERS += \
 
 
 DESTDIR = ../../bin
-
 INCLUDEPATH += $$PWD/graph
 
 # Default rules for deployment.

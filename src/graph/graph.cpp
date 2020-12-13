@@ -27,37 +27,29 @@ namespace graph {
 
     //std::cout << "Register Stores \n";
     // Register all the stores with the id manager
-    for(auto &store : *this->m_storeManager->Stores()) {
+    for(auto &store : this->m_storeManager->GetStores()) {
       this->m_idManager->Register(store,store->GetConcept());
     }
     //std::cout << "Create complete\n";
 
+    this->m_registry = new type::Registry(this,this->m_storeManager);
+
 
     // Create the transaction manager
-    this->m_transactionManager = new tx::TransactionManager(this->m_log, this->m_cacheManager, this->m_idManager);
+    this->m_transactionManager = new tx::TransactionManager(this->m_log, this->m_cacheManager,
+                                                            this->m_idManager, this->m_registry);
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
   Graph::~Graph() {
-    // Flush all caches
-
-    // Flush all datastores
-
-    // Close all datastores
-
-    // delete all caches
-
-    // delete all datastores
-
     delete this->m_transactionManager;
+    delete this->m_registry;
     delete this->m_idManager;
     delete this->m_cacheManager;
     delete this->m_storeManager;
     delete this->m_log;
-
-
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -101,9 +93,17 @@ namespace graph {
       return false;
     }
 
-    // open the cache manager
+    if(!this->m_registry->Open()) {
+      std::cout << "[GRAPH] Failed to open registry." << std::endl;
+      this->m_log->Close();
+      this->m_storeManager->Close();
+      this->m_idManager->Close();
+      return false;
+    }
 
-   // std::cout << "Open  complete\n";
+
+    // ensure the entity and relation types exist
+    this->EnsureBaseTypes();
 
     this->m_isOpen = true;
     return true;
@@ -115,13 +115,11 @@ namespace graph {
   void Graph::Close() {
     this->m_isOpen = false;
 
-    // flush the cache
+    this->m_cacheManager->Flush();
 
     this->m_log->Close();
     this->m_storeManager->Close();
     this->m_idManager->Close();
-
-
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -154,5 +152,30 @@ namespace graph {
 
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  void Graph::EnsureBaseTypes() {
+    bool entity = this->m_registry->TypeExists("entity");
+    bool relation = this->m_registry->TypeExists("relation");
+
+    if(!entity || !relation) {
+      tx::Transaction tx;
+      if(this->Update(tx)) {
+        if(!entity) {
+          tx.CreateType(Storeable::Concept::EntityConcept,"entity",0x0);
+        }
+        if(!relation) {
+          tx.CreateType(Storeable::Concept::RelationConcept,"relation",0x0);
+        }
+        tx.Commit();
+      } else {
+        std::cout << "[GRAPH] Error - failed to start base type create transaction." << std::endl;
+      }
+    }
+
+
+
+  }
 
 }

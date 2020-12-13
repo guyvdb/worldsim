@@ -6,7 +6,7 @@
 #include <buffer.h>
 
 namespace graph {
-
+/*
   // Abstract class for creating object. Each type of Storeable object
   // should define a factory that creates objects of its type
   class Decoder {
@@ -23,6 +23,7 @@ namespace graph {
       virtual Storeable *Empty() {return 0x0; }
       virtual bool Decodeable() {return false; }
   };
+  */
 }
 
 
