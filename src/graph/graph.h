@@ -13,7 +13,7 @@
 #include <config.h>
 
 #include <store/storemanager.h>
-#include <idmanager.h>
+#include <id/idmanager.h>
 
 #include <wal/writeaheadlog.h>
 #include <tx/transactionmanager.h>
@@ -47,7 +47,7 @@ namespace graph {
       ErrorNo m_lastError;
       bool m_isOpen;
       Config &m_config;
-      IdManager *m_idManager;
+      id::IdManager *m_idManager;
       store::StoreManager *m_storeManager;
       tx::TransactionManager *m_transactionManager;
       cache::CacheManager *m_cacheManager;

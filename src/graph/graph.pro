@@ -1,5 +1,6 @@
 CONFIG -= qt
 
+
 TEMPLATE = lib
 DEFINES += GRAPH_LIBRARY
 
@@ -13,23 +14,23 @@ SOURCES += \
     attribute.cpp \
     buffer.cpp \
     cache/cache.cpp \
+    cache/page.cpp \
     cache/cachemanager.cpp \
     config.cpp \
     decoder.cpp \
-    entity.cpp \     \
-    wal/writeaheadlog.cpp
+    entity.cpp \
+    store/storemanager.cpp \
+    tx/transactioncache.cpp \
+    tx/transactionmanager.cpp \
+    wal/writeaheadlog.cpp \
     graph.cpp \
-    idmanager.cpp \
+    id/idmanager.cpp \
     log.cpp \
-    page.cpp \
     relation.cpp \
     store/store.cpp \
-    store/storemanager.cpp \
     store/file.cpp \
     storeable.cpp \
     tx/transaction.cpp \
-    tx/transactioncache.cpp \
-    tx/transactionmanager.cpp \
     type/base.cpp \
     type/heirachy.cpp \
     type/propertydef.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     attribute.h \
     buffer.h \
     cache/cache.h \
+    cache/page.h \
     cache/cachemanager.h \
     config.h \
     decoder.h \
@@ -48,14 +50,13 @@ HEADERS += \
     graph_global.h \
     graph.h \
     grapherrors.h \
-    idmanager.h \
+    id/idmanager.h \
     log.h \
-    page.h \
     relation.h \
     store/scanner.h \
     store/store.h \
-    store/storemanager.h \
     store/file.h \
+    store/storemanager.h \
     storeable.h \
     tx/transaction.h \
     tx/transactioncache.h \

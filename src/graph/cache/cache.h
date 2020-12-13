@@ -7,7 +7,7 @@
 #include <map>
 
 #include <type/base.h>
-#include <page.h>
+#include <cache/page.h>
 #include <storeable.h>
 #include <store/store.h>
 #include <mutex>

@@ -6,14 +6,14 @@
 #include <tx/transaction.h>
 #include <wal/writeaheadlog.h>
 #include <cache/cachemanager.h>
-#include <idmanager.h>
+#include <id/idmanager.h>
 
 namespace graph {
   namespace tx {
       class TransactionManager {
        friend Transaction;
       public:
-        TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager, IdManager *idManager);
+        TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager, id::IdManager *idManager);
         ~TransactionManager();
         bool StartReadOnlyTransaction(Transaction &tx);
         bool StartReadWriteTransaction(Transaction &tx);
@@ -29,7 +29,7 @@ namespace graph {
         std::shared_mutex *m_mutex;
         TransactionLog* m_log;
         cache::CacheManager* m_cacheManager;
-        IdManager *m_idManager;
+        id::IdManager *m_idManager;
     };
   }
 }

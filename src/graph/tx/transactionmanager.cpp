@@ -7,7 +7,7 @@ namespace graph {
 
 
 
-    TransactionManager::TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager, IdManager *idManager) :
+    TransactionManager::TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager, id::IdManager *idManager) :
       m_mutex(0x0), m_log(log), m_cacheManager(cacheManager), m_idManager(idManager) {
       this->m_mutex = new std::shared_mutex();
     }

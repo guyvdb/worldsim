@@ -5,9 +5,9 @@
 #include <filesystem>
 #include <cstdint>
 #include <string>
-#include <page.h>
+#include <cache/page.h>
 #include <storeable.h>
-#include <idmanager.h>
+#include <id/idmanager.h>
 #include <store/file.h>
 #include <store/scanner.h>
 //#include <decoder.h>
@@ -28,7 +28,7 @@ namespace graph {
         ~Store();
         bool Open();
         void Close();
-        void SetIdAccumulator(IdAccumulator *accumulator) {this->m_accumulator = accumulator;}
+        void SetIdAccumulator(id::IdAccumulator *accumulator) {this->m_accumulator = accumulator;}
         ErrorNo LastError() { return m_lastError; }
         bool IsOpen() { return m_isopen; }
         std::string Filename() { return this->m_filename; }
@@ -44,7 +44,7 @@ namespace graph {
 
         bool Scan(Scanner *scanner);
 
-        bool ScanIds(IdAccumulator *scanner);
+        bool ScanIds(id::IdAccumulator *scanner);
         Storeable::Concept GetConcept() { return  this->m_concept;}
         std::size_t RecordSize() { return this->m_recordsize; }
         std::size_t PageSize() { return this->m_pagesize; }
@@ -57,7 +57,7 @@ namespace graph {
         ErrorNo m_lastError;
         Storeable::Concept m_concept;
         BlockFile *m_file;
-        IdAccumulator *m_accumulator;
+        id::IdAccumulator *m_accumulator;
     };
 
   }
