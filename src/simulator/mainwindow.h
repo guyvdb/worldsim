@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <graph.h>
+#include <graph/graph.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,13 +18,15 @@ class MainWindow : public QMainWindow
 
     graph::Graph *CreateGraph();
 
+  private:
+    void recursivePrint(graph::Class *c, std::string indent);
   private slots:
-    void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
-
-    void on_pushButton_3_clicked();
-
-    void on_pushButton_4_clicked();
+    void on_btnCreateEntityRelation_clicked();
+    void on_btnReadEntity_clicked();
+    void on_btnCreateClassInheritance_clicked();
+    void on_btnReadClassInheritance_clicked();
+    void on_btnOpenCloseGraph_clicked();
+    void on_btnGenerateMap_clicked();
 
   private:
     Ui::MainWindow *ui;

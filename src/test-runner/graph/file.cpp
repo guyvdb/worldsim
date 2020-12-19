@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <utils.h>
-#include <store/file.h>
+#include <graph/store/file.h>
 
 graph::store::BlockFile* CreateTestFile() {
   RemoveTestDirectory();

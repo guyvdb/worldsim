@@ -1,0 +1,92 @@
+#ifndef TRANSACTION_H
+#define TRANSACTION_H
+
+#include <vector>
+#include <map>
+
+#include "type/errors.h"
+#include "type/base.h"
+#include "storeable.h"
+#include "tx/transactioncache.h"
+#include "class.h"
+
+namespace graph {
+
+
+  class Entity;
+  class Relation;
+
+  namespace cache {
+    class CacheManager;
+  }
+
+  namespace tx {
+    class TransactionManager;
+  }
+    class Transaction {
+      public:
+        enum TransactionState : int {
+          Created,
+          Started,
+          RolledBack,
+          Committed
+        };
+        Transaction();
+        ~Transaction();
+        bool Commit();
+        void Rollback();
+        bool ReadOnly() { return this->m_readonly; }
+        TransactionState State() { return m_state; }
+        graph::type::ErrorNo LastError();
+        bool IsReadable();
+        bool IsWriteable();
+
+
+        Entity *CreateEntity(std::string clazz);
+        Entity *CreateEntity(type::gid clazz);
+        Entity *CreateEntity(Class *clazz);
+        Entity *FindEntity(type::gid id);
+
+        Class *CreateClass(Storeable::Concept concept, std::string name, Class *superclass=0x0);
+        Class *FindClass(type::gid id);
+        Class *FindClass(std::string name);
+
+        Inheritance *CreateInheritance(type::gid superclass, type::gid subclass);
+        Inheritance *FindInheritance(type::gid id);
+
+
+
+        Relation *CreateRelation(std::string type);
+        Relation *CreateRelation(type::gid type);
+        Relation *CreateRelation(Class *type);
+
+        Relation *FindRelationById(type::gid id);
+
+
+
+
+        void SetTransactionManager(tx::TransactionManager *manager) {this->m_transactionManager = manager; }
+        void ChangeState(TransactionState state) {this->m_state = state;}
+        void SetReadOnly(bool value) { this->m_readonly = value; }
+        void SetTxId(type::txid id) { this->m_txid = id; }
+        std::vector<Storeable*> ModifiedObjects();
+      private:
+        void ReleaseResources();
+        tx::TransactionManager *TxMan() { return this->m_transactionManager; }
+        cache::CacheManager *CacheMan();
+        // Allocate a new id via the id manager
+        StoreableId AllocateId(Storeable::Concept concept);
+        // Allow the id manager to reclaim an id that was not used
+        bool ReclaimId(StoreableId id);
+        bool m_readonly;
+        tx::TransactionManager *m_transactionManager;
+        tx::TransactionCacheManager m_transactionCacheManager;
+        graph::type::ErrorNo m_lastError;
+        type::txid m_txid;
+        TransactionState m_state;
+        std::vector<StoreableId> m_allocatedIds;        
+    };
+
+
+}
+#endif // TRANSACTION_H

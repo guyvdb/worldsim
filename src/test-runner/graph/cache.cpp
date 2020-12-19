@@ -5,7 +5,7 @@
 
 //#include <utils.h>
 //#include <store.h>
-#include <cache/cache.h>
+#include <graph/cache/cache.h>
 //#include <file.h>
 
 struct CacheInfoTest {

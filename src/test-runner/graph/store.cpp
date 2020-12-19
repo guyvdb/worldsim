@@ -1,10 +1,10 @@
 #include <catch2.hpp>
 #include <utils.h>
-#include <store/store.h>
+#include <graph/store/store.h>
 #include <filesystem>
-#include <entity.h>
+#include <graph/entity.h>
 //#include <entityencoder.h>
-#include <storeable.h>
+#include <graph/storeable.h>
 
 
 TEST_CASE("The store should store and retreive pages","[graph][store]") {

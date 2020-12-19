@@ -14,11 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btnCreateEntityRelation">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
+      <x>10</x>
+      <y>10</y>
       <width>201</width>
       <height>26</height>
      </rect>
@@ -27,11 +27,11 @@
      <string>Create Entities &amp;&amp; Relation</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="btnReadEntity">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>60</y>
+      <x>10</x>
+      <y>40</y>
       <width>201</width>
       <height>26</height>
      </rect>
@@ -40,30 +40,56 @@
      <string>Read Entities</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="btnCreateClassInheritance">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>100</y>
+      <x>10</x>
+      <y>70</y>
       <width>191</width>
       <height>26</height>
      </rect>
     </property>
     <property name="text">
-     <string>Create Types</string>
+     <string>Create Classes &amp;&amp; Inheritance</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="btnOpenCloseGraph">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>140</y>
+      <x>10</x>
+      <y>130</y>
       <width>191</width>
       <height>26</height>
      </rect>
     </property>
     <property name="text">
      <string>Open &amp;&amp; Close Graph</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnReadClassInheritance">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>191</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Read Classes &amp;&amp; Inheritance</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnGenerateMap">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>10</y>
+      <width>121</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Generate Map</string>
     </property>
    </widget>
   </widget>

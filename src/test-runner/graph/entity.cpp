@@ -1,7 +1,7 @@
 #include <catch2.hpp>
 #include <utils.h>
-#include <entity.h>
-#include <buffer.h>
+#include <graph/entity.h>
+#include <graph/type/buffer.h>
 
 TEST_CASE("Entity should encode and decode from a byte stream","[graph][entity]") {
 
@@ -12,7 +12,7 @@ TEST_CASE("Entity should encode and decode from a byte stream","[graph][entity]"
   graph::type::gid outRelId = RandomGraphId();
 
   graph::Entity *t1 = new graph::Entity(id,attribid,outRelId,inRelid);
-  graph::Entity *t2 = new graph::Entity(id, new graph::ByteBuffer(t1->Buffer()));
+  graph::Entity *t2 = new graph::Entity(id, new graph::type::ByteBuffer(t1->Buffer()));
 
   REQUIRE(t1->Buffer()->Equal(t2->Buffer()));
 

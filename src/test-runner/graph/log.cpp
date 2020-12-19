@@ -2,7 +2,7 @@
 
 #include "../utils.h"
 #include <iostream>
-#include <wal/writeaheadlog.h>
+#include <graph/wal/writeaheadlog.h>
 //#include <tx/transactionlog.h>
 
 

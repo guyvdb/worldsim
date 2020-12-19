@@ -1,7 +1,7 @@
 #include <catch2.hpp>
 #include <utils.h>
-#include <graph.h>
-#include <config.h>
+#include <graph/graph.h>
+#include <graph/config.h>
 #include <iostream>
 
 TEST_CASE("Should open a graph","[graph][graph-db]") {

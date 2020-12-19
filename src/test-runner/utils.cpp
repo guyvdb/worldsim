@@ -1,6 +1,6 @@
 #include <utils.h>
 #include <chrono>
-#include <type/base.h>
+#include <graph/type/base.h>
 #include <QDir>
 #include <QDebug>
 #define TEST_ROOT "data"

@@ -2,7 +2,7 @@
 #define UTILS_H
 
 #include <filesystem>
-#include <type/base.h>
+#include <graph/type/base.h>
 // some useful utility functions around the file system
 
 void RemoveTestDirectory();

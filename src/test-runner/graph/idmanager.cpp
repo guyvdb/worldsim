@@ -5,12 +5,12 @@
 #include <cstdio>
 
 #include <utils.h>
-#include <store/store.h>
-#include <storeable.h>
-#include <id/idmanager.h>
-#include <entity.h>
+#include <graph/store/store.h>
+#include <graph/storeable.h>
+#include <graph/id/idmanager.h>
+#include <graph/entity.h>
 //#include <entityencoder.h>
-#include <type/base.h>
+#include <graph/type/base.h>
 
 TEST_CASE("Check Byte Order","[bytes]") {
 

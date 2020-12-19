@@ -1,7 +1,8 @@
 #include <catch2.hpp>
-#include <buffer.h>
-#include <type/base.h>
 #include <iostream>
+
+#include <graph/type/buffer.h>
+#include <graph/type/base.h>
 
 
 TEST_CASE("ByteBuffer should encode/decode values", "[graph][buffer]") {
@@ -11,7 +12,7 @@ TEST_CASE("ByteBuffer should encode/decode values", "[graph][buffer]") {
   std::uint32_t i32 = 984838222;            // 3 4 5 6
   //std::uint64_t i64 = 948484838232432;      // 7 8 9 10 11 12 13 14
 
-  graph::ByteBuffer *b = new graph::ByteBuffer(15);
+  graph::type::ByteBuffer *b = new graph::type::ByteBuffer(15);
   b->Set(0,i8);
   b->Set(1,i16);
   b->Set(3,i32);
