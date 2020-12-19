@@ -18,7 +18,6 @@ SOURCES += \
 HEADERS += \
     bounds.h \
     delaunator.h \
-    math_global.h \
     point.h \
     random.h \
     rect.h

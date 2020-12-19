@@ -10,7 +10,7 @@
 #include <vector>
 
 //namespace delaunator {
-namespace math {
+namespace num {
 
 
 

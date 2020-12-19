@@ -1,7 +1,7 @@
 #include "random.h"
 
 
-namespace math {
+namespace num {
 
 
 

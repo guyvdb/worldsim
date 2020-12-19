@@ -17,7 +17,7 @@ HEADERS += \
     character.h
 
 
-DESTDIR = ../../bin
+DESTDIR = ../../../bin
 
 # Default rules for deployment.
 unix {

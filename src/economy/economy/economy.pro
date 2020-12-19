@@ -16,7 +16,7 @@ HEADERS += \
     economy_global.h \
     economy.h
 
-DESTDIR = ../../bin
+DESTDIR = ../../../bin
 
 
 # Default rules for deployment.

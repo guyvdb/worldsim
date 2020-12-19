@@ -22,12 +22,12 @@ HEADERS += \
     language.h \
     organisation/organisation.h
 
-DESTDIR = ../../bin
+DESTDIR = ../../../bin
 
 DISTFILES += \
   notes.txt
 
-unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lgraph
+unix|win32: LIBS += -L$$OUT_PWD/../../../bin/ -lgraph
 
 INCLUDEPATH += $$PWD/../../graph
 DEPENDPATH += $$PWD/../../graph

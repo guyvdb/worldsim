@@ -1,5 +1,5 @@
 #include "point.h"
 
-namespace math {
+namespace num {
 
 }

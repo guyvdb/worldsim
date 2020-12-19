@@ -9,10 +9,10 @@ SOURCES += \
 
 DESTDIR = ../../bin
 
-unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lmath
+unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lnumbers
 
-INCLUDEPATH += $$PWD/../math
-DEPENDPATH += $$PWD/../math
+INCLUDEPATH += $$PWD/../numbers
+DEPENDPATH += $$PWD/../numbers
 
 
 unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lmap

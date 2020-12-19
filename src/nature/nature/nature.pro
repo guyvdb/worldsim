@@ -9,7 +9,6 @@ SOURCES += \
     ecosystem/ecosystem.cpp \
     fauna/animal.cpp \
     flora/flora.cpp \
-    map/map.cpp \
     nature.cpp \
     planet/planet.cpp \
     species.cpp
@@ -18,15 +17,14 @@ HEADERS += \
     ecosystem/ecosystem.h \
     fauna/animal.h \
     flora/flora.h \
-    map/map.h \
     nature_global.h \
     nature.h \
     planet/planet.h \
     species.h
 
-DESTDIR = ../../bin
+DESTDIR = ../../../bin
 
-unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lgraph
+unix|win32: LIBS += -L$$OUT_PWD/../../../bin/ -lgraph
 
 INCLUDEPATH += $$PWD/../../graph
 DEPENDPATH += $$PWD/../../graph

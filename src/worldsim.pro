@@ -6,10 +6,9 @@ SUBDIRS += \
   economy/economy \
   geography/geography \
   graph/graph \
-  math/math \
   nature/nature \
   map/map \
-  math/math \
+  numbers/numbers \
   random \
   simulator \
   test-runner \

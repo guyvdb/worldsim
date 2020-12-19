@@ -136,6 +136,10 @@ namespace graph {
       return h;
     }
 
+    type::PropertyDef* Class::AddProperty(type::FixedString name, type::DataType datatype, bool required) {
+      return 0x0;
+    }
+
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/

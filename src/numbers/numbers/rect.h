@@ -5,7 +5,7 @@
 #include "bounds.h"
 
 
-namespace math {
+namespace num {
 
 
   class Rect {

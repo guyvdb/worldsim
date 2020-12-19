@@ -1,7 +1,7 @@
 #include "rect.h"
 
 
-namespace math {
+namespace num {
 
 
 

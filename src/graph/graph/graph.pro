@@ -69,7 +69,7 @@ HEADERS += \
     wal/writeaheadlog.h
 
 
-DESTDIR = ../../bin
+DESTDIR = ../../../bin
 INCLUDEPATH += $$PWD/
 
 # Default rules for deployment.

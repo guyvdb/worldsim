@@ -1,12 +1,12 @@
-#ifndef RANDOM_H
-#define RANDOM_H
+#ifndef RANDOMNUMBERS_H
+#define RANDOMNUMBERS_H
 
 #include <random>
 
 #include "point.h"
 #include "rect.h"
 
-namespace math {  
+namespace num {
   class Random {
     public:
       Random(unsigned long seed);
@@ -21,4 +21,4 @@ namespace math {
 }
 
 
-#endif // RANDOM_H
+#endif // RANDOMNUMBERS_H

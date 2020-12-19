@@ -6,22 +6,22 @@
 
 
 
-#include <math/random.h>
-#include <math/point.h>
-#include <math/rect.h>
+#include <numbers/random.h>
+#include <numbers/point.h>
+#include <numbers/rect.h>
 
 #include <map/planetgenerator.h>
 
 int main() {
 
-  math::Random g(std::chrono::system_clock::now().time_since_epoch().count());
+  num::Random g(std::chrono::system_clock::now().time_since_epoch().count());
 
-  math::Rect r(1,1,100,100);
+  num::Rect r(1,1,100,100);
 
   std::cout << "Normal = " << g.Normal(3.0,1.0) << std::endl;
   std::cout << "Uniform = " << g.UniformInt(4,7) << std::endl;
 
-  math::Point p = g.UniformPoint(r);
+  num::Point p = g.UniformPoint(r);
 
   std::cout << "Uniform Point = (x:" << p.X << ", y:" << p.Y << ")" << std::endl;
 

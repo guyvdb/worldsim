@@ -4,7 +4,7 @@
 
 
 
-namespace math {
+namespace num {
 
 
   class Bounds {

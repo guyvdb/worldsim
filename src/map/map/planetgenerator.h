@@ -1,38 +1,39 @@
-#ifndef GENERATOR_H
-#define GENERATOR_H
+#ifndef PLANETGENERATOR_H
+#define PLANETGENERATOR_H
 
 #include <vector>
 
-#include "map.h"
-
-#include <math/random.h>
-#include <math/rect.h>
+#include <numbers/random.h>
+#include <numbers/rect.h>
+#include <numbers/delaunator.h>
 
 namespace map {
 
 
   struct PlanetGeneratorConfig {
-    math::Random *RandomNumberGenerator;
+    num::Random *RandomNumberGenerator;
     int SeedPointCount;
-    math::Rect Bounds;
+    num::Rect Bounds;
   };
 
-  PlanetGeneratorConfig DefaultPlanetGeneratorConfig(math::Random *randomNumberGenerator) {
+  PlanetGeneratorConfig DefaultPlanetGeneratorConfig(num::Random *randomNumberGenerator) {
     return PlanetGeneratorConfig {
       .RandomNumberGenerator=randomNumberGenerator,
       .SeedPointCount=1000000,
-      .Bounds=math::Rect(0,0,1920,1080)
+      .Bounds=num::Rect(0,0,1920,1080)
     };
   }
 
   class PlanetGenerator {
     public:
       PlanetGenerator(PlanetGeneratorConfig& config);
+      ~PlanetGenerator();
       bool Generate();
     private:
-      math::Random *m_rand;
+      num::Random *m_rand;
       int m_seedPointCount;
-      math::Rect m_bounds;
+      num::Rect m_bounds;
+      num::Delaunator *m_delaunator;
 
   };
 
@@ -41,4 +42,4 @@ namespace map {
 
 }
 
-#endif // GENERATOR_H
+#endif // PLANETGENERATOR_H

@@ -29,3 +29,5 @@ unix|win32: LIBS += -L$$OUT_PWD/../culture/ -lculture
 INCLUDEPATH += $$PWD/../map
 DEPENDPATH += $$PWD/../map
 unix|win32: LIBS += -L$$OUT_PWD/../map/ -lmap
+
+

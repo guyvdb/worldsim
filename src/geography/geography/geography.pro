@@ -22,9 +22,9 @@ DISTFILES += \
   notes.txt
 
 
-DESTDIR = ../../bin
+DESTDIR = ../../../bin
 
-unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lgraph
+unix|win32: LIBS += -L$$OUT_PWD/../../../bin/ -lgraph
 
 INCLUDEPATH += $$PWD/../graph
 DEPENDPATH += $$PWD/../graph
