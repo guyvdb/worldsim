@@ -41,18 +41,11 @@ namespace graph {
         bool IsReadable();
         bool IsWriteable();
 
-
         Entity *CreateEntity(std::string clazz);
         Entity *CreateEntity(type::gid clazz);
         Entity *CreateEntity(Class *clazz);
         Entity *FindEntity(type::gid id);
 
-        Class *CreateClass(Storeable::Concept concept, std::string name, Class *superclass=0x0);
-        Class *FindClass(type::gid id);
-        Class *FindClass(std::string name);
-
-        Inheritance *CreateInheritance(type::gid superclass, type::gid subclass);
-        Inheritance *FindInheritance(type::gid id);
 
 
 
@@ -63,6 +56,15 @@ namespace graph {
         Relation *FindRelationById(type::gid id);
 
 
+        // Protect theres ????
+        Class *CreateClass(Storeable::Concept concept, std::string name, Class *superclass=0x0);
+        Class *FindClass(type::gid id);
+        Class *FindClass(std::string name);
+
+        Inheritance *CreateInheritance(type::gid superclass, type::gid subclass);
+        Inheritance *FindInheritance(type::gid id);
+
+
 
 
         void SetTransactionManager(tx::TransactionManager *manager) {this->m_transactionManager = manager; }
@@ -70,6 +72,9 @@ namespace graph {
         void SetReadOnly(bool value) { this->m_readonly = value; }
         void SetTxId(type::txid id) { this->m_txid = id; }
         std::vector<Storeable*> ModifiedObjects();
+
+      protected:
+        // Only the registry should be able to create Classes, Inheritances and PropTypes
       private:
         void ReleaseResources();
         tx::TransactionManager *TxMan() { return this->m_transactionManager; }

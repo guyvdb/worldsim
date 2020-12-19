@@ -57,7 +57,7 @@ namespace graph {
 
       // Does the type exist in the graph. I.e. does it have a gid
       if(!this->ClassExists(definition.Name)) {
-        this->CreateClass(definition.Concept, definition.Name, definition.Properties);
+        this->CreateClass(definition.Concept, definition.Name, definition.SuperclassName ,definition.Properties);
       }
 
       // do we alread have a factory registered for this type? If so
@@ -82,16 +82,29 @@ namespace graph {
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
-    gid Registry::CreateClass(Storeable::Concept concept, std::string name, std::vector<ClassProperty> properties) {
+    gid Registry::CreateClass(Storeable::Concept concept, std::string name, std::string superclass, std::vector<ClassProperty> properties) {
+      gid result = NullGraphId;
+
       graph::Transaction tx;
       if(this->m_graph->Update(tx)) {
-        Class *t = tx.CreateClass(concept, name);
-        return t->GetGraphId();
-      }
+        Class *t = tx.CreateClass(concept, name, tx.FindClass(superclass));
 
-      // failed...
-      std::cout << "[REGISTRY] Error - failed to create type " << name << "." << std::endl;
-      return type::NullGraphId;
+        // create all the propdefs
+
+        for(auto &property : properties) {
+          t->AddProperty(property.Name, property.DataType, property.Required);
+
+        }
+
+
+
+        result = t->GetGraphId();
+        if(!tx.Commit()) {
+          std::cout << "[REGISTRY] Error - failed to commit transaction on create class." << std::endl;
+          return NullGraphId;
+        }
+      }
+      return  result;
     }
 
 

@@ -13,22 +13,28 @@ namespace graph {
     typedef std::uint32_t pid;      // Page Id
     typedef std::uint8_t  cid;      // Concept Id
     typedef std::uint8_t  stateid;  // Action Id
-    typedef std::uint8_t  stid;     // Scalar Type Id
+    typedef std::uint8_t  pdtid;     // Property Type Id
 
     const gid NullGraphId = 0x0;
 
 
-    enum SimpleType : stid {
-      ComplexType,
-      IntegerType,
-      FloatType,
-      BooleanType,
-      FixedStringType,
-      DynamicStringType,
-      IntegerArrayType,
-      FloatArrayType,
-      BooleanArrayType,
-      DateTimeType
+    typedef void (*myfunc)();
+
+    enum DataType : pdtid {
+      Integer,
+      IntegerArray,
+      Float,
+      FloatArray,
+      Boolean,
+      BooleanArray,
+      ShortString,
+      ShortStringArray,
+      LongString,
+      LongStringArray,
+      DateTime,
+      DataTimeArray,
+      LatLon,
+      LatLonArray
     };
 
     class ByteBuffer;

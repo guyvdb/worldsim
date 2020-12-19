@@ -55,7 +55,7 @@ namespace graph {
 
         //     * | flag      | type id | name    | Dtid | ordinal | Required | Next ProfDef Id | Prev PropDef Id |
 
-        type::PropertyDef *AddProperty(type::FixedString name, type::SimpleType datatype, bool required);
+        type::PropertyDef *AddProperty(type::FixedString name, type::DataType datatype, bool required);
         void RemoveProperty(type::FixedString name);
         std::vector<type::PropertyDef*> Properties();
 

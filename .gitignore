@@ -3,7 +3,8 @@ build
 contrib
 data
 documentation
-
+art
+ux
 src/*.pro.user
 src/**/*.pro.user
 

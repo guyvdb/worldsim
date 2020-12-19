@@ -60,6 +60,7 @@ HEADERS += \
     tx/transactioncache.h \
     tx/transactionmanager.h \
     type/base.h \
+    type/factory.h \
     type/propertydef.h \
     type/registry.h \
     type/buffer.h \

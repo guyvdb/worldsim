@@ -13,7 +13,7 @@
 #include <graph/relation.h>
 #include <graph/class.h>
 
-#include <map/generator.h>
+#include <map/planetgenerator.h>
 
 /* ----------------------------------------------------------------------------------------
  *
@@ -203,7 +203,7 @@ void MainWindow::on_btnCreateEntityRelation_clicked(){
 
 void MainWindow::on_btnGenerateMap_clicked() {
   std::cout << "Map Generate Clicked" << std::endl;
-  map::Generator gen;
+  map::PlanetGenerator gen;
 
  std::vector<map::geopoint> gpoints = gen.CreateRandomPoints();
  std::vector<double> points = gen.FlattenGeoPoints(gpoints);

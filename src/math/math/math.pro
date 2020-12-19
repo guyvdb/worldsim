@@ -1,7 +1,7 @@
-QT -= gui
+CONFIG -= qt
 
 TEMPLATE = lib
-DEFINES += PROP_LIBRARY
+DEFINES += MATH_LIBRARY
 
 CONFIG += c++17
 
@@ -10,16 +10,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    prop.cpp
+  bounds.cpp \
+  point.cpp \
+  random.cpp \
+  rect.cpp
 
 HEADERS += \
-    prop_global.h \
-    prop.h
+    bounds.h \
+    delaunator.h \
+    math_global.h \
+    point.h \
+    random.h \
+    rect.h
 
-DESTDIR = ../../bin
 
-# Default rules for deployment.
-unix {
-    target.path = /usr/lib
-}
-!isEmpty(target.path): INSTALLS += target
+DESTDIR = ../../../bin
+

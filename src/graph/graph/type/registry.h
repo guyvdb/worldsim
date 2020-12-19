@@ -7,6 +7,7 @@
 #include "../store/store.h"
 #include "../storeable.h"
 #include "../type/buffer.h"
+#include "factory.h"
 
 #include <vector>
 #include <map>
@@ -26,23 +27,24 @@ namespace graph {
 
 
 
+/*
     class ClassFactory {
         virtual Storeable *CreateType() = 0;
         virtual Storeable *CreateType(gid id, ByteBuffer *buffer) = 0;
-        virtual std::string TypeName() = 0;
-    };
+       // virtual std::string TypeName() = 0;
+    };*/
 
     struct ClassProperty {
         std::string Name;
-        stid ScalarTypeId;
-        bool Array;
+        type::DataType DataType;
         bool Required;
     };
 
     struct ClassDefinition {
         std::string Name;
+        std::string SuperclassName;
         Storeable::Concept Concept;
-        ClassFactory *Factory;
+        FactoryFunc Factory;
         std::vector<ClassProperty> Properties;
     };
 
@@ -63,9 +65,9 @@ namespace graph {
         type::gid GetClassGraphId(std::string name);
       private:
         bool ClassFactoryExists(std::string name);
-        gid CreateClass(Storeable::Concept concept, std::string name, std::vector<ClassProperty> properties);
+        gid CreateClass(Storeable::Concept concept, std::string name, std::string superclass, std::vector<ClassProperty> properties);
         std::map<std::string, gid> m_nameIndex;
-        std::map<gid, ClassFactory*> m_factories;
+        std::map<gid, FactoryFunc> m_factories;
         graph::Graph *m_graph;
         store::Store *m_typeStore;
     };

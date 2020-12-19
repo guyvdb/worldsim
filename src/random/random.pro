@@ -7,5 +7,15 @@ SOURCES += \
         main.cpp
 
 
+DESTDIR = ../../bin
 
-DESTDIR =../../bin
+unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lmath
+
+INCLUDEPATH += $$PWD/../math
+DEPENDPATH += $$PWD/../math
+
+
+unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lmap
+
+INCLUDEPATH += $$PWD/../map
+DEPENDPATH += $$PWD/../map

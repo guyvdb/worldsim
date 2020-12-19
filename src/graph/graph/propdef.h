@@ -37,8 +37,8 @@ namespace graph {
       void SetClassId(type::gid id) { this->Update(CLASS_ID_OFFSET, id); }
       std::string GetName() { return this->GetFixedString(NAME_OFFSET).StdString(); }
       void SetName(std::string value) { this->Update(NAME_OFFSET, type::FixedString(value)); }
-      type::stid GetScalarId() { return this->GetUint8(SCALAR_ID_OFFSET); }
-      void SetScalarId(type::stid id) { this->Update(SCALAR_ID_OFFSET, id); }
+      type::DataType GetPropertyDataType() { return (type::DataType)this->GetUint8(SCALAR_ID_OFFSET); }
+      void SetPropertyDataType(type::DataType type) { this->Update(SCALAR_ID_OFFSET, type); }
       bool GetArrayFlag() { return this->GetBool(ARRAY_FLAG_OFFSET); }
       //void SetArrayFlag(bool value) { this->SetBool(ARRAY_FLAG_OFFSET, value); }
       bool GetRequiredFlag() { return this->GetBool(REQUIRED_FLAG_OFFSET); }
