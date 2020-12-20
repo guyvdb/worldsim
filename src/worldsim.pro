@@ -1,16 +1,16 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-  character/character \
-  culture/culture \
-  economy/economy \
-  geography/geography \
-  graph/graph \
-  nature/nature \
-  map/map \
-  numbers/numbers \
-  random \
-  simulator \
-  test-runner \
-  workbench
+  character \
+  culture \
+  economy \
+  geography \
+  graph \
+  nature \
+  map \
+  numbers \
+  exec/random \
+  exec/simulator \
+  exec/test-runner \
+  exec/workbench
 
