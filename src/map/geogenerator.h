@@ -21,7 +21,7 @@ namespace map {
       .RandomNumberGenerator=randomNumberGenerator,
       .SeedPointCount=10,
       .SeedPointMaxRadius=8,
-      .Bounds=num::Rect(0,0,14000,7000)
+      .Bounds=num::Rect(0,0,2000,1000)
     };
   }
 
