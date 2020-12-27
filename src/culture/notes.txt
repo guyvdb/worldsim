@@ -26,3 +26,183 @@ Culture includes:
 
 
 -- This module should include laws/rules of state, history/civilisation and language
+
+
+
+
+I. Questions of Place
+(a) Describe the geography of where your society calls home.
+(b) Describe the climate your society deals with. How severe are their seasons?
+(c) What kinds of natural disasters has this society gotten used to?
+(d) What are the most commonly-grown foods?
+(e) What are the most commonly-eaten meats?
+(f) What foods are considered exotic or expensive?
+(g) What forms of alcohol are common? Rare?
+(h) Is there usually enough food and water for the population?
+(i) What is this place's most abundant resource?
+(j) What is its most valuable resource?
+(k) What resource is it most lacking?
+(l) How do people travel from one place to another?
+(m) Are the borders secure? In what way?
+(n) How many people live here?
+(o) Where in this place to they congregate?
+(p) What part of this place do they avoid? Why?
+(q) What are the most common domesticated animals here? And what are they domesticated for?
+(r) What are the most common wild animals?
+(s) Which animals are likely to be pets? Which ones won't be?
+II. Questions of Time
+(a) How far back does this society's written history go?
+(b) How far back do its people believe it goes?
+(c) What is the worst disaster they believe they've faced?
+(d) What was the best thing that every happened to them?
+(e) What in their past makes them feel ashamed?
+(f) What in their past makes them proud?
+(g) What are they afraid of happening again?
+(h) What are they hoping will happen? Do they think it likely?
+(i) What do they assume the future will hold?
+(j) How has this society changed? Do its current members realize this?
+(k) What are the most popular stories about the past?
+(l) Who in the past is the greatest hero? The worst villain?
+(m) Do people think the present better or worse than the past?
+(n) Do people believe the future will be better or worse than the present or past?
+III. Questions of Sex and Family
+(a) How many spouses may a man or woman have?
+(b) Who decides on a marriage?
+(c) Can a marriage end in divorce? How?
+(d) Who usually takes custody of children if a marriage ends for some reason?
+(e) How is adultery defined? What (if any) is the punishment? Who decides?
+(f) How are families named?(g) What happens to orphans?
+(h) How are boy and girl children treated differently?
+(i) Are premarital relations allowed?
+(j) How does your society define incest? Rape? How do people react to these?
+(k) What, if anything, is considered a good marriage gift?
+(l) What secret vice is believed to be widely practiced?
+(m) What secret vice actually is practiced?
+(n) What sexual habits are widely believed common among foriegners?
+(o) How do people react to homosexuality?
+(p) How do the genders dress?
+(q) Is prostitution legal? How are prostitutes viewed? Is this accurate?
+(r) What professions or activities are considered masculine?
+(s) What professions or activities are viewed as feminine?
+(t) What inanimate or sexless things are considered male or female?
+(u) What is the biggest sexual taboo?
+(v) Does this society connect the ideas of marriage with love?
+(w) What does this society mean by the word "virgin" and how important it it?
+IV. Questions of Manners
+(a) Who speaks first at a formal gathering?
+(b) What kinds of gifts are considered in extremely bad taste?
+(c) How do younger adults address their elders?
+(d) What colors are associated with power? With virtue? With death?
+(e) If two men get into a fight, how is this supposed to be resolved?
+(f) If two women get into a fight, how should that be resolved?
+(g) When is it rude to laugh at something funny?
+(h) What kinds of questions cannot be asked in public? In private? At all?
+(i) How do people demonstrate grief?
+(j) What does this society do with their corpses?
+(k) What kinds of jewelry do people where? And when?
+(l) Who inheirits property? Titles? Position?
+(m) What happens to those suffering from extreme mental illness?
+(n) What are the most popular games? How important are they?
+(o) What parts of the body are routinely covered?
+(p) How private are bodily functions like bathing or defecating?
+(q) How do people react to physical deformity?
+(r) When and how does someone go from child to adult?
+V. Questions of Faith
+(a) Is there a formal clergy? How are they organized?
+(b) What do people believe happens to them after death? How, if at all, can they influence this?
+(c) What happens to those who disagree with the majority on questions of religion?
+(d) Are there any particular places considered special or holy? What are they like?
+(e) What are the most popular rituals or festivals?
+(f) What do people want from the god or gods? How do they try and get it?
+(g) How do their religious practices differ from their neighbours?
+(h) What is the most commonly broken religious rule?(i) What is the least-violated religious rule?
+(j) What factions exist within the dominant religious institutions? How do they compete?
+(k) Are there monastic groups? What do they do and how are they organized? How do you join one?
+(l) How are those who follow different faiths treated?
+(m) What relationship do religious and political leaders have?
+(n) What superstitions are common? What kinds of supernatural events/beings do people fear?
+VI. Questions of Government
+(a) Who decides whether someone has broken a law? How?
+(b) What kinds of punishments are meted out? By whom? Why?
+(c) How are new laws created or old ones changed?
+(d) Is there some form of clemency or pardon? What is involved?
+(e) Who has the right to give orders, and why?
+(f) What titles do various officials have?
+(g) How are the rules different for officials as opposed to the common person?
+(h) How do government officials dress?
+(i) Is the law written down? Who interprets it?
+(j) Once accused, what recourse does someone have?
+(k) Is torture allowed? What kinds?
+(l) How are people executed?
+(m) Who cannot rise to positions of leadership?
+(n) Is bribery allowed? Under what circumstances?
+(o) What makes someone a bad ruler in this society? What can be done about it?
+(p) What are the most common or dangerous forms of criminal?
+VII. Questions of War
+(a) Who declares war?
+(b) Who has the power to declare conditions of peace?
+(c) What happens to prisoners taken in battle?
+(d) What form of warfare does this society use?
+(e) Who are the Elite warriors? What distinguishes them?
+(f) How does someone get command of troops?
+(g) Where do the loyalties of military units lie?
+(h) Are there professional soldiers? Do they make up the bulk of the military?
+(i) Has this society ever attacked another? Do they want to? What would make them do so?
+(j) Who are their enemies? Who's winning?
+(k) What do soldiers do when there's no war?
+VIII. Questions of Education
+(a) Does this society have its own language? Its own writing?
+(b) How common is literacy? How is literacy viewed?
+(c) What form and value are books?
+(d) Who teaches others? How do they teach?
+(e) Who decides who learns to read or write?(f) Who teaches professions, like carpenter or scribe?
+(g) Are foreigners ever brought in to teach new skills? Who does that?
+(h) How do this society's doctors try to treat wounds and sickness?
+(i) Which medical assumtions of this society are wrong?
+IX. Questions of Art
+(a) What are the favorite artforms?
+(b) What are the least-favorite?
+(c) How respected are artists?
+(d) Do artists require official or unofficial protection?
+(e) What kinds of trouble are artists in particular likely to find themselves in?
+(f) How might a very successful artist live?
+(g) What forms of theatre does your society have?
+(h) How naturalistic or stylized is your society's art?
+(j) What shapes are most common in your society's arts, like embroidery or architecture?
+(k) Which artforms get the most and least respect?
+(l) What form does censorship take?
+(m) Who may not be an artist?
+(n) What qualities equal "beauty" in this society?
+(o) What makes a man or woman especially beautiful?
+(p) How do people react to tattoos? Piercings? Facial hair? Make-up?
+X. Questions of sex and marriage
+(a) Is sex confined to marriage?
+(b) Or, is it supposed to be? What constitutes aberrant behavior?
+(c) Is there anything about this culture or religion in that culture that specifically addresses sexual conduct?
+(d) Are there laws about it? What about prostitution?
+(e) How old should someone be in your culture to be having sex?
+(f) What is considered too great a difference in age for a couple?
+(g) Do relationships allow multiple partners?
+(h) Should sex be a one-to-one experience? Or are groups allowed?
+(i) And, of course, what about homosexuality? Is it frowned on? Encouraged?
+XI. Questions of death and burial
+(a) What is their understanding of death and dying?
+(b) Do they cremate their dead? Or, how are dead bodies disposed of?
+(c) Is the family responsible for the body?
+(d) What part do the priests play?
+(e) Are there cemeteries at all?
+(f) Or, does everyone have a crypt in back with all the relatives in it?
+(g) Do people visit the dead? If so, how often and why?
+XII. Questions of suicide
+(a) What do people in this culture think about suicide?
+(b) Is it the greatest sin one can commit? Or is it a sin at all?
+(c) Is it the great and last comfort of a tormented soul?
+(d) Is it worse than murder?
+XIII. Questions of Law, Justice and Police
+(a) Is there a civilian police force, or is law enforcement the province of the military?
+(b) Is the police force a nationalised one, or are there multiple regional forces?
+(c) How "military" are they? Are they usually/ever armed?
+(d) What is the extent of their authority? Can they shoot you? Can they use magic? Can they torture or otherwise force a confession? Can they use telepathy?
+(e) Are there individuals or groups who are above the law?
+(f) Is there a secret police?
+(g) What is the role of police informants, if any?
