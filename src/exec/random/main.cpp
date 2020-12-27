@@ -7,7 +7,7 @@
 
 
 #include <numbers/random.h>
-#include <numbers/point.h>
+#include <numbers/vector.h>
 #include <numbers/rect.h>
 
 //#include <map/planetgenerator.h>
@@ -27,7 +27,7 @@ int main() {
   // Geo
   map::GeoConfig cfg = map::DefaultGeoConfig(&g);
   map::GeoGenerator *generator = new map::GeoGenerator(cfg);
-  generator->Generate("/home/guy/Projects/worldsim/image2.png");
+  generator->Generate("/home/guy/Projects/worldsim/image2.png",0);
   delete generator;
 
 

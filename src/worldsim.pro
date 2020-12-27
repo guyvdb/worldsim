@@ -1,6 +1,8 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+  exec/wmap \
+  template \
   character \
   culture \
   economy \
@@ -13,4 +15,6 @@ SUBDIRS += \
   exec/simulator \
   exec/test-runner \
   exec/workbench
+
+
 

@@ -184,17 +184,18 @@ void MainWindow::on_btnCreateEntityRelation_clicked(){
 
   graph::Transaction tx;
   if(g->Update(tx)){
-    graph::Entity *e1 = tx.CreateEntity(1343);
+
+    graph::Entity *e1 = tx.CreateEntity();
+
     for(int i=0;i<50;i++) {
-      graph::Entity *e2 = tx.CreateEntity(145);
+      graph::Entity *e2 = tx.CreateEntity();
        e1->CreateRelation(e2, 675);
     }
     tx.Commit();
     g->Flush();
   }
 
-
-    // Close & Dispose
+  // Close & Dispose
   g->Close();
   delete g;
 }
