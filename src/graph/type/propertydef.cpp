@@ -2,7 +2,7 @@
 namespace graph {
   namespace type {
 
-
+/*
     PropertyDef::PropertyDef(gid id) : Storeable(id, Storeable::PropertyDefSize){
 
     }
@@ -14,6 +14,6 @@ namespace graph {
     PropertyDef::~PropertyDef() {
 
     }
-
+*/
   }
 }

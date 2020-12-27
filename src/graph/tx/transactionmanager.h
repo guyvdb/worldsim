@@ -22,7 +22,7 @@ namespace graph {
         void Rollback(Transaction &tx);
         cache::CacheManager *GetCacheManager() { return this->m_cacheManager; }
         TransactionLog *GetLog() { return this->m_log; }
-        type::Registry *GetTypeRegistry() { return this->m_typeRegistry; }
+        type::Registry *GetRegistry() { return this->m_Registry; }
       protected:
         StoreableId AllocateId(Storeable::Concept concept);
         // Allow the id manager to reclaim an id that was not used
@@ -32,7 +32,7 @@ namespace graph {
         TransactionLog* m_log;
         cache::CacheManager* m_cacheManager;
         id::IdManager *m_idManager;
-        type::Registry *m_typeRegistry;
+        type::Registry *m_Registry;
     };
   }
 }

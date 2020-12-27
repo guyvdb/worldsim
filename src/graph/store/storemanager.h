@@ -15,11 +15,12 @@ namespace graph {
     class StoreManager  {
       public:
         const char * ENTITY_STORE_FILENAME = "entity.db";
-        const char * ENTITY_DEFINITION_STORE_FILENAME = "entity.def";
+       // const char * ENTITY_DEFINITION_STORE_FILENAME = "entity.def";
         const char * RELATION_STORE_FILENAME = "relation.db";
-        const char * RELATION_DEFINITION_STORE_FILENAME = "relation.def";
+        //const char * RELATION_DEFINITION_STORE_FILENAME = "relation.def";
         const char * CLASS_STORE_FILENAME = "class.db";
         const char * INHERITANCE_STORE_FILENAME = "inheritance.db";
+        const char * INSTANCE_STORE_FILENAME = "instance.db";
 
 
         const char * ATTRIBUTE_BUCKET_STORE_FILENAME = "attribute.db";
@@ -44,6 +45,7 @@ namespace graph {
         Store *m_relationStore;
         Store *m_classStore;
         Store *m_inheritanceStore;
+        Store *m_instanceStore;
 
 
         std::vector<Store*> m_dataStores;

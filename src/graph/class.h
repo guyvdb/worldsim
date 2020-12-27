@@ -3,8 +3,9 @@
 
 #include "storeable.h"
 #include "type/base.h"
-#include "type/propertydef.h"
 #include "inheritance.h"
+#include "instance.h"
+#include "propdef.h"
 namespace graph {
 
 
@@ -20,8 +21,15 @@ namespace graph {
      * | flag      | Concept |  name   | SuperClass Id | Root Inheritance Id | Root PropDef Id |
      * |-----------|---------|---------|---------------|---------------------|-----------------|
      *
+     * |----------------------------------------------|
+     * |                                              |
+     * |------------------------|---------------------|
+     * | 47 48 49 50            | 51 52 53 54         |
+     * | First Instance Page Id | Last InstancePageId |
+     * |------------------------|---------------------|
+     *
      * Name is a short string
-     * Class padded to 48 bytes long
+     * Class padded to 56 bytes long
      */
 
     // A Type is a type of Entity or a Type of Relation. Type is a graph vertex. Type and
@@ -35,6 +43,8 @@ namespace graph {
         const static int SUPERCLASS_ID_OFFSET = 35;
         const static int ROOT_INHERITANCE_ID_OFFSET = 39;
         const static int ROOT_PROPDEF_ID_OFFSET = 43;
+        const static int FIRST_INSTANCE_PAGE_ID_OFFSET = 47;
+        const static int LAST_INSTANCE_PAGE_ID_OFFSET = 51;
         Class(type::gid id);
         Class(type::gid id, type::ByteBuffer *buffer);
         virtual Concept GetConcept() { return Concept::ClassConcept; }
@@ -55,9 +65,11 @@ namespace graph {
 
         //     * | flag      | type id | name    | Dtid | ordinal | Required | Next ProfDef Id | Prev PropDef Id |
 
-        type::PropertyDef *AddProperty(type::FixedString name, type::DataType datatype, bool required);
-        void RemoveProperty(type::FixedString name);
-        std::vector<type::PropertyDef*> Properties();
+        PropDef *AddPropDef(type::FixedString name, type::DataType datatype, bool required);
+        bool LinkPropDef(PropDef *def);
+
+        void RemovePropDef(type::FixedString name);
+        std::vector<PropDef*> PropDefs();
 
     };
 

@@ -13,14 +13,14 @@ namespace graph {
     typedef std::uint32_t pid;      // Page Id
     typedef std::uint8_t  cid;      // Concept Id
     typedef std::uint8_t  stateid;  // Action Id
-    typedef std::uint8_t  pdtid;     // Property Type Id
+    typedef std::uint8_t  ptid;     // Property Type Id
 
     const gid NullGraphId = 0x0;
 
 
     typedef void (*myfunc)();
 
-    enum DataType : pdtid {
+    enum DataType : ptid {
       Integer,
       IntegerArray,
       Float,
@@ -33,8 +33,8 @@ namespace graph {
       LongStringArray,
       DateTime,
       DataTimeArray,
-      LatLon,
-      LatLonArray
+      LatLon,         // this is a pair
+      LatLonArray     // this is an array of pairs
     };
 
     class ByteBuffer;

@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-
+#include "entity.h"
+#include "relation.h"
 
 
 namespace graph {
@@ -89,7 +90,7 @@ namespace graph {
 
 
     // ensure the entity and relation types exist
-    this->EnsureBaseClasses();
+    this->RegisterBaseClasses();
 
     this->m_isOpen = true;
     return true;
@@ -144,7 +145,7 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  void Graph::EnsureBaseClasses() {
+  void Graph::RegisterBaseClasses() {
     bool entity = this->m_registry->ClassExists("Entity");
     bool relation = this->m_registry->ClassExists("Relation");
 
@@ -157,12 +158,17 @@ namespace graph {
         if(!relation) {
           tx.CreateClass(Storeable::Concept::RelationConcept,"Relation",0x0);
         }
-        tx.Commit();
+        if(!tx.Commit()) {
+          std::cout << "[GRAPH] Error - failed to commit base type create transaction." << std::endl;
+        }
       } else {
-        std::cout << "[GRAPH] Error - failed to start base type create transaction." << std::endl;
+        std::cout << "[GRAPH] Error - failed to begin base type create transaction." << std::endl;
       }
     }
 
+    // register the Factory Functions
+    this->m_registry->RegisterFactoryFunction("Entity", Entity::GetFactoryFunc());
+    this->m_registry->RegisterFactoryFunction("Relation",Relation::GetFactoryFunc());
 
 
   }

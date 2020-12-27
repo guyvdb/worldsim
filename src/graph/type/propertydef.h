@@ -21,6 +21,7 @@ namespace graph {
     * PropertyDef padded to 82 bytes long
     */
 
+    /*
     // This is the definition of a property. The property can be an entity property
     // or a relation property. That is determined by the type definition.
     class PropertyDef : public Storeable {
@@ -56,6 +57,7 @@ namespace graph {
 
         virtual Storeable::Concept GetConcept() { return Storeable::PropDefConcept; }
     };
+    */
   }
 }
 

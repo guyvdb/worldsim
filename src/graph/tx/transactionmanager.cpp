@@ -11,7 +11,7 @@ namespace graph {
      * --------------------------------------------------------------------------------------*/
     TransactionManager::TransactionManager(TransactionLog *log, cache::CacheManager *cacheManager,
                                            id::IdManager *idManager, type::Registry *registry) :
-      m_mutex(0x0), m_log(log), m_cacheManager(cacheManager), m_idManager(idManager), m_typeRegistry(registry) {
+      m_mutex(0x0), m_log(log), m_cacheManager(cacheManager), m_idManager(idManager), m_Registry(registry) {
       this->m_mutex = new std::shared_mutex();
     }
 
@@ -60,14 +60,11 @@ namespace graph {
      *
      * --------------------------------------------------------------------------------------*/
     bool TransactionManager::Commit(graph::Transaction &tx) {
-      bool result = false;
-
-     // std::cout << "[TXMANAGER] Commit called" << std::endl;
+      //bool result = false;
 
       this->m_log->Lock();
       type::txid id = this->m_log->FrameStart();
       tx.SetTxId(id);
-
 
       std::vector<Storeable*> modified = tx.ModifiedObjects();
 
@@ -97,7 +94,7 @@ namespace graph {
 
 
       //this->m_log->TransactionRelease();
-      return result;
+      return true;
 
     }
 

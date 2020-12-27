@@ -16,8 +16,6 @@ namespace graph {
 
     StoreManager::StoreManager(const char *datadir, std::size_t pagesize) : m_pagesize(pagesize), m_datadir(datadir) {
 
-     // this->m_dataStores = new std::vector<Store*>();
-     // this->m_dataStoreIndex = new std::map<Storeable::Type, Store*>();
       this->m_entityStore = this->CreateStore(ENTITY_STORE_FILENAME,
                                               Storeable::EntitySize,
                                               Storeable::Concept::EntityConcept);
@@ -34,6 +32,10 @@ namespace graph {
       this->m_inheritanceStore = this->CreateStore(INHERITANCE_STORE_FILENAME,
                                                 Storeable::InheritanceSize,
                                                 Storeable::InheritanceConcept);
+
+      this->m_instanceStore = this->CreateStore(INSTANCE_STORE_FILENAME,
+                                                Storeable::InstanceSize,
+                                                Storeable::InstanceConcept);
 
     }
 
@@ -88,12 +90,6 @@ namespace graph {
      * --------------------------------------------------------------------------------------*/
     Store *StoreManager::CreateStore(std::string filename, std::size_t size, Storeable::Concept concept) {
       std::string fq = fn(filename);
-
-//      std::cout << "[STOREMANAGER] Create store: " <<
-//                   "filename=" << filename <<
-//                   ", fq=" << fq << std::endl;
-
-
       Store *s = new Store(fq,this->m_pagesize, size, concept);
       this->m_dataStores.push_back(s);
       this->m_dataStoreIndex[concept] = s;

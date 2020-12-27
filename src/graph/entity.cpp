@@ -8,10 +8,29 @@
 
 namespace graph {
 
+  /*graph::Storeable *EntityFactoryFunc(type::gid id, type::ByteBuffer*buffer) {
+
+    // if buffer is null
+  }*/
+
+  Storeable * Entity::FactoryFunc(type::gid id, type::ByteBuffer *buffer) {
+    if(id == type::NullGraphId) {
+      return new Entity();
+    } else if(buffer == 0x0) {
+      return new Entity(id);
+    } else {
+      return new Entity(id, buffer);
+    }
+  }
+
+  type::FactoryFunc Entity::GetFactoryFunc() {
+    return Entity::FactoryFunc;
+  }
+
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Entity::Entity() : StoreableWithAttributes(type::NullGraphId, Storeable::EntitySize) {
+  Entity::Entity() : StoreableWithProps(type::NullGraphId, Storeable::EntitySize) {
     this->Load(ROOT_OUT_REL_ID_OFFSET, type::NullGraphId);
     this->Load(ROOT_IN_REL_ID_OFFSET, type::NullGraphId);
   }
@@ -19,7 +38,7 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Entity::Entity(type::gid id) : StoreableWithAttributes(id, Storeable::EntitySize) {
+  Entity::Entity(type::gid id) : StoreableWithProps(id, Storeable::EntitySize) {
     this->Load(ROOT_OUT_REL_ID_OFFSET, type::NullGraphId);
     this->Load(ROOT_IN_REL_ID_OFFSET, type::NullGraphId);
   }
@@ -29,14 +48,14 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   // The entity takes ownership of the buffer
-  Entity::Entity(type::gid id, graph::type::ByteBuffer *buffer) : StoreableWithAttributes(id, buffer) {
+  Entity::Entity(type::gid id, graph::type::ByteBuffer *buffer) : StoreableWithProps(id, buffer) {
     // Load of in and out rel id is within buffer
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  Entity::Entity(type::gid id, type::gid attribid, type::gid outRelId, type::gid inRelid) : StoreableWithAttributes(id, Storeable::EntitySize) {
+  Entity::Entity(type::gid id, type::gid attribid, type::gid outRelId, type::gid inRelid) : StoreableWithProps(id, Storeable::EntitySize) {
     this->Load(ROOT_ATTRIB_BUCKET_ID_OFFSET, attribid);
     this->Load(ROOT_OUT_REL_ID_OFFSET, outRelId);
     this->Load(ROOT_IN_REL_ID_OFFSET, inRelid);
@@ -83,11 +102,11 @@ namespace graph {
     std::vector<Relation*> v;
     if(this->IsReadable()) {
       if(this->GetRootInRelationId() != type::NullGraphId) {
-        Relation *r = this->Tx()->FindRelationById(this->GetRootInRelationId());
+        Relation *r = this->Tx()->FindRelation(this->GetRootInRelationId());
         if(r != 0x0) {
           v.push_back(r);
           while(r->GetNextInRelationId() != type::NullGraphId) {
-            r = this->Tx()->FindRelationById(r->GetNextInRelationId());
+            r = this->Tx()->FindRelation(r->GetNextInRelationId());
             if(r != 0x0) {
               v.push_back(r);
             } else {
@@ -109,11 +128,11 @@ namespace graph {
     std::vector<Relation*> v;
     if(this->IsReadable()) {
       if(this->GetRootOutRelationId() != type::NullGraphId) {
-        Relation *r = this->Tx()->FindRelationById(this->GetRootOutRelationId());
+        Relation *r = this->Tx()->FindRelation(this->GetRootOutRelationId());
         if(r != 0x0) {
           v.push_back(r);
           while(r->GetNextOutRelationId() != type::NullGraphId) {
-            r = this->Tx()->FindRelationById(r->GetNextOutRelationId());
+            r = this->Tx()->FindRelation(r->GetNextOutRelationId());
             if(r != 0x0) {
               v.push_back(r);
             } else {
@@ -127,8 +146,6 @@ namespace graph {
     }
     return v;
   }
-
-
 
   /* ----------------------------------------------------------------------------------------
    *
@@ -224,37 +241,4 @@ namespace graph {
     // return the relation
     return r;
   }
-
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-//  EntityCollection::EntityCollection() {
-//  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-//  EntityCollection::~EntityCollection() {
-//  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-//  void EntityCollection::Add(Entity *entity) {
-//    this->m_entities.push_back(entity);
-//  }
-
-  /* ----------------------------------------------------------------------------------------
-   *
-   * --------------------------------------------------------------------------------------*/
-//  Entity* EntityCollection::operator[](std::size_t index){
-//    if(index < this->m_entities.size() && index >= 0) {
-//      return this->m_entities[index];
-//    }
-//    return 0x0;
-//  }
-
-
-
 }

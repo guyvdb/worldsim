@@ -107,6 +107,58 @@ namespace graph {
   }
 
   /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  Entity *Transaction::FactoryCreateEntity(type::gid id, type::gid superclazz) {
+    if(!this->IsReadable()) {
+      std::cout << "[TX] Error - transaction is not readable." << std::endl;
+      return 0x0;
+    }
+
+    // Do we have a factory for this superclazz?
+    if(this->m_transactionManager->GetRegistry()->FactoryExists(superclazz)) {
+      return (Entity*)this->m_transactionManager->GetRegistry()->Factory(superclazz)(id, 0x0);
+    }
+
+    // We did not return an entity - look up the class and find its superclass and try again
+    Class *c = this->FindClass(superclazz);
+    if(c != 0x0) {
+      return this->FactoryCreateEntity(id, c->GetSuperclassId());
+    } else {
+      // this is bad...
+      std::cout << "[TX] Error - factory create is at the end of heirachy without finding a factory." << std::endl;
+      return new Entity();
+    }
+
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  Relation *Transaction::FactoryCreateRelation(type::gid id, type::gid superclazz) {
+    if(!this->IsReadable()) {
+      std::cout << "[TX] Error - transaction is not readable." << std::endl;
+      return 0x0;
+    }
+
+    // Do we have a factory for this superclazz?
+    if(this->m_transactionManager->GetRegistry()->FactoryExists(superclazz)) {
+      return (Relation*)this->m_transactionManager->GetRegistry()->Factory(superclazz)(id, 0x0);
+    }
+
+    // We did not return an entity - look up the class and find its superclass and try again
+    Class *c = this->FindClass(superclazz);
+    if(c != 0x0) {
+      return this->FactoryCreateRelation(id, c->GetSuperclassId());
+    } else {
+      // this is bad...
+      std::cout << "[TX] Error - factory create is at the end of heirachy without finding a factory." << std::endl;
+      return new Relation();
+    }
+  }
+
+
+  /* ----------------------------------------------------------------------------------------
    * Create a new entity.
    * --------------------------------------------------------------------------------------*/
   Entity *Transaction::CreateEntity(type::gid clazz) {
@@ -115,12 +167,17 @@ namespace graph {
       return  0x0;
     }
 
+
+    // find the super class -- if gid is null then super is entity
+
+
+
     StoreableId rec = this->AllocateId(Storeable::Concept::EntityConcept);
 
     // use the type system to create the entity as there might be a more
     // specialised class available
 
-    Entity *e = new Entity(rec.Id);
+    Entity *e = this->FactoryCreateEntity(rec.Id, clazz); //new Entity(rec.Id);
     e->SetFlag(0x1);
     e->SetClassId(clazz);
     e->SetTransaction(this);
@@ -132,8 +189,30 @@ namespace graph {
     return e;
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
   Entity *Transaction::CreateEntity(std::string clazz) {
+    type::cid cid = this->m_transactionManager->GetRegistry()->GetClassGraphId(clazz);
+    return this->CreateEntity(cid);
+  }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  Entity *Transaction::CreateEntity(Class *clazz) {
+    if(clazz != 0x0) {
+      return this->CreateEntity(clazz->GetGraphId());
+    } else {
+      return this->CreateEntity();
+    }
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  Entity *Transaction::CreateEntity() {
+    return this->CreateEntity("Entity");
   }
 
   /* ----------------------------------------------------------------------------------------
@@ -175,7 +254,7 @@ namespace graph {
     }
 
     // make sure type name is unique
-    if(this->m_transactionManager->GetTypeRegistry()->ClassExists(name)) {
+    if(this->m_transactionManager->GetRegistry()->ClassExists(name)) {
       std::cout << "[TX] Error - class " << name << " already exists." << std::endl;
       return 0x0;
     }
@@ -188,7 +267,7 @@ namespace graph {
 
     // entity and relation will have null superclasses
     // every other class has a superclass even if not provided
-    if(super == 0x0 && name != "entity" && name != "relation") {
+    if(super == 0x0 && name != "Entity" && name != "Relation") {
       if(concept == Storeable::Concept::EntityConcept) {
         super = this->FindClass("Entity");
       } else {
@@ -220,7 +299,7 @@ namespace graph {
     // house keeping
     this->m_transactionCacheManager.Add(t);
     this->m_allocatedIds.push_back(rec);
-    this->m_transactionManager->GetTypeRegistry()->IndexTypeName(rec.Id, name);
+    this->m_transactionManager->GetRegistry()->IndexTypeName(rec.Id, name);
 
     return t;
   }
@@ -255,10 +334,10 @@ namespace graph {
    *
    * --------------------------------------------------------------------------------------*/
   Class *Transaction::FindClass(std::string name) {
-    if(!this->m_transactionManager->GetTypeRegistry()->ClassExists(name)) {
+    if(!this->m_transactionManager->GetRegistry()->ClassExists(name)) {
       return 0x0;
     }
-    type::gid id = this->m_transactionManager->GetTypeRegistry()->GetClassGraphId(name);
+    type::gid id = this->m_transactionManager->GetRegistry()->GetClassGraphId(name);
     return this->FindClass(id);
   }
 
@@ -311,6 +390,51 @@ namespace graph {
     return h;
   }
 
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  PropDef *Transaction::CreatePropDef() {
+    if(!this->IsReadable()) {
+      std::cout << "[TX] Error - transaction is not writeable." << std::endl;
+      return 0x0;
+    }
+
+    StoreableId rec = this->AllocateId(Storeable::Concept::PropDefConcept);
+    PropDef *d = new PropDef(rec.Id);
+    d->SetFlag(0x1);
+    d->SetTransaction(this);
+    d->SetDirty(true);
+    this->m_transactionCacheManager.Add(d);
+    this->m_allocatedIds.push_back(rec);
+    return d;
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  PropDef *Transaction::FindPropDef(type::gid id) {
+    if(!this->IsReadable()) {
+      std::cout << "[TX] Error - transaction is not readable." << std::endl;
+      return 0x0;
+    }
+
+    // is the propdef in the transaction cache?
+    if(this->m_transactionCacheManager.Contains(Storeable::PropDefConcept, id)) {
+      // return from transaction cache
+      return (PropDef*)this->m_transactionCacheManager.Get(Storeable::PropDefConcept, id);
+    } else {
+      // return from file cache
+      graph::type::ByteBuffer *b = this->CacheMan()->CopyBytesFromPage(Storeable::Concept::PropDefConcept, id);
+      if(b == 0x0) {
+        std::cout << "[TX] Error - failed to load PropDef from cache." << std::endl;
+        return 0x0;
+      }
+      PropDef *d = new PropDef(id, b);
+      d->SetTransaction(this);
+      this->m_transactionCacheManager.Add(d);
+      return d;
+    }
+  }
 
   /* ----------------------------------------------------------------------------------------
    *
@@ -322,7 +446,7 @@ namespace graph {
     }
 
     StoreableId rec = this->AllocateId(Storeable::Concept::RelationConcept);
-    Relation *r = new Relation(rec.Id);
+    Relation *r = this->FactoryCreateRelation(rec.Id, clazz);
     r->SetFlag(0x1);
     r->SetClassId(clazz);
     r->SetTransaction(this);
@@ -335,7 +459,33 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-    Relation * Transaction::FindRelationById(type::gid id) {
+  Relation* Transaction::CreateRelation(std::string clazz) {
+    type::gid cid = this->m_transactionManager->GetRegistry()->GetClassGraphId(clazz);
+    return this->CreateRelation(cid);
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  Relation* Transaction::CreateRelation(Class *clazz) {
+    if (clazz != 0x0) {
+      return this->CreateRelation(clazz->GetGraphId());
+    } else {
+      return this->CreateRelation();
+    }
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+  Relation* Transaction::CreateRelation() {
+    return this->CreateRelation("Relation");
+  }
+
+  /* ----------------------------------------------------------------------------------------
+   *
+   * --------------------------------------------------------------------------------------*/
+    Relation * Transaction::FindRelation(type::gid id) {
       if(!this->IsReadable()) {
         std::cout << "[TX] Error - transaction is not readable." << std::endl;
         return 0x0;

@@ -10,6 +10,7 @@ SOURCES += \
     entity.cpp \
     id/idscanner.cpp \
     inheritance.cpp \
+    instance.cpp \
     propdef.cpp \
     store/storemanager.cpp \
     tx/transactioncache.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     id/idmanager.h \
     id/idscanner.h \
     inheritance.h \
+    instance.h \
     propdef.h \
     relation.h \
     store/scanner.h \

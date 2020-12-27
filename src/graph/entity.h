@@ -6,6 +6,7 @@
 #include "storeable.h"
 #include "type/base.h"
 #include "type/buffer.h"
+#include "type/factory.h"
 
 
 namespace graph {
@@ -15,7 +16,7 @@ namespace graph {
   /*
    * Buffer layout: Entity
    * |-----------|--------------------|----------------------|----------------------------------|
-   * | Storeable | StoreableWithClass | StoreableWithAttrib  | Entity                           |
+   * | Storeable | StoreableWithClass | StoreableWithProps   | Entity                           |
    * |-----------|--------------------|----------------------|-----------------|----------------|
    * | 0         | 1 2 3 4            | 5 6 7 8              | 9 10 11 12      | 13 14 15 16    |
    * | flag      | class id           | Root AttribBucket Id | Root Out Rel Id | Root In Rel Id |
@@ -24,12 +25,20 @@ namespace graph {
    * Entity padded to 18 bytes long
    */
 
+  /*
+   *  typedef graph::Storeable* (*FactoryFunc)(gid id, ByteBuffer *buffer);
+   */
 
 
-  class Entity : public StoreableWithAttributes {
+
+  class Entity : public StoreableWithProps {
     public:
       const static int ROOT_OUT_REL_ID_OFFSET = 9;
       const static int ROOT_IN_REL_ID_OFFSET = 13;
+
+      static Storeable* FactoryFunc(type::gid id, type::ByteBuffer *buffer);
+      static type::FactoryFunc GetFactoryFunc();
+
 
       // Constructors/Destructor
       Entity();
@@ -69,6 +78,13 @@ namespace graph {
 
     private:
   };
+
+
+
+
+
+
+
 }
 #endif // ENTITY_H
 

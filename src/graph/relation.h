@@ -4,6 +4,7 @@
 #include "storeable.h"
 #include "transaction.h"
 #include "type/buffer.h"
+#include "type/factory.h"
 
 
 
@@ -17,7 +18,7 @@ namespace graph {
   /*
    * Buffer layout: Relation
    * |-----------|--------------------|----------------------|
-   * | Storeable | StoreableWithClass | StoreableWithAttrib  |
+   * | Storeable | StoreableWithClass | StoreableWithProps   |
    * |-----------|--------------------|----------------------|
    * | 0         | 1 2 3 4            | 5 6 7 8              |
    * | flag      | class id           | Root AttribBucket Id |
@@ -35,7 +36,7 @@ namespace graph {
    *
    */
 
-  class Relation : public StoreableWithAttributes{
+  class Relation : public StoreableWithProps{
     public:
       const static int FROM_ENTITY_ID_OFFSET = 9;
       const static int TO_ENTITY_ID_OFFSET = 13;
@@ -44,10 +45,13 @@ namespace graph {
       const static int NEXT_IN_REL_ID_OFFSET = 25;
       const static int PREV_IN_REL_ID_OFFSET = 29;
 
+      static Storeable* FactoryFunc(type::gid id, type::ByteBuffer *buffer);
+      static type::FactoryFunc GetFactoryFunc();
 
+      Relation();
       Relation(type::gid id);
       Relation(type::gid id, graph::type::ByteBuffer *buffer);
-      Relation(type::gid id, std::uint8_t *buffer, std::size_t size);
+      //Relation(type::gid id, std::uint8_t *buffer, std::size_t size);
       ~Relation();
 
       Entity* From();
@@ -73,6 +77,8 @@ namespace graph {
       Entity *m_fromEntity;
       Entity *m_toEntity;
   };
+
+
 
 }
 #endif // RELATION_H

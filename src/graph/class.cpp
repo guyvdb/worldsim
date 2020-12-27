@@ -105,22 +105,11 @@ namespace graph {
         return 0x0;
       }
 
-      //std::cout << "----> Create Inheritance: ";
-
       // we need to create a new inheritance relationship and
       // link it into the chain
       Inheritance *h = this->Tx()->CreateInheritance(this->GetGraphId(), subclass->GetGraphId());
-
-      //std::cout << "super=" << h->GetSuperclassId() << ", sub=" << h->GetSubclassId();
-
-
-
       if(this->GetRootInheritanceId() == type::NullGraphId) {
-
         this->SetRootInheritanceId(h->GetGraphId());
-
-        //std::cout << ", root inheritance id=" << this->GetRootInheritanceId();
-
       } else {
         std::vector<Inheritance*> v = this->GetInheritances();
         Inheritance *last = v.back();
@@ -131,21 +120,92 @@ namespace graph {
           std::cout << "[CLASS] Error - failed to link inheritance. Last inheritance does not have next null graph id." << std::endl;
         }
       }
-
-      //std::cout << std::endl;
       return h;
     }
 
-    type::PropertyDef* Class::AddProperty(type::FixedString name, type::DataType datatype, bool required) {
-      return 0x0;
+
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
+    PropDef* Class::AddPropDef(type::FixedString name, type::DataType datatype, bool required) {
+      if(!this->IsWriteable()) {
+        std::cout << "[CLASS] Error - class is not writeable." << std::endl;
+        return 0x0;
+      }
+
+      PropDef *d = this->Tx()->CreatePropDef();
+      d->SetName(name);
+      d->SetPropertyDataType(datatype);
+      d->SetRequiredFlag(required);
+      d->SetClassId(this->GetGraphId());
+
+      if(!this->LinkPropDef(d)) {
+        std::cout << "[CLASS] Error - failed to link propdef." << std::endl;
+        return 0x0;
+      }
+      return d;
     }
+
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
+    bool Class::LinkPropDef(PropDef *def) {
+
+      if(!this->IsWriteable()) {
+        std::cout << "[CLASS] Error - cannot link propdef. Class is not writeable." << std::endl;
+        return false;
+      }
+
+      if(this->GetRootPropDefId() == type::NullGraphId) {
+        // link on root
+        this->SetRootPropDefId(def->GetGraphId());
+        return true;
+      } else {
+        std::vector<PropDef*> defs = this->PropDefs();
+        PropDef* last = defs.back();
+        if(last->GetNextPropDefId() == type::NullGraphId) {
+          last->SetNextPropDefId(def->GetGraphId());
+          return true;
+        } else {
+          std::cout << "[CLASS] Error - the last element  of PropDefs does not have a NULL pointer to the next element." << std::endl;
+          return false;
+        }
+      }
+    }
+
+    /* ----------------------------------------------------------------------------------------
+     *
+     * --------------------------------------------------------------------------------------*/
+    std::vector<PropDef*> Class::PropDefs() {
+      std::vector<PropDef*> v;
+      if(this->IsReadable()) {
+        if(this->GetRootPropDefId() != type::NullGraphId) {
+          PropDef *d = this->Tx()->FindPropDef(this->GetRootPropDefId());
+          if(d != 0x0) {
+            v.push_back(d);
+            while(d->GetNextPropDefId() != type::NullGraphId) {
+              d = this->Tx()->FindPropDef(d->GetNextPropDefId());
+              if(d != 0x0) {
+                v.push_back(d);
+              } else {
+                break;
+              }
+            }
+          }
+        }
+      } else {
+        std::cout << "[ENTITY] Error - failed to load out relations. Entity is not readable." << std::endl;
+      }
+      return v;
+    }
+
 
     /* ----------------------------------------------------------------------------------------
      *
      * --------------------------------------------------------------------------------------*/
     Class *Class::Superclass() {
       if(!this->IsReadable()) {
-        std::cout << "[TYPE] Error - class is not readable." << std::endl;
+        std::cout << "[CLASS] Error - class is not readable." << std::endl;
         return 0x0;
       }
       return this->Tx()->FindClass(this->GetSuperclassId());

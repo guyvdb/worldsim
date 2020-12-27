@@ -18,22 +18,6 @@ namespace graph {
 
   namespace type {
 
-    // We can define a type derived from base class entity or relation
-    // or one of the subclasses of the two.
-
-    // We can define the properties of our new type
-
-    // We can provide a factory for the generation of our new type
-
-
-
-/*
-    class ClassFactory {
-        virtual Storeable *CreateType() = 0;
-        virtual Storeable *CreateType(gid id, ByteBuffer *buffer) = 0;
-       // virtual std::string TypeName() = 0;
-    };*/
-
     struct ClassProperty {
         std::string Name;
         type::DataType DataType;
@@ -48,8 +32,6 @@ namespace graph {
         std::vector<ClassProperty> Properties;
     };
 
-
-
     // The registry allows applications to register
     // pre-defined types with the type system
     class Registry : public store::Scanner {
@@ -62,10 +44,19 @@ namespace graph {
         bool Open();
         bool Close();
         bool ClassExists(std::string name);
+
+        void RegisterFactoryFunction(std::string clazz, FactoryFunc func);
+        void RegisterFactoryFunction(type::gid clazz, FactoryFunc func);
+
+        bool FactoryExists(std::string clazz);
+        bool FactoryExists(type::gid clazz);
+        FactoryFunc Factory(std::string clazz);
+        FactoryFunc Factory(type::gid clazz);
+
         type::gid GetClassGraphId(std::string name);
       private:
-        bool ClassFactoryExists(std::string name);
-        gid CreateClass(Storeable::Concept concept, std::string name, std::string superclass, std::vector<ClassProperty> properties);
+        //bool ClassFactoryExists(std::string name);
+        gid CreateClass(ClassDefinition definition);//   Storeable::Concept concept, std::string name, std::string superclass, std::vector<ClassProperty> properties);
         std::map<std::string, gid> m_nameIndex;
         std::map<gid, FactoryFunc> m_factories;
         graph::Graph *m_graph;

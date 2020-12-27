@@ -233,21 +233,21 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  StoreableWithAttributes::StoreableWithAttributes(type::gid id, std::size_t size) : StoreableWithClass(id, size) {
+  StoreableWithProps::StoreableWithProps(type::gid id, std::size_t size) : StoreableWithClass(id, size) {
     this->Load(ROOT_ATTRIB_BUCKET_ID_OFFSET, type::NullGraphId);
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  StoreableWithAttributes::StoreableWithAttributes(type::gid id, graph::type::ByteBuffer *buffer) : StoreableWithClass(id,buffer) {
+  StoreableWithProps::StoreableWithProps(type::gid id, graph::type::ByteBuffer *buffer) : StoreableWithClass(id,buffer) {
     // root attrib bucket id will be loaded via buffer
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  StoreableWithAttributes::~StoreableWithAttributes() {
+  StoreableWithProps::~StoreableWithProps() {
 
   }
 
@@ -255,14 +255,14 @@ namespace graph {
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  type::gid StoreableWithAttributes::GetRootAttributesBucketId() {
+  type::gid StoreableWithProps::GetRootAttributesBucketId() {
     return this->GetUint32(ROOT_ATTRIB_BUCKET_ID_OFFSET);
   }
 
   /* ----------------------------------------------------------------------------------------
    *
    * --------------------------------------------------------------------------------------*/
-  void StoreableWithAttributes::SetRootAttributesBucketId(type::gid id){
+  void StoreableWithProps::SetRootAttributesBucketId(type::gid id){
     this->Update(ROOT_ATTRIB_BUCKET_ID_OFFSET, id);
   }
 

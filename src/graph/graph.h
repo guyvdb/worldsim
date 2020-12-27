@@ -34,7 +34,7 @@ namespace graph {
       bool Read(Transaction &tx);
       bool Update(Transaction &tx);
     private:
-      void EnsureBaseClasses();
+      void RegisterBaseClasses();
       void SetError(graph::type::ErrorNo no);
       std::filesystem::path m_path;
       graph::type::ErrorNo m_lastError;
