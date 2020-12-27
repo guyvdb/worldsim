@@ -4,13 +4,20 @@ CONFIG += c++17
 
 SOURCES += \
     geogenerator.cpp \
-    georenderer.cpp \
-    map.cpp
+    geometry.cpp \
+    heatmapgradient.cpp \
+    heatmaprenderer.cpp \
+    map.cpp \
+    renderer.cpp
 
 HEADERS += \
     geogenerator.h \
-    georenderer.h \
-    map.h
+    geometry.h \
+    heatmapgradient.h \
+    heatmaprenderer.h \
+    map.h \
+    renderer.h \
+    spartialindex.h
 
 
 DESTDIR = ../../bin
@@ -18,6 +25,6 @@ DESTDIR = ../../bin
 
 unix|win32: LIBS += -L$$OUT_PWD/../../bin/ -lnumbers
 
-
+DEPENDPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../
 #DEPENDPATH += $$PWD/../../numbers

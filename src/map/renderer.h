@@ -1,32 +1,26 @@
-#ifndef GEORENDERER_H
-#define GEORENDERER_H
+#ifndef MAPRENDERER_H
+#define MAPRENDERER_H
+
+#include <QPainter>
 
 #include <string>
 #include <vector>
+#include <numbers/vector.h>
 #include <numbers/rect.h>
 #include <numbers/triangle.h>
+
+#include "map.h"
+
+
 namespace map {
 
-  /*
-  struct geometry {
-    double SampleOffsetSize;
-    std::vector<double> *Samples;
-    std::vector<std::size_t> *Triangles;
-    std::vector<double> const& Coords;
-    std::vector<std::size_t> *HalfEdges;
-  };
-  */
 
-  class GeoRenderer {
+  class Renderer {
     public:
-      static void Render(std::string filename,
-                         num::Rect bounds,
-                         double sampleOfset,
-                         std::vector<std::size_t> const &triangles,
-                         std::vector<double> const &coords
-                         );
+      void Render(std::string filename, num::Rect bounds, Map *map);
+    private:
   };
 
 }
 
-#endif // GEORENDERER_H
+#endif // MAPRENDERER_H
