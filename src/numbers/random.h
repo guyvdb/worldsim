@@ -3,7 +3,7 @@
 
 #include <random>
 
-#include "point.h"
+#include "vector.h"
 #include "rect.h"
 
 namespace num {
@@ -11,7 +11,7 @@ namespace num {
     public:
       Random(unsigned long seed);
       double Normal(double mean, double stddev);
-      Point UniformPoint(Rect& bounds);
+      Vector UniformPoint(Rect& bounds);
       double UniformReal(Bounds& bounds);
       int UniformInt(int min, int max);
       std::default_random_engine* Engine() { return &this->m_generator; }

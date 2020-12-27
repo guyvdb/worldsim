@@ -5,7 +5,7 @@ namespace num {
 
 
 
-  Rect::Rect(Point topleft, Point bottomright) {
+  Rect::Rect(Vector topleft, Vector bottomright) {
     this->Top = topleft.X;
     this->Left = topleft.Y;
     this->Width = bottomright.X - topleft.X;

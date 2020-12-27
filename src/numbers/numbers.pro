@@ -4,22 +4,22 @@ CONFIG += c++17
 SOURCES += \
   bounds.cpp \
   line.cpp \
-  point.cpp \
   random.cpp \
   rect.cpp \
   simplexnoise.cpp \
-  triangle.cpp
+  triangle.cpp \
+  vector.cpp
 
 HEADERS += \
     bounds.h \
     delaunator.h \
     line.h \
-    point.h \
     poisson.h \
     random.h \
     rect.h \
     simplexnoise.h \
-    triangle.h
+    triangle.h \
+    vector.h
 
 
 DESTDIR = ../../bin

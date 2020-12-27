@@ -3,7 +3,7 @@
 
 namespace num {
 
-  Point Triangle::Circumcenter() {
+  Vector Triangle::Circumcenter() {
 
     // Line AB is ax + by = c
     double a,b,c;
@@ -24,15 +24,15 @@ namespace num {
     return this->LineLineIntersection(a,b,c,e,f,g);
   }
 
-  void Triangle::LineFromPoints(Point P, Point Q, double &a, double &b, double &c){
+  void Triangle::LineFromPoints(Vector P, Vector Q, double &a, double &b, double &c){
     a = Q.Y - P.Y;
     b = P.X - Q.X;
     c = a * (P.X) + b * (P.Y);
   }
 
 
-  void Triangle::PerpendicularBisectorForLine(Point P, Point Q, double &a, double &b, double &c){
-    Point mid((P.X + Q.X) / 2, (P.Y + Q.Y) / 2);
+  void Triangle::PerpendicularBisectorForLine(Vector P, Vector Q, double &a, double &b, double &c){
+    Vector mid((P.X + Q.X) / 2, (P.Y + Q.Y) / 2);
     // c = -bc + ay
     c = -b * (mid.X) + a * (mid.Y);
 
@@ -43,11 +43,11 @@ namespace num {
 
 
 
-  Point Triangle::LineLineIntersection(double a1, double b1, double c1, double a2, double b2, double c2){
+  Vector Triangle::LineLineIntersection(double a1, double b1, double c1, double a2, double b2, double c2){
     double determinant = a1 * b2 - a2 * b1;
     double x = (b2 * c1 - b1 * c2) / determinant;
     double y = (a1 * c2 - a2 * c1) / determinant;
-    return Point(x,y);
+    return Vector(x,y);
   }
 
   /*

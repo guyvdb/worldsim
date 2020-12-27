@@ -14,10 +14,10 @@ namespace num {
       return dist(this->m_generator);
     }
 
-    Point Random::UniformPoint(Rect &bounds) {
+    Vector Random::UniformPoint(Rect &bounds) {
       Bounds x = bounds.XBounds();
       Bounds y = bounds.YBounds();
-      return Point(this->UniformReal(x), this->UniformReal(y));
+      return Vector(this->UniformReal(x), this->UniformReal(y));
     }
 
     double Random::UniformReal(Bounds &bounds) {
